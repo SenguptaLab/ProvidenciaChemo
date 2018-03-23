@@ -14,10 +14,13 @@
 #' @export
 #' @examples data <- plotGCaMP_multi(N2, genotype = N2, cue = octanol)
 #'
-plotGCaMP_multi <- function(FileFilter, genotype, cue) {
+plotGCaMP_multi <- function(FileFilter, genotype, cue, food) {
+  library(tidyverse)
+  library(magrittr)
   FileFilter <- quo_name(enquo(FileFilter)) # make Filter usable inside other functions
   genotype <- quo_name(enquo(genotype))
   cue <- quo_name(enquo(cue))
+  food <- quo_name(enquo(food))
 
   folderPath <- dirname(file.choose())
   files <- list.files(file.path(folderPath), pattern = "*.mat", recursive = TRUE)
@@ -31,7 +34,8 @@ plotGCaMP_multi <- function(FileFilter, genotype, cue) {
                       animal = filenames,
                       animal_num = seq(from = 1, to = length(filenames)),
                       genotype = genotype,
-                      cue = cue)
+                      cue = cue,
+                      food = food)
   plot <- data %>% unnest() %>%
     ggplot(aes(x = time, y = delF)) +
     geom_line(aes(colour = animal)) +

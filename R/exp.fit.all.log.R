@@ -14,7 +14,7 @@
 #' @examples data <- exp.fit.all.log(files[1], skip.time = 10)
 
 exp.fit.all.log<-function (filename,skip.time) {
-  matfile<-readMat(filename, fixNames = TRUE)
+  matfile<-R.matlab::readMat(filename, fixNames = TRUE)
   signal<-matfile$signal
   time<-(1:length(signal))/4
   df<-data.frame(time, signal)

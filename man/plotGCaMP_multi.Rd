@@ -4,7 +4,7 @@
 \alias{plotGCaMP_multi}
 \title{plotGCaMP_multi}
 \usage{
-plotGCaMP_multi(FileFilter, genotype, cue)
+plotGCaMP_multi(FileFilter, genotype, cue, food)
 }
 \arguments{
 \item{FileFilter}{string to search/subset filenames}
