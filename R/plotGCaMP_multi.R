@@ -24,7 +24,7 @@ plotGCaMP_multi <- function(FileFilter, genotype, cue, food) {
 
   folderPath <- dirname(file.choose())
   files <- list.files(file.path(folderPath), pattern = "*.mat", recursive = TRUE)
-  files <- files[str_detect(files, pattern = paste0(FileFilter))]
+  files <- files[stringr::str_detect(files, pattern = paste0(FileFilter))]
   filenames <- files
   files <- file.path(folderPath, files)
   #df <- data.frame(x = 1, genotype = genotype, cue = cue)
