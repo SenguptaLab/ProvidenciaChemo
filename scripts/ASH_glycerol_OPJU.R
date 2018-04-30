@@ -134,7 +134,7 @@ rbind(ASI_glycerol_OP, ASI_glycerol_Ps) %>% group_by(food,time,pos) %>%
   viridis::scale_fill_viridis(discrete = TRUE) +
   scale_colour_manual(values = c("black", "black")) +
   facet_grid(pos~.) +
-  geom_segment(aes(x = 30, y = max(deltaF + 0.2), xend = 60, yend = max(deltaF + 0.2))) +
+  geom_segment(aes(x = 30, y = max(deltaF + 0.), xend = 60, yend = max(deltaF + 0.2))) +
   coord_cartesian(xlim=c(20,80)) +
   theme_classic()
 

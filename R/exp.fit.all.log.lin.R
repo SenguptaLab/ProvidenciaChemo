@@ -23,7 +23,12 @@ exp.fit.all.log.lin <- function(filename, skip.time) {
     #quo_name(enquo(filename))
 
   # fit to first N(skip.time) seconds to 30 sec
+  #fit1 <- lm(data = df[c(skip.time:120, 300:360), ], signal ~ log(time) + time) # plus last 15s
   fit1 <- lm(data = df[c(skip.time:120, 300:360), ], signal ~ log(time) + time) # plus last 15s
+  if(fit1$coefficients[2] > 0) {
+    fit1 <- lm(data = df[c(skip.time:120, 300:360), ], signal ~ log(time))
+  }
+
 
   fitted <- predict(fit1, newdata = df)
 
@@ -31,8 +36,11 @@ exp.fit.all.log.lin <- function(filename, skip.time) {
   # }
 
   # correct after fitted values go below zero (~ 20s) could do this in function
-  df$corrected <- df$signal
-  df$corrected[skip.time:nrow(df)] <- (df$signal[skip.time:nrow(df)] - df$fitted[skip.time:nrow(df)])
+  df %<>% mutate(corrected = case_when(
+    fit1$coefficients[2] > 0 ~ signal, #ignore inverted exp fit
+    fitted > 0 ~ signal, #ignor cases which have linear fit > 0
+    TRUE ~ signal - fitted
+  ))
 
   # plot fits to inspect
   p <- ggplot(df, aes(x = time, y = signal)) +

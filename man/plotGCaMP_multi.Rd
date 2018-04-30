@@ -4,7 +4,8 @@
 \alias{plotGCaMP_multi}
 \title{plotGCaMP_multi}
 \usage{
-plotGCaMP_multi(FileFilter, genotype, cue, food)
+plotGCaMP_multi(FileFilter, genotype = N2, cue = cue, food = OP50,
+  start = 30, end = 60, center_on_pulse = FALSE)
 }
 \arguments{
 \item{FileFilter}{string to search/subset filenames}
@@ -12,13 +13,19 @@ plotGCaMP_multi(FileFilter, genotype, cue, food)
 \item{genotype}{label the genotype for these data}
 
 \item{cue}{label the stimulus cue.}
+
+\item{food}{label to food cue}
+
+\item{start}{begin of stimulus}
+
+\item{end}{end time of stimulus}
 }
 \description{
 Function is a wrapper for exp.fit.all.log.lin which outputs corrected GCaMP signals as well as plots showing
 original and corrected signals. Also plots average trace for GCaMP signal. Inputs are matfiles.
 The script searches recursively for matfiles from a starter file (can be any placeholder file). Need to exclude
 matfiles that are not GCaMP files either using FileFilter, or by putting only relevant files in the folder.
-Plan is to update to include stim
+Requires max_delta helper function
 time etc...
 }
 \examples{

@@ -14,5 +14,6 @@ Imports:
   magrittr,
   tidyverse,
   R.matlab,
-  stringr
+  stringr,
+  scales
 RoxygenNote: 6.0.1
