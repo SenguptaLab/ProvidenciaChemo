@@ -12,32 +12,38 @@
 \alias{add.n}
 \alias{add.Bayes.CI}
 \alias{theme_my_classic}
+\alias{theme_my_ppt}
 \alias{fun_length}
 \alias{theme_my}
+\alias{g_legend}
 \title{ggplot_layers}
 \format{An object of class \code{theme} (inherits from \code{gg}) of length 60.}
 \usage{
-add.scatter()
+add.scatter(yval)
 
-add.median(width)
+add.median(yval, width, colour = "black")
 
-add.mean(width)
+add.mean(yval, width, colour = black)
 
-add.quartiles(width)
+add.quartiles(yval, width)
 
-figure.axes()
+figure.axes(no.x = TRUE, ...)
 
-add.n.categorical(dark)
+add.n.categorical(group, dark, ypos = 0, ...)
 
-add.n()
+add.n(xval)
 
 add.Bayes.CI()
 
 theme_my_classic
 
+theme_my_ppt
+
 fun_length(x)
 
 theme_my
+
+g_legend(a.gplot)
 }
 \arguments{
 \item{width}{optional width for median lines}

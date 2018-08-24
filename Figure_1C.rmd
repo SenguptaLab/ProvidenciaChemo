@@ -1,0 +1,42 @@
+---
+title: "Figure 1C"
+author: "Mike O'Donnell"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 5
+    fig_width: 10
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+
+```
+
+```{r SOS dataload}
+cutoff <- 10 #cutoff time for binary
+SOS <- read.csv(here::here("extdata","SOS_OP50_JUb39.csv")) %>%
+  mutate(food = factor(food, levels = c("OP50", "JUb39", "BL21", "BL21_tdcGOF","655", "655-tdcDel")),
+         genotype = factor(genotype, levels = c("N2", "tdc-1", "octr-1", "tbh-1")),
+         bin.time = if_else(response.time < cutoff, 1, 0))
+
+
+##### plot 1 SOS OP50 v JUb39 ####
+
+SOS_plot <- SOS %>% dplyr::filter(cond == "off_food", genotype == "N2", food %in% c("OP50", "JUb39")) %>%
+  ggplot(aes(x = food, y = response.time)) +
+  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  add.mean('response.time', colour = "red") +
+  add.quartiles('response.time') +
+  theme_my +
+  labs(x = "food",
+      y = "time to reversal (s)",
+      title = "100% octanol") +
+  #figure.axes(no.x = FALSE) +
+  guides(color = FALSE) + figure.axes()
+```
+

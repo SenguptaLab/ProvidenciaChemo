@@ -1,0 +1,55 @@
+---
+title: "Figure_1D"
+author: "Mike O'Donnell"
+date: "6/19/2018"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+
+```
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+filepath <- here::here("extdata/Figure_1D.csv")
+
+Gent_data <- read.csv(filepath) %>%
+  format_AvoidData(day.correct = "treatment") %>%
+  mutate(plate = factor(seq(1:nrow(.))),
+         treatment = factor(treatment, levels = c("live", "dead")))
+
+plot1 = Gent_data %>%
+  plot_plasticityIndex(xvar = treatment) + labs(title = "1-oct (corrected)") + 
+  scale_color_plot(palette = "grey-blue", drop = TRUE) + guides(color = FALSE) + facet_grid(.~strain)
+
+plot1
+
+glmm <- lme4::glmer(data = Gent_data, 
+                    formula = cbind(nCue,nControl) ~ treatment * strain + (1|date) + (1|plate),
+                    family = binomial,
+                    control= lme4::glmerControl(optimizer="bobyqa"))
+
+stan_glmm <-  rstanarm::stan_glmer(data = Gent_data, 
+                  formula = cbind(nCue,nControl) ~ strain * treatment + (1 | date) + (1|plate),
+                  chains = 6, cores = 4, seed = 2000,iter=6000,
+                  family = binomial,
+    control = list(adapt_delta=0.99))
+
+
+glm.lsm.list <- lsmeans::ref.grid(glmm) %>% lsmeans::lsmeans(., pairwise ~ treatment | strain, adjust = "mvt")
+glm.contrasts <- update(lsm.list$contrast, adjust = "mvt", by.vars = NULL)
+
+library(nlme)
+lm <- lm(rel.Logit ~ strain * treatment,data = Gent_data)
+anova(lm)
+lm.lsm.list <- lsmeans::ref.grid(lm) %>% lsmeans::lsmeans(., pairwise ~ treatment | strain, adjust = "Tukey")
+
+
+```

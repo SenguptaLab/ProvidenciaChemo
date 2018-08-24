@@ -1,0 +1,86 @@
+---
+title: "Figure 1B"
+author: "Mike O'Donnell"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 5
+    fig_width: 10 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+
+```
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+filepath <- here::here("extdata/Figure_1B_MOb007.csv")
+
+MOb_data <- read.csv(filepath) %>%
+  dplyr::filter(date != "5_12_17") %>%
+  format_AvoidData(day.correct = "OP50") %>%
+  mutate(plate = factor(seq(1:nrow(.))))
+
+MOb_plot = MOb_data %>%
+  plot_plasticityIndex(xvar = strain, plotColors = "grey-blue") + labs(title = "1-oct (corrected)") + 
+  scale_color_plot(palette = "2-Ps", drop = TRUE) + guides(color = FALSE) + figure.axes()
+# plot1non = MOb_data_nonC %>%
+#   plot_plasticityIndex(xvar = strain, plotColors = "grey-blue") + labs(title = "1-oct") +
+#   scale_color_plot(palette = "2-Ps", drop = TRUE) + guides(color = FALSE)
+# 
+# plot1 + plot1non
+
+plot2 = MOb_data %>%
+  plot_ChemoIndex(xvar = strain, plotColors = "grey-blue", plot.pos = FALSE) +
+  labs(title = "1-oct") + scale_color_plot(palette = "2-Ps", drop = TRUE)
+
+glmm <- lme4::glmer(data = MOb_data, 
+                    formula = cbind(nCue,nControl) ~ strain + (1|date) + (1|plate),
+                    family = binomial)
+
+lsm.list <- lsmeans::ref.grid(glmm) %>% lsmeans::lsmeans(., pairwise ~ strain)
+contrasts <- update(lsm.list$contrast, adjust = "mvt", by.vars = NULL)
+
+# sciplot::bargraph.CI(data = MOb_data,
+#                      x.factor = strain,
+#                      response = CI,
+#                      group = strain,
+#                      ylim = c(-1,0.25),
+#                      #ylim = c(-1,0.5),
+#                      col=c("#827E7E","#484CC7","#A3A3FA"),
+#                      err.width = 0.05,
+#                      space = 0.05
+#                      )
+
+```
+
+```{r MI sem plots with MOb007}
+MOb_data <- read.csv(here::here("extdata/Figure_1C.csv")) %>%
+  dplyr::filter(date != "5_12_17") %>%
+  format_AvoidData(day.correct = "OP50") %>%
+  mutate(plate = factor(seq(1:nrow(.))),
+         assay = "1-oct_repeat")
+alldata <- rbind(nonanone_data, octanol_data, MOb_data) %>% droplevels()
+
+
+
+sciplot::bargraph.CI(
+  data = alldata, 
+  x.factor = assay,
+  response = rel.Logit,
+  group = strain,
+  col = plotColors,
+  ylim = c(-1,2.5),
+  err.width = 0.05
+)
+
+levels(alldata$strain)
+
+```
+

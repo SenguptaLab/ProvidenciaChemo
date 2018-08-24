@@ -14,54 +14,61 @@ NULL
 #' @rdname ggplot_layers
 #'
 
-add.scatter <- function() {
-  geom_quasirandom(aes(y=cell.norm),colour = "#339900", cex=1,
-                   width = 0.075,size=0.3,
-                   method = 'smiley')}
+add.scatter <- function(yval) {
+  yval <- quo_name(enquo(yval))
+  ggbeeswarm::geom_quasirandom(aes_string(y = yval),colour = "black", cex=1,
+                   width = 0.075,size=0.3, alpha = 0.75,
+                   method = 'smiley')
+  }
 #' @export
 #' @rdname ggplot_layers
 
-add.median <- function(width) {
+add.median <- function(yval, width, colour = "black") {
+  yval <- quo_name(enquo(yval))
   if(missing(width)) {
     width = 0.25
   } else {
     width = width
   }
-  stat_summary(aes(y=cell.norm),fun.y = median,
+  stat_summary(aes_string(y=yval),fun.y = median,
                fun.ymin = median,
                fun.ymax = median,
-               geom = "crossbar", width = width, lwd = 0.35)
+               geom = "crossbar", width = width, lwd = 0.35, colour = colour)
 }
 
 #' @export
 #' @rdname ggplot_layers
 
-add.mean <- function(width) {
+
+add.mean <- function(yval, width, colour = black) {
+  color <- quo_name(enquo(colour))
+  yval <- quo_name(enquo(yval))
   if(missing(width)) {
     width = 0.25
   } else {
     width = width
   }
-  stat_summary(aes(y=cell.norm),fun.y = mean,
+  stat_summary(aes_string(y=yval),fun.y = mean,
                fun.ymin = mean,
                fun.ymax = mean,
-               geom = "crossbar", width = width, lwd = 0.35, colour = "white")
+               geom = "crossbar", width = width, lwd = 0.35, colour = color)
 }
 
 #' @export
 #' @rdname ggplot_layers
 
-add.quartiles <- function(width) {
+add.quartiles <- function(yval, width) {
+  yval <- quo_name(enquo(yval))
   if(missing(width)) {
-    stat_summary(aes(y=cell.norm),fun.y = median,
+    stat_summary(aes_string(y = yval),fun.y = median,
                  fun.ymin = function(z) {quantile(z,0.25)},
                  fun.ymax = function(z) {quantile(z,0.75)},
-                 geom = "errorbar", width = 0.15, lwd = 0.15)
+                 geom = "errorbar", width = 0.15, lwd = 0.25)
   } else {
-    stat_summary(aes(y=cell.norm),fun.y = median,
+    stat_summary(aes_string(y = yval),fun.y = median,
                  fun.ymin = function(z) {quantile(z,0.25)},
                  fun.ymax = function(z) {quantile(z,0.75)},
-                 geom = "errorbar", width = width, lwd = 0.15)
+                 geom = "errorbar", width = width, lwd = 0.25)
   }
 
 }
@@ -69,24 +76,33 @@ add.quartiles <- function(width) {
 #' @export
 #' @rdname ggplot_layers
 
-figure.axes <- function() {
+figure.axes <- function(no.x = TRUE, ...) {
+  if(no.x){
   list(theme(axis.title.x = ggplot2::element_blank(),
         axis.text.x = ggplot2::element_blank(),
         axis.text.y = ggplot2::element_text(size = 15),
         strip.text.x = ggplot2::element_blank()),
-    labs( title = NULL,
-          subtitle = NULL))
+    labs(subtitle = NULL))
+  } else {
+    list(theme(axis.title.x = ggplot2::element_blank(),
+               axis.text.x = ggplot2::element_text(size = 15),
+               axis.text.y = ggplot2::element_text(size = 15),
+               strip.text.x = ggplot2::element_blank()),
+         labs(subtitle = NULL))
+    }
 }
 
 #' @export
 #' @rdname ggplot_layers
 
-add.n.categorical <- function(dark) {
+add.n.categorical <- function(group, dark, ypos = 0, ...) {
+  group <- quo_name(enquo(group))
+  ypos <- quo_name(enquo(ypos))
   if(missing(dark)) {
-    stat_summary(aes(x=as.numeric(as.factor(genotype)) + 0.3, y=0),
+    stat_summary(aes_string(x = group, y = ypos),
                  fun.data = fun_length, geom = "text", size = 3)
   } else {
-    stat_summary(aes(x=as.numeric(as.factor(food)) + 0.3, y=0),
+    stat_summary(aes_string(x = as.numeric(as.factor(group)) + 0.3, y= ypos),
                  fun.data = fun_length, geom = "text", size = 3, color = "white")
   }
 
@@ -95,8 +111,9 @@ add.n.categorical <- function(dark) {
 #' @export
 #' @rdname ggplot_layers
 
-add.n <- function() {
-  stat_summary(aes(x= temp + 0.3, y=0),
+add.n <- function(xval) {
+  xval <- quo_name(enquo(xval))
+  stat_summary(aes(x= xval + 0.3, y=0),
                fun.data = fun_length, geom = "text", size = 3)
 }
 
@@ -119,6 +136,16 @@ add.Bayes.CI <- function() {
 theme_my_classic <- ggplot2::theme_classic() +
   ggplot2::theme(axis.text.x=ggplot2::element_text(angle=45, hjust=1, size=12),legend.key = ggplot2::element_blank())
 
+#' @export
+#' @rdname ggplot_layers
+#alt to theme classic
+theme_my_ppt <- ggplot2::theme_classic() +
+  ggplot2::theme(
+    axis.text.x=ggplot2::element_text(angle=45, hjust=1, size=12),
+    legend.key = ggplot2::element_blank(),
+    panel.background = ggplot2::element_blank(),
+    legend.background = ggplot2::element_blank(),
+    plot.background = ggplot2::element_rect(fill = "#E0D8D6", colour = NA))
 
 #' @export
 #' @rdname ggplot_layers
@@ -142,6 +169,17 @@ theme_my <- ggplot2::theme_bw() + ggplot2::theme(
   legend.key       = ggplot2::element_blank(),
   axis.text.x=ggplot2::element_text(angle=45, hjust=1, size=12)
 )
+
+#' @export
+#' @rdname ggplot_layers
+#grabs the legend info for separate plotting
+g_legend <- function(a.gplot){
+  tmp <- ggplotGrob(a.gplot)
+  #leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  #legend <- tmp$grobs[[leg]]
+  legend <- gtable::gtable_filter(tmp, 'guide-box', fixed = TRUE)
+  return(legend)
+}
 
 theme_black = function(base_size = 12, base_family = "") {
 

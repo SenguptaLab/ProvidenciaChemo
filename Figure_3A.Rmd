@@ -1,0 +1,60 @@
+---
+title: "Figure_3A"
+author: "Mike O'Donnell"
+date: "6/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+```
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+filepath <- here::here("extdata/Figure_3A.csv")
+
+enzymes <- read.csv(filepath) %>% #dplyr::filter(date != "6_10_17") %>%
+  format_AvoidData(day.correct = "genotype") %>%
+  mutate(strain = factor(strain, levels = c("OP50", "JUb39")),
+         genotype = factor(genotype, levels = c("N2", "tbh-1", "tdc-1", "cat-2", "tph-1")),
+         plate = factor(seq(1:nrow(.))))
+
+p1 <- enzymes %>%
+  plot_plasticityIndex(xvar = strain) + facet_grid(.~genotype) +
+  scale_color_plot(palette = "grey-blue", drop = TRUE) + figure.axes()
+
+p2 = enzymes %>% 
+  plot_ChemoIndex(xvar = "strain", plot.pos = FALSE) +
+  facet_grid(.~genotype, drop = TRUE) +
+  scale_color_plot('grey-blue', drop = FALSE) +
+  guides(fill = FALSE) + labs(title = "1-oct") +
+  coord_cartesian(ylim = c(-1.1, 0.5)) +
+  theme_my_ppt
+
+p1 + p2
+
+glmm <- lme4::glmer(data = enzymes, 
+                    formula = cbind(nCue,nControl) ~ genotype * strain + (strain | date) + (1|plate),
+                    family = binomial,
+                    control= lme4::glmerControl(optimizer="bobyqa"))
+
+lsmeans::lsmeans(glmm, ~ genotype*strain) %>% lsmeans::contrast(method = "pairwise")
+lsm.list <- lsmeans::ref.grid(glmm) %>% lsmeans::lsmeans(., pairwise ~ strain | genotype) #%>% summary(adjust = "bon")
+contrasts <- update(lsm.list$contrast, adjust = "mvt", by.vars = NULL)
+
+stan_all <- rstanarm::stan_glmer(data =enzymes, 
+                  formula = cbind(nCue,nControl) ~ genotype * strain + (strain | date) + (1|plate),
+                  chains = 6, cores = 4, seed = 2000,iter=6000,
+                  family = binomial,
+    control = list(adapt_delta=0.99))
+
+lm <- lm(enzymes, formula = CI ~ genotype * strain)
+lsm <- lsmeans::ref.grid(lm) %>% lsmeans::lsmeans(., pairwise ~ strain | genotype)
+lsm.contrasts <- update(lsm$contrast, adjust = "mvt", by.vars = NULL)
+
+```

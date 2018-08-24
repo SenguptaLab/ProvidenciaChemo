@@ -1,0 +1,149 @@
+---
+title: "Figure 1A"
+author: "Mike O'Donnell"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 5
+    fig_width: 12
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+
+```
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+
+filepath <- here::here("extdata","Figure1A_attractants_B.csv")
+
+attractData <- read_csv(filepath) %>% format_AttractData() %>%
+  mutate(assay = fct_relevel(assay,"diacetyl"))  %>%
+  mutate(strain = fct_relevel(strain, "DA1878", after = Inf))
+#attractData.old <- read_csv(filepath) %>% format_AttractData()
+
+bz_data = attractData %>%
+  filter(assay == "bz")
+
+IAA_data = attractData %>%
+  filter(assay == "IAA")
+
+dia_data = attractData %>%
+  filter(assay == "diacetyl")
+
+butanone_data = attractData %>%
+  filter(assay == "2-but", user == "MOD")
+
+hex_data = attractData %>%
+  filter(assay == "1-hex")
+
+attractData <- rbind(bz_data, IAA_data, dia_data, hex_data, butanone_data) %>% droplevels()
+
+# plotColors = c('#827E7E','#2F8A34','#484CC7','#B8B1B1','#E6DDDD', 'gray94')
+
+
+plot1 = IAA_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  guides(color = FALSE) + labs(title = "IAA") + figure.axes(no.x = TRUE)
+
+plot2 =  dia_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  labs(title = "diacetyl") + figure.axes(no.x = TRUE)
+
+plot2_nolegend <- plot2 + guides(color = FALSE)
+
+plot3 = hex_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  guides(color = FALSE) +
+  labs(title = "1-hex (1:1000)") + figure.axes(no.x = TRUE)
+
+plot4 =  butanone_data %>% dplyr::filter(genotype == 'N2', user == "MOD") %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  guides(color = FALSE) +
+  labs(title = "butanone") + figure.axes(no.x = TRUE)
+
+plot5 =  bz_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  guides(color = FALSE) +
+  labs(title = "benzaldehyde") + figure.axes(no.x = TRUE)
+
+#legend_Grob <- wrap_ggplot_grob(g_legend(plot2))
+
+
+# legend_Grob <- g_legend(plot2)
+
+#row1 <- wrap_ggplot_grob(gridExtra::grid.arrange(plot1, plot2_nolegend, plot3, plot4, plot5, nrow = 1))
+row1 <- plot2_nolegend + plot1 + plot4 + plot5 + plot_layout(nrow = 1)
+```
+
+
+```{r repellent data}
+
+filepath <- here::here("extdata", "Figure1A_avoidance.csv")
+
+nonanone_data = read.csv(filepath) %>%
+  filter(assay == "nonanone") %>%
+  format_AvoidData(day.correct = FALSE) %>%
+  mutate(strain = fct_relevel(strain, "DA1878", after = Inf))
+
+octanol_data = read.csv(filepath) %>%
+  filter(assay == "oct") %>%
+  format_AvoidData(day.correct = "OP50") %>%
+  mutate(strain = fct_relevel(strain, "DA1878", after = Inf))
+
+
+nonanone_plot = nonanone_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, plot.pos = FALSE) +
+  guides(color = FALSE) + labs(title = "nonanone") + figure.axes()
+
+oct_plot =  octanol_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, plot.pos = FALSE) + labs(title = "1-oct") + figure.axes()
+
+repellents = nonanone_plot + oct_plot
+
+
+row1
+repellents
+
+```
+
+```{r stats and bayesian model}
+
+library(rstanarm)
+columns <- c("date", "assay", "strain", "plate", "nCue", "nControl", "CI")
+
+alldata <- rbind(select(attractData, columns),
+                 select(octanol_data, columns),
+                 select(nonanone_data, columns)) %>% 
+  mutate(assay = fct_relevel(assay, "oct"))
+
+glm.all <- lme4::glmer(alldata, formula = cbind(nCue,nControl) ~ strain * assay + (assay|date) + (1|plate),
+                       family = binomial)
+lm.all <- lm(alldata, formula = CI ~ strain * assay)
+
+contrasts <- lsmeans::ref.grid(lm.all, type = "response") %>% lsmeans::lsmeans(pairwise ~ strain | assay)
+contrasts <- contrasts$contrasts
+broom::tidy(contrasts) %>% dplyr::filter(p.value < 0.05 & level1 == "OP50 ")
+
+stan_all <- rstanarm::stan_glmer(data = mutate(alldata, assay = fct_relevel(assay, "IAA")), 
+                  formula = cbind(nCue,nControl) ~ strain * assay + (1 + assay | date) + (1|plate),
+                  chains = 6, cores = 4, seed = 2000,iter=6000,
+                  family = binomial,
+    control = list(adapt_delta=0.99))
+
+stan_lm_all <- rstanarm::stan_glmer(data = mutate(alldata, assay = fct_relevel(assay, "IAA")),
+                                    prior_intercept = student_t(df = 7),
+                                    prior = student_t(df = 7),
+                                    formula = CI ~ strain * assay + (1 + assay|date),
+                                    chains = 3, cores =4, seed = 2000,iter=6000,
+                                    control = list(adapt_delta=0.99))
+
+
+
+```
