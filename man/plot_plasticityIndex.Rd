@@ -4,7 +4,8 @@
 \alias{plot_plasticityIndex}
 \title{plot_plasticityIndex}
 \usage{
-plot_plasticityIndex(data, xvar = strain, palette = "main", ...)
+plot_plasticityIndex(data, xvar = strain, dot_color = strain,
+  palette = main, ...)
 }
 \description{
 plot_plasticityIndex

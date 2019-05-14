@@ -19,9 +19,9 @@ library(patchwork)
 filepath <- here::here("extdata/Figure_4D.csv")
 
 tdcGOF <- read.csv(filepath) %>% 
-  format_AvoidData() %>%
+  format_AvoidData(day.correct = "genotype") %>%
   #filter(genotype == "N2") %>%
-  mutate(strain = factor(strain, levels = c("OP50", "JUb39", "BL21", "BL21_tdc+", 'E.d.655', 'E.d.655_tdcDel')),
+  mutate(strain = factor(strain, levels = c("OP50", "JUb39", "BL21", "BL21_tdc+", 'E.d.655', 'E.d.655_tdcDel', "JUb39; tdcDel::cmR")),
          plate = factor(seq(1:nrow(.))))
 
 p1 <- tdcGOF %>% 

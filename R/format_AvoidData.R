@@ -9,7 +9,7 @@
 format_AvoidData <- function(data, day.correct = "OP50", center.data = FALSE, ...) {
   data %>% mutate(
          strain = fct_relevel(strain, 'OP50'),
-         plate = seq(1:nrow(.)),
+         plate = factor(seq(1:nrow(.))),
          nCue = RowA + RowB,
          nControl = RowE + RowF,
          nAll = nCue + nControl,
@@ -39,10 +39,18 @@ if(day.correct == "genotype") {
 
   if(day.correct == "treatment") {
     means <- data %>%
-      filter(strain == "OP50", treatment == "live") %>%
+      filter(strain == "OP50", treatment %in% c("control", "none")) %>%
       group_by(date) %>%
       summarise(meanOP50 = mean(logit.p))
   }
+
+  if(day.correct == "genotype+treatment") {
+    means <- data %>%
+      filter(strain == "OP50") %>%
+      group_by(genotype, date, treatment) %>%
+      summarise(meanOP50 = mean(logit.p))
+  }
+
 
   if(day.correct == FALSE) {
     means <- data %>%

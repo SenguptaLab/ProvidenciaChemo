@@ -21,19 +21,20 @@
 \usage{
 add.scatter(yval)
 
-add.median(yval, width, colour = "black")
+add.median(yval, width, colour = "black", dodge.width = 0,
+  group = NA)
 
-add.mean(yval, width, colour = black)
+add.mean(yval, width, colour = black, dodge.width = 0, group = NA)
 
-add.quartiles(yval, width)
+add.quartiles(yval, width = 0.15, dodge.width = 0, group = NA)
 
 figure.axes(no.x = TRUE, ...)
 
 add.n.categorical(group, dark, ypos = 0, ...)
 
-add.n(xval)
+add.n(xval, y.pos)
 
-add.Bayes.CI()
+add.Bayes.CI(modsum, emmeans = FALSE, xvar, ...)
 
 theme_my_classic
 

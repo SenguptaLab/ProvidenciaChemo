@@ -53,20 +53,6 @@ scale_fill_plot(palette = "main", discrete = TRUE, reverse = FALSE,
 }
 \description{
 standard plot color themes
-
-plotColors
-makes a list of named colors for the theme
-
-plotColorGetter
-use name of index to pull a vector of hex color codes
-
-PlotColor_palettes
-
-paletteGetter
-
-scale_color_plot
-
-scale_fill_plot
 }
 \section{}{
 NA

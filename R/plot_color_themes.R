@@ -57,7 +57,9 @@ plotColor_palettes <- list(
 
   `2-Ps` = plotColorGetter("darkGrey", "blue", "light-blue"),
 
-  `2-each` = plotColorGetter("darkGrey", "lightGrey", "blue", "light-blue")
+  `2-each` = plotColorGetter("darkGrey", "lightGrey", "blue", "light-blue"),
+
+  `grey-blue-light` = plotColorGetter("darkGrey", "blue", "light-blue")
 )
 
 

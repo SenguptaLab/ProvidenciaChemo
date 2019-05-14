@@ -1,5 +1,5 @@
 ---
-title: "Figure_2B"
+title: "Figure_2B - move to "
 author: "Mike O'Donnell"
 date: "6/19/2018"
 output: html_document
@@ -29,17 +29,27 @@ GPCR_data <- read.csv(filepath) %>%
 plot = GPCR_data %>%
   plot_plasticityIndex(xvar = strain) + labs(title = "day corrected") +
   scale_color_plot(palette = "grey-blue", drop = TRUE) + guides(color = FALSE) + 
-  facet_grid(.~genotype) +
-  theme_my
+  facet_grid(.~genotype)
 
-plot
+plot + coord_cartesian(ylim = c(-3,4))
 
 glmm <- lme4::glmer(data = GPCR_data, 
-                    formula = cbind(nCue,nControl) ~ genotype * strain + (1 + strain | date) +  (1|plate),
-                    family = binomial,
-                    control= lme4::glmerControl(optimizer="bobyqa"))
+                    formula = cbind(nCue,nControl) ~ genotype * strain + (1 | date) +  (1|plate),
+                    family = binomial)
 
-lsm.list <- lsmeans::ref.grid(glmm) %>% lsmeans::lsmeans(., pairwise ~ strain | genotype) #%>% summary(adjust = "bon")
+stan_glmm <-  rstanarm::stan_glmer(data = GPCR_data, 
+                  formula = cbind(nCue,nControl) ~ 
+                    genotype * strain + (1 + strain + genotype | date) +  (1|plate),
+                  chains = 6, cores = 4, seed = 2000,iter=6000,
+                  family = binomial,
+    control = list(adapt_delta=0.99))
+
+emmeans::ref_grid(stan_glmm) %>% emmeans::contrast(., method = "revpairwise", by = "genotype") %>% str()#%>% broom::tidy() 
+
+#emmeans::ref_grid(stan_glmm) %>% emmeans::emmeans(., pairwise ~ strain | genotype)
+
+
+lsm.list <- emmeans::ref_grid(glmm) %>% emmeans::lsmeans(., pairwise ~ strain | genotype) #%>% summary(adjust = "bon")
 contrasts <- update(lsm.list$contrast, adjust = "mvt", by.vars = NULL)
 
 

@@ -1,0 +1,55 @@
+---
+title: "Figure_S1A"
+author: "Mike O'Donnell"
+date: "4/28/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+theme_set(theme_my)
+```
+
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+filepath <- here::here("extdata/Figure_S1_lidAvoidance.csv")
+  
+lid_data <- read.csv(filepath) %>%
+  format_AvoidData(day.correct = "treatment") %>%
+  mutate(plate = factor(seq(1:nrow(.))),
+         treatment = factor(treatment, levels = c("none", "lid"))) %>% 
+  mutate(group = interaction(strain, treatment)) %>% droplevels()
+
+plot1 = lid_data %>%
+  plot_plasticityIndex(xvar = strain) + labs(title = "1-oct (corrected)") + 
+  scale_color_plot(palette = "grey-blue", drop = TRUE) + guides(color = FALSE) + facet_grid(~treatment)
+
+plot1
+
+glmm <- lme4::glmer(data = lid_data, 
+                    formula = cbind(nCue,nControl) ~ group + (1|plate),
+                    family = binomial,
+                    control= lme4::glmerControl(optimizer="bobyqa"))
+
+stan_glmm <-  rstanarm::stan_glmer(data = lid_data, 
+                  formula = cbind(nCue,nControl) ~ group + (1 | date) + (1|plate),
+                  chains = 6, cores = 4, seed = 2000,iter=6000,
+                  family = binomial,
+    control = list(adapt_delta=0.99))
+
+
+glm.lsm.list <- emmeans(glmm, "group")
+glm.contrasts <- contrast(glm.lsm.list, "trt.vs.ctrl")
+
+library(nlme)
+lm <- lm(rel.Logit ~ groupt,data = lid_data)
+anova(lm)
+lm.lsm.list <- lsmeans::ref.grid(lm) %>% lsmeans::lsmeans(., pairwise ~ strain | treatment, adjust = "Tukey")
+```
+

@@ -18,13 +18,17 @@ library(patchwork)
 
 filepath <- here::here("extdata/Figure_3A.csv")
 
-enzymes <- read.csv(filepath) %>% #dplyr::filter(date != "6_10_17") %>%
+enzymes <- read.csv(filepath) %>% 
+  dplyr::filter(date %in% c("4_18_17", "6_10_17","5_31_17","5_12_17","6_12_17"), # worms were contaminated after June 2018, bleached for subsequent expreiments
+                genotype %in% c("N2", "tbh-1", "tdc-1")) %>%
   format_AvoidData(day.correct = "genotype") %>%
   mutate(strain = factor(strain, levels = c("OP50", "JUb39")),
-         genotype = factor(genotype, levels = c("N2", "tbh-1", "tdc-1", "cat-2", "tph-1")),
+         genotype = factor(genotype, levels = c("N2", "tbh-1", "tdc-1")), #"cat-2", "tph-1")),
          plate = factor(seq(1:nrow(.))))
 
 p1 <- enzymes %>%
+  #filter(date %in% c("4_18_17", "7_22_18")) %>%
+  #filter(date %in% c("4_18_17", "5_31_17","5_12_17","6_12_17", "7")) %>%
   plot_plasticityIndex(xvar = strain) + facet_grid(.~genotype) +
   scale_color_plot(palette = "grey-blue", drop = TRUE) + figure.axes()
 
@@ -37,24 +41,23 @@ p2 = enzymes %>%
   theme_my_ppt
 
 p1 + p2
-
 glmm <- lme4::glmer(data = enzymes, 
-                    formula = cbind(nCue,nControl) ~ genotype * strain + (strain | date) + (1|plate),
+                    formula = cbind(nCue,nControl) ~ genotype * strain + (1|plate) + (1|date),
                     family = binomial,
                     control= lme4::glmerControl(optimizer="bobyqa"))
 
-lsmeans::lsmeans(glmm, ~ genotype*strain) %>% lsmeans::contrast(method = "pairwise")
-lsm.list <- lsmeans::ref.grid(glmm) %>% lsmeans::lsmeans(., pairwise ~ strain | genotype) #%>% summary(adjust = "bon")
+emmeans::emmeans(glmm, ~ genotype*strain) %>% emmeans::contrast(method = "pairwise")
+lsm.list <- emmeans::ref_grid(glmm) %>% emmeans::emmeans(., pairwise ~ strain | genotype) #%>% summary(adjust = "bon")
 contrasts <- update(lsm.list$contrast, adjust = "mvt", by.vars = NULL)
 
 stan_all <- rstanarm::stan_glmer(data =enzymes, 
-                  formula = cbind(nCue,nControl) ~ genotype * strain + (strain | date) + (1|plate),
+                  formula = cbind(nCue,nControl) ~ genotype * strain +  (1|plate) + (1 | date),
                   chains = 6, cores = 4, seed = 2000,iter=6000,
                   family = binomial,
     control = list(adapt_delta=0.99))
 
 lm <- lm(enzymes, formula = CI ~ genotype * strain)
-lsm <- lsmeans::ref.grid(lm) %>% lsmeans::lsmeans(., pairwise ~ strain | genotype)
+lsm <- emmeans::ref_grid(lm) %>% emmeans::emmeans(., pairwise ~ strain | genotype)
 lsm.contrasts <- update(lsm$contrast, adjust = "mvt", by.vars = NULL)
 
 ```

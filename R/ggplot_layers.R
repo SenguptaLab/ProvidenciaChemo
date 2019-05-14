@@ -23,54 +23,62 @@ add.scatter <- function(yval) {
 #' @export
 #' @rdname ggplot_layers
 
-add.median <- function(yval, width, colour = "black") {
+add.median <- function(yval, width, colour = "black", dodge.width = 0, group = NA) {
   yval <- quo_name(enquo(yval))
+  group <- quo_name(enquo(group))
   if(missing(width)) {
     width = 0.25
   } else {
     width = width
   }
-  stat_summary(aes_string(y=yval),fun.y = median,
+  stat_summary(aes_string(y=yval, group = group),fun.y = median,
                fun.ymin = median,
                fun.ymax = median,
-               geom = "crossbar", width = width, lwd = 0.35, colour = colour)
+               geom = "crossbar",
+               width = width,
+               lwd = 0.35,
+               colour = colour,
+               position = position_dodge(width = dodge.width))
 }
 
 #' @export
 #' @rdname ggplot_layers
 
 
-add.mean <- function(yval, width, colour = black) {
+add.mean <- function(yval, width, colour = black, dodge.width = 0, group = NA) {
   color <- quo_name(enquo(colour))
   yval <- quo_name(enquo(yval))
+  group <- quo_name(enquo(group))
   if(missing(width)) {
     width = 0.25
   } else {
     width = width
   }
-  stat_summary(aes_string(y=yval),fun.y = mean,
+  stat_summary(aes_string(y=yval, group = group),fun.y = mean,
                fun.ymin = mean,
                fun.ymax = mean,
-               geom = "crossbar", width = width, lwd = 0.35, colour = color)
+               geom = "crossbar",
+               width = width,
+               lwd = 0.35,
+               colour = color,
+               position = position_dodge(width = dodge.width))
 }
 
 #' @export
 #' @rdname ggplot_layers
 
-add.quartiles <- function(yval, width) {
+add.quartiles <- function(yval, width = 0.15, dodge.width = 0, group = NA) {
   yval <- quo_name(enquo(yval))
-  if(missing(width)) {
-    stat_summary(aes_string(y = yval),fun.y = median,
-                 fun.ymin = function(z) {quantile(z,0.25)},
-                 fun.ymax = function(z) {quantile(z,0.75)},
-                 geom = "errorbar", width = 0.15, lwd = 0.25)
-  } else {
-    stat_summary(aes_string(y = yval),fun.y = median,
-                 fun.ymin = function(z) {quantile(z,0.25)},
-                 fun.ymax = function(z) {quantile(z,0.75)},
-                 geom = "errorbar", width = width, lwd = 0.25)
-  }
+  group <- quo_name(enquo(group))
 
+  stat_summary(aes_string(y = yval, group = group),
+               fun.y = median,
+               fun.ymin = function(z) {quantile(z,0.25)},
+               fun.ymax = function(z) {quantile(z,0.75)},
+               geom = "errorbar",
+               width = width,
+               lwd = 0.25,
+               position = position_dodge(width = dodge.width))
 }
 
 #' @export
@@ -99,7 +107,7 @@ add.n.categorical <- function(group, dark, ypos = 0, ...) {
   group <- quo_name(enquo(group))
   ypos <- quo_name(enquo(ypos))
   if(missing(dark)) {
-    stat_summary(aes_string(x = group, y = ypos),
+    stat_summary(aes_string(x = as.numeric(as.factor(group)) + 0.3, y = ypos),
                  fun.data = fun_length, geom = "text", size = 3)
   } else {
     stat_summary(aes_string(x = as.numeric(as.factor(group)) + 0.3, y= ypos),
@@ -111,16 +119,36 @@ add.n.categorical <- function(group, dark, ypos = 0, ...) {
 #' @export
 #' @rdname ggplot_layers
 
-add.n <- function(xval) {
+add.n <- function(xval, y.pos) {
+  if(missing(y.pos)) {
+    y.pos <- 0
+  } else {
+    y.pos <- quo_name(enquo(y.pos))
+  }
   xval <- quo_name(enquo(xval))
-  stat_summary(aes(x= xval + 0.3, y=0),
+  stat_summary(aes_string(x = xval, y=y.pos),
                fun.data = fun_length, geom = "text", size = 3)
 }
 
 #' @export
 #' @rdname ggplot_layers
 
-add.Bayes.CI <- function() {
+add.Bayes.CI <- function(modsum, emmeans=FALSE, xvar, ...) {
+  if(emmeans) {
+    xvar <- quo_name(enquo(xvar))
+
+    list(geom_errorbar(data=modsum, aes_(x= xvar,
+                                         y=~estimate,
+                                         ymin=~lower.HPD,
+                                         ymax=~lower.HPD),
+                       width=0,colour ="grey", lwd=0.15))
+         # geom_errorbar(data=modsum, aes(x=x.pos,y=mean, ymin = lower.25, ymax = upper.75),
+         #               width=0,colour = "darkgrey", lwd = 0.15+0.7),
+         # geom_segment(data = modsum, aes_(x = xvar,#x.pos-(0.009*nrow(mixed)),
+         #                                  y=~estimate,
+         #                                xend = xvar,#x.pos+(0.009*nrow(mixed)),
+         #                                yend = ~estimate),colour = "darkgrey"))
+  } else {
   list(geom_errorbar(data=mixed, aes(x=x.pos,y=mean, ymin=lower.CL, ymax=upper.CL),
                      width=0,colour ="grey", lwd=0.15),
        geom_errorbar(data=mixed, aes(x=x.pos,y=mean, ymin = lower.25, ymax = upper.75),
@@ -128,6 +156,7 @@ add.Bayes.CI <- function() {
        geom_segment(data = mixed, aes(x = x.pos-(0.009*nrow(mixed)),
                                       y = mean, xend = x.pos+(0.009*nrow(mixed)),
                                       yend = mean), colour = "darkgrey"))
+  }
 }
 
 #' @export
