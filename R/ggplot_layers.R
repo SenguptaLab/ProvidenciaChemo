@@ -70,6 +70,7 @@ add.mean <- function(yval, width, colour = black, dodge.width = 0, group = NA) {
 add.quartiles <- function(yval, width = 0.15, dodge.width = 0, group = NA) {
   yval <- quo_name(enquo(yval))
   group <- quo_name(enquo(group))
+  width = width
 
   stat_summary(aes_string(y = yval, group = group),
                fun.y = median,
@@ -77,7 +78,7 @@ add.quartiles <- function(yval, width = 0.15, dodge.width = 0, group = NA) {
                fun.ymax = function(z) {quantile(z,0.75)},
                geom = "errorbar",
                width = width,
-               lwd = 0.25,
+               lwd = 0.4,
                position = position_dodge(width = dodge.width))
 }
 

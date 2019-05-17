@@ -15,5 +15,8 @@ Imports:
   tidyverse,
   R.matlab,
   stringr,
-  scales
+  scales,
+  emmeans,
+  tidybayes,
+  modelr
 RoxygenNote: 6.1.1

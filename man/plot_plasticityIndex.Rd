@@ -5,7 +5,7 @@
 \title{plot_plasticityIndex}
 \usage{
 plot_plasticityIndex(data, xvar = strain, dot_color = strain,
-  palette = main, ...)
+  palette = main, BayesFit = FALSE, width = 0.5, ...)
 }
 \description{
 plot_plasticityIndex
