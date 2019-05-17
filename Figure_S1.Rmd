@@ -10,46 +10,76 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 library(ProvidenciaChemo)
-theme_set(theme_my)
 ```
 
 
 ```{r dataload}
 library(tidyverse)
 library(patchwork)
+library(tidybayes)
+library(modelr)
+library(emmeans)
+library(magrittr)
+theme_set(theme_my)
 
 filepath <- here::here("extdata/Figure_S1_lidAvoidance.csv")
   
-lid_data <- read.csv(filepath) %>%
+lid_data <- read_csv(filepath) %>%
   format_AvoidData(day.correct = "treatment") %>%
   mutate(plate = factor(seq(1:nrow(.))),
-         treatment = factor(treatment, levels = c("none", "lid"))) %>% 
-  mutate(group = interaction(strain, treatment)) %>% droplevels()
+         treatment = factor(treatment, levels = c("none", "lid")),
+         data_type = "raw") %>% 
+  mutate(group.id = interaction(strain, treatment)) %>% droplevels()
 
-plot1 = lid_data %>%
-  plot_plasticityIndex(xvar = strain) + labs(title = "1-oct (corrected)") + 
-  scale_color_plot(palette = "grey-blue", drop = TRUE) + guides(color = FALSE) + facet_grid(~treatment)
+plot1 <- lid_data %>%
+  plot_plasticityIndex(xvar = strain, position = "data_type") + labs(title = "1-oct (corrected)") + 
+  scale_color_plot(palette = "grey-blue", drop = TRUE) + 
+  guides(color = FALSE) + 
+  facet_grid(~treatment) +
+  stat_pointinterval(aes(y=rel.Logit), data = fitted, position = "dodge")
 
 plot1
 
+#convergence errors with date random effect, left out of this model
 glmm <- lme4::glmer(data = lid_data, 
-                    formula = cbind(nCue,nControl) ~ group + (1|plate),
+                    formula = cbind(nCue,nControl) ~ strain * treatment + (1|plate),
                     family = binomial,
                     control= lme4::glmerControl(optimizer="bobyqa"))
 
-stan_glmm <-  rstanarm::stan_glmer(data = lid_data, 
-                  formula = cbind(nCue,nControl) ~ group + (1 | date) + (1|plate),
-                  chains = 6, cores = 4, seed = 2000,iter=6000,
+
+stan_glmm <-  rstanarm::stan_glmer(data = lid_data,
+                  formula = cbind(nCue,nControl) ~ strain * treatment + (1|plate),
+                  chains = 4, cores = 4, seed = 2000,iter=6000,
                   family = binomial,
     control = list(adapt_delta=0.99))
 
+fitted <- recenter_fittedValues(lid_data, stan_glmm, day.correct = "treatment") %>%
+  mutate(data_type = "fit")
+  # lid_data %>% group_by(strain, treatment) %>% 
+  # data_grid(strain, treatment) %>% 
+  # add_fitted_draws(stan_glmm, re_formula = ~ 0) #%>%
+  fitted %>% ggplot(aes(x = strain, y = rel.Logit)) +
+  stat_pointinterval() +
+  facet_grid(~treatment)
 
-glm.lsm.list <- emmeans(glmm, "group")
-glm.contrasts <- contrast(glm.lsm.list, "trt.vs.ctrl")
+  
+  
+
+stan_sum <- emmeans::ref_grid(stan_glmm) %>% summary(level = 0.8)
+stan_sum %>% 
+  mutate(groupid = as.numeric(group),
+         intercept = prediction[1]) %>%
+  mutate_at(vars(prediction, lower.HPD, upper.HPD), funs(rel = . - intercept))
+  
+                                              rel.estimate = estimate - intercept,
+                                              rel.lower.HPD = lowe.HPD - intercept)
+
+glm.lsm.list <- emmeans::emmeans(glmm, "group")
+glm.contrasts <- emmeans::contrast(glm.lsm.list, "trt.vs.ctrl")
 
 library(nlme)
-lm <- lm(rel.Logit ~ groupt,data = lid_data)
+lm <- lm(rel.Logit ~ group,data = lid_data)
 anova(lm)
-lm.lsm.list <- lsmeans::ref.grid(lm) %>% lsmeans::lsmeans(., pairwise ~ strain | treatment, adjust = "Tukey")
+lm.lsm.list <- emmeans::ref_grid(lm) %>% emmeans::emmeans(., pairwise ~ group, adjust = "Tukey")
 ```
 

@@ -8,7 +8,6 @@
 
 plot_plasticityIndex <- function(data, xvar = strain, dot_color = strain, palette = main, ...) {
 
-
   xvar <- quo_name(enquo(xvar))
   colors <- quo_name(enquo(palette))
   p <- ggplot(data, aes_string(x = xvar))
@@ -29,6 +28,6 @@ plot_plasticityIndex <- function(data, xvar = strain, dot_color = strain, palett
     add.n(!!xvar, y.pos = -3) +
     coord_cartesian(ylim = c(-3,3)) +
     labs(y = "plasticity index") #+
-    figure.axes(no.x = FALSE)
+    #figure.axes(no.x = FALSE)
 
 }
