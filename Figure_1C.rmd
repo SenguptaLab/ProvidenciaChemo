@@ -19,14 +19,64 @@ library(ProvidenciaChemo)
 ```{r SOS dataload}
 cutoff <- 10 #cutoff time for binary
 SOS <- read.csv(here::here("extdata","SOS_OP50_JUb39.csv")) %>%
-  mutate(food = factor(food, levels = c("OP50", "JUb39", "BL21", "BL21_tdcGOF","655", "655-tdcDel")),
-         genotype = factor(genotype, levels = c("N2", "tdc-1", "octr-1", "tbh-1")),
-         bin.time = if_else(response.time < cutoff, 1, 0))
+  dplyr::filter(cond == "off_food", 
+                                  genotype == "N2", 
+                                  food %in% c("OP50", "JUb39"),
+                                  response.time < 20,
+                                  date %in% c("10_17_17", 
+                                              "6_18_18", 
+                                              "6_23_18",
+                                              "23072018",
+                                              "24072018",
+                                              "20180904",
+                                              "2018_10_23")) %>%
+  mutate(food = factor(food, levels = c("OP50", "JUb39")))
+
+
+lmm <- lme4::lmer(SOS, formula = log(response.time) ~ food + (1|date))
+
+stan_glmm <- rstanarm::stan_glmer(SOS,
+                                  formula = response.time ~ food + (1|date),
+                                  family = lognormal)
+
+brms::brm(data = SOS,formula = log(response.time) ~ food + (1|date),
+                                  family = lognormal)
+
+SOS %>% data_grid(food) %>%
+  add_predicted_draws(stan_lmm, re_formula = NA) %>%
+  mutate(response = .prediction) %>%
+  ggplot(aes(y = food)) +
+  geom_halfeyeh(aes(x = exp(response)))
+         
+         
+         
+           stat_pointinterval(aes(y=rel.Logit, x = 1.2),
+                              fatten_point = 0,
+                           size_range = c(0.3, 1), colour = "grey") +
+        stat_summary(data = fitted,
+                     aes(y=rel.Logit, x = 1.2),
+                     fun.y = median,
+                     fun.ymin = median,
+                     fun.ymax = median,
+                     geom = "crossbar",
+                     width = 0.05,
+                     lwd = 0.35,
+                     colour = "grey")
 
 
 ##### plot 1 SOS OP50 v JUb39 ####
 
-SOS_plot <- SOS %>% dplyr::filter(cond == "off_food", genotype == "N2", food %in% c("OP50", "JUb39")) %>%
+SOS_plot <- SOS %>% dplyr::filter(cond == "off_food", 
+                                  genotype == "N2", 
+                                  food %in% c("OP50", "JUb39"),
+                                  response.time < 20,
+                                  date %in% c("10_17_17", 
+                                              "6_18_18", 
+                                              "6_23_18",
+                                              "23072018",
+                                              "24072018",
+                                              "20180904",
+                                              "2018_10_23")) %>%
   ggplot(aes(x = food, y = response.time)) +
   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2) +
   scale_color_plot("grey-blue", drop = TRUE) +
@@ -37,6 +87,9 @@ SOS_plot <- SOS %>% dplyr::filter(cond == "off_food", genotype == "N2", food %in
       y = "time to reversal (s)",
       title = "100% octanol") +
   #figure.axes(no.x = FALSE) +
-  guides(color = FALSE) + figure.axes()
+  guides(color = FALSE)
+
+
+
 ```
 

@@ -19,7 +19,8 @@ format_AvoidData <- function(data, day.correct = "OP50", center.data = FALSE, ..
             #p == 0 ~ boot::logit(0.005),
             p == 0 ~ boot::logit(1/nAll),
             p == 1 ~ boot::logit(0.995),
-            TRUE ~ boot::logit(p))) %>%
+            TRUE ~ boot::logit(p)),
+         data_type = "raw") %>%
     mutate(plate = interaction(date,assay,plate)) -> data
 
 

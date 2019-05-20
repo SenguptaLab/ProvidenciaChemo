@@ -19,68 +19,57 @@ library(ProvidenciaChemo)
 ```{r dataload}
 library(tidyverse)
 library(patchwork)
+library(tidybayes)
+library(modelr)
+library(emmeans)
+library(magrittr)
+library(emmeans)
+
 
 filepath <- here::here("extdata/Figure_1B_MOb007.csv")
 
 MOb_data <- read.csv(filepath) %>%
   dplyr::filter(date != "5_12_17") %>%
   format_AvoidData(day.correct = "OP50") %>%
-  mutate(plate = factor(seq(1:nrow(.))))
-
-MOb_plot = MOb_data %>%
-  plot_plasticityIndex(xvar = strain, plotColors = "grey-blue") + labs(title = "1-oct (corrected)") + 
-  scale_color_plot(palette = "2-Ps", drop = TRUE) + guides(color = FALSE) + figure.axes()
-# plot1non = MOb_data_nonC %>%
-#   plot_plasticityIndex(xvar = strain, plotColors = "grey-blue") + labs(title = "1-oct") +
-#   scale_color_plot(palette = "2-Ps", drop = TRUE) + guides(color = FALSE)
-# 
-# plot1 + plot1non
-
-plot2 = MOb_data %>%
-  plot_ChemoIndex(xvar = strain, plotColors = "grey-blue", plot.pos = FALSE) +
-  labs(title = "1-oct") + scale_color_plot(palette = "2-Ps", drop = TRUE)
+  mutate(plate = factor(seq(1:nrow(.)))) %>% droplevels()
 
 glmm <- lme4::glmer(data = MOb_data, 
-                    formula = cbind(nCue,nControl) ~ strain + (1|date) + (1|plate),
+                    formula = cbind(nCue,nControl) ~ 
+                      strain + (1|date) + (1|plate),
                     family = binomial)
 
-lsm.list <- lsmeans::ref.grid(glmm) %>% lsmeans::lsmeans(., pairwise ~ strain)
-contrasts <- update(lsm.list$contrast, adjust = "mvt", by.vars = NULL)
+stan_glmm <-  rstanarm::stan_glmer(data = MOb_data,
+                  formula = cbind(nCue,nControl) ~ 
+                    strain + (1|date) + (1|plate),
+                  chains = 4, cores = 4, seed = 2000,
+                  iter=6000,
+                  family = binomial,
+    control = list(adapt_delta=0.99))
 
-# sciplot::bargraph.CI(data = MOb_data,
-#                      x.factor = strain,
-#                      response = CI,
-#                      group = strain,
-#                      ylim = c(-1,0.25),
-#                      #ylim = c(-1,0.5),
-#                      col=c("#827E7E","#484CC7","#A3A3FA"),
-#                      err.width = 0.05,
-#                      space = 0.05
-#                      )
+fitted <- recenter_fittedValues(MOb_data, stan_glmm, day.correct = FALSE, BayesFit = "HDI")
 
+MOb_plot <- MOb_data %>%
+  plot_plasticityIndex(xvar = strain, 
+                       plotColors = "grey-blue", 
+                       BayesFit = TRUE,
+                       width = 0.2) + 
+  labs(title = "1-oct (corrected)") + 
+  scale_color_plot(palette = "2-Ps", drop = TRUE) +
+  guides(color = FALSE) + 
+  facet_grid(~strain)
+  figure.axes()
+
+#glm.contrasts <- emmeans::emmeans(glmm, pairwise ~ strain | treatment)
+glm.contrasts.1 <- emmeans::ref_grid(glmm) %>% 
+  emmeans::contrast(., method = "pairwise") %>%
+  broom::tidy() %>%
+  filter(level1 == "OP50 ") %>%
+  mutate(strain = forcats::as_factor(c("JUb39", "MOb007")),
+         data_type = forcats::as_factor(rep("raw", 2)))
+  
+
+MOb_plot + 
+  geom_text(data = glm.contrasts.1, 
+            aes(label = paste0("P~",round(p.value, 3)), 
+                y = max(1.3*MOb_data$rel.Logit)))
 ```
-
-```{r MI sem plots with MOb007}
-MOb_data <- read.csv(here::here("extdata/Figure_1C.csv")) %>%
-  dplyr::filter(date != "5_12_17") %>%
-  format_AvoidData(day.correct = "OP50") %>%
-  mutate(plate = factor(seq(1:nrow(.))),
-         assay = "1-oct_repeat")
-alldata <- rbind(nonanone_data, octanol_data, MOb_data) %>% droplevels()
-
-
-
-sciplot::bargraph.CI(
-  data = alldata, 
-  x.factor = assay,
-  response = rel.Logit,
-  group = strain,
-  col = plotColors,
-  ylim = c(-1,2.5),
-  err.width = 0.05
-)
-
-levels(alldata$strain)
-
-```
-

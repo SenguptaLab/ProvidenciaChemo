@@ -7,8 +7,29 @@
 plot_plasticityIndex(data, xvar = strain, dot_color = strain,
   palette = main, BayesFit = FALSE, width = 0.5, ...)
 }
+\arguments{
+\item{data}{dataset used to plot, must be proportion data}
+
+\item{xvar}{x-axis before facetting. This should be the variable that will
+divide the nearest data categories. Usually this is "strain" - the food source.}
+
+\item{dot_color}{factor by which to order the color categories}
+
+\item{palette}{see eg using plot_color_themes}
+
+\item{BayesFit}{optional to include a Bayes credile interval based on
+posterior draws. Must have a "fitted" object which is derived from
+recenter_fittedValues() function. If using this, the xvar is locked to
+"data_type" column to align the raw data and fitted values. Additional
+orienting of the data needs to be done by facetting.}
+
+\item{width}{width of horizontal elements, median, error bars.}
+}
 \description{
-plot_plasticityIndex
+This function is used to plot a modulation, ie a relative change in
+log odds of a chemotaxis response. In principle, this function could
+be used to plot other relative proportion data. The plot is relative to
+a common control, and expects output from format_AvoidData().
 }
 \examples{
 data \%>\% plot_plasticityIndex()

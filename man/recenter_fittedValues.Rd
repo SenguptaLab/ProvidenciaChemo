@@ -5,7 +5,7 @@
 \title{recenter_fittedValues}
 \usage{
 recenter_fittedValues(data, model, day.correct = day.correct,
-  transform = "logit", ...)
+  transform = "logit", BayesFit = "fitted_draws", ...)
 }
 \description{
 recenter_fittedValues

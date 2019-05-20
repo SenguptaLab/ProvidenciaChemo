@@ -23,6 +23,7 @@ add.scatter <- function(yval) {
 #' @export
 #' @rdname ggplot_layers
 
+
 add.median <- function(yval, width, colour = "black", dodge.width = 0, group = NA) {
   yval <- quo_name(enquo(yval))
   group <- quo_name(enquo(group))
