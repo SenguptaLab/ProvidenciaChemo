@@ -10,9 +10,13 @@ choice <- read_csv(here::here("data/Bac_choice.csv")) %>%
 
 choice %>% ggplot(aes(x = food, y = index)) +
   add.median(index, colour = "red") +
-  geom_point() + facet_wrap(~spacing) +
+  add.quartiles(index) +
+  geom_point(aes(colour = food)) + facet_wrap(~spacing) +
   scale_x_discrete(labels = function(food) str_wrap(food, width = 10)) +
-  labs(y = "Providencia preference index")
+  labs(y = "Providencia preference index") +
+  theme(panel.spacing = unit(4, "lines")) +
+  guides(colour = FALSE) +
+  scale_color_plot(palette = "2-Ps", drop = TRUE)
 
 
 lme4::glmer(data = choice, cbind(N_JUb39, N_OP50) ~ food*spacing + (1|plateID), family = binomial) %>%
