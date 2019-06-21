@@ -23,13 +23,13 @@ SOS <- readr::read_csv(here::here("extdata","SOS_OP50_JUb39.csv")) %>%
                                                 "tbh-1",
                                                 "tdc-1",
                                                 "octr-1",
+                                                "ser-3",
                                                 "tyra-2",
                                                 "tyra-2; ex[sra6p::tyra-2]",
                                                 "tyra-2; octr-1",
                                                 "octr-1; ex[sra6p::octr-1]",
                                                 "tdc-1; tyra-2",
                                                 "tdc-1; tbh-1")),
-         bin.time = if_else(response.time < cutoff, 1, 0),
          paralyzed = case_when(response.time == 20 ~ "paralyzed",
                                TRUE ~ "non-paralyzed")) %>%
   group_by(date, genotype, food, cond, cue) %>%
@@ -121,26 +121,74 @@ amine_data <- SOS %>% dplyr::filter(cond == "Tyrosine",
   mutate(tdc = case_when(genotype %in% c("N2", "tbh-1") ~ "+",
                          TRUE ~ "mutant"),
          tbh = case_when(genotype %in% c("N2", "tdc-1") ~ "+",
-                         TRUE ~ "mutant"))
-amine_data %>%
-  ggplot(aes(x = food, y = response.time)) +
+                         TRUE ~ "mutant"),
+         data_type = "raw") %>% droplevels()
+
+#Bayesian regression (log-transformed)
+
+stan_glm <- amine_data %>%
+  rstanarm::stan_glmer(data = ., log(response.time) ~ food * genotype + (1|date) + (1|plateID),
+                       family = gaussian,
+                       chains = 6,
+                       cores = 6)
+
+fitted <- amine_data %>%
+  data_grid(food, genotype) %>%
+  add_fitted_draws(stan_glm, re_formula = NA) %>%
+  mutate(response.time = exp(.value), data_type = "fit")
+
+sjstats::equi_test(stan_glm)
+
+mcmc.comps <- emmeans(stan_glm, ~ food | genotype, type = "response") %>%
+  contrast(method = "pairwise") %>%
+  coda::as.mcmc() #%>%
+p1 <- bayesplot::mcmc_areas(mcmc.comps)
+p2 <- bayesplot::mcmc_intervals(mcmc.comps,prob = 0.66, prob_outer = 0.95)
+
+p1 + p2 + theme(axis.text.y = element_blank())
+
+# frequentist glmm (log transformed)
+lmer <- amine_data %>%
+  lme4::lmer(data = ., log(response.time) ~ food * genotype + (1|date) + (1|plateID))
+
+lmer %>% emmeans(pairwise ~ food | genotype)
+
+
+#plot
+plot <- amine_data %>%
+  ggplot(aes(x = data_type, y = response.time)) +
   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.75) +
   scale_color_plot("grey-blue", drop = TRUE) +
-  facet_grid(.~genotype) +
-  add.median('response.time', colour = "red") +
+  facet_grid(.~genotype+food) +
   add.quartiles('response.time') +
-  add.n(food) +
+  add.median('response.time', colour = "red") +
+  add.n(data_type) +
+  stat_pointinterval(aes(y=response.time, x = 1.3),
+                     data = fitted, fatten_point = 0,
+                     size_range = c(0.3, 1), colour = "grey") +
+  stat_summary(data = fitted,
+               aes(y=response.time, x = 1.3),
+               fun.y = median,
+               fun.ymin = median,
+               fun.ymax = median,
+               geom = "crossbar",
+               width = 0.05,
+               lwd = 0.35,
+               colour = "grey") +
   labs(x = "food",
        y = "time to reversal (s)")
 
-lmer <- amine_data %>%
-  lme4::lmer(data = ., log(response.time) ~ food * tdc * tbh + (1|date) + (1|plateID))
+gt <- ggplot_gtable(ggplot_build(plot))
+#gt$widths[c(8,12,16,20)] = 2*gt$widths[c(8,12,16,20)]
+gt$widths[c(6,10,14,18,22)] = .3*gt$widths[c(6,10,14,18,22)]
+grid::grid.draw(gt)
 
 lmer2 <- amine_data %>%
-  lme4::lmer(data = ., log(response.time) ~ food * genotype + (1|date) + (1|plateID))
+  lme4::lmer(data = ., log(response.time) ~ food * tdc * tbh + (1|date) + (1|plateID))
+car::Anova(lmer2, test = "F")
 
 emm.lmer <- lmer %>% emmeans(pairwise ~ food  | tdc | tbh)
-lmer2 %>% emmeans(pairwise ~ food | genotype)
+update(lmer2,REML=TRUE)
 car::Anova(lmer)
 
 stan_lmer <- amine_data %>%
@@ -149,6 +197,8 @@ stan_lmer <- amine_data %>%
                        chains = 6,
                        cores = 6)
 
+
+
 emmeans(stan_lmer, pairwise ~ food | tdc * tbh)
 
 
@@ -156,7 +206,9 @@ emmeans(stan_lmer, pairwise ~ food | tdc * tbh)
   SOS %>% dplyr::filter(cond == "off_food",
                         genotype %in% c("N2","tbh-1", "tdc-1"),
                         food %in% c("OP50", "JUb39"),
-                        date %in% c("6_23_18", "10_24_17", "20180904")) %>%
+                        date %in% c("6_23_18", "10_24_17", "20180904"),
+                        response.time < 20,
+                        ) %>%
     ggplot(aes(x = food, y = response.time)) +
     ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2) +
     scale_color_plot("grey-blue", drop = TRUE) +
@@ -198,7 +250,8 @@ SOSKO <-  SOS %>% dplyr::filter(cond == "Tyrosine",
                                   '2019_04_23',
                                   '2019_04_27',
                                   '2019_04_29')) %>%
-  mutate(food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC")))%>%
+  mutate(food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC")),
+                            data_type = "raw") %>%
   droplevels() %>%
   mutate(log.response = log(response.time))
 
@@ -208,6 +261,8 @@ p1 %+% SOSKO +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   scale_color_plot("grey-blue-light", drop = TRUE)
 
+
+##### working out stan parameters ####
 (lmer <- SOSKO %>%
     lme4::lmer(., formula = log10(response.time) ~ food  + (1|date) + (1|plateID)))
 
@@ -217,12 +272,28 @@ p1 %+% SOSKO +
 
 library(rstanarm)
 
-stan_lm <- SOSKO %>%
-  rstanarm::stan_lmer(., formula = response.time ~ food + (1 | date) + (1|plateID))
+stan_glm <- SOSKO %>%
+  rstanarm::stan_lmer(., formula = log(response.time) ~ food + (1 | date) + (1|plateID))
 
-sjstats::equi_test(stan_lm)
+fitted <- SOSKO %>%
+  data_grid(food) %>%
+  add_fitted_draws(stan_glm, re_formula = NA) %>%
+  mutate(response.time = exp(.value), data_type = "fit")
 
-stan_lm %>%
+
+
+sjstats::equi_test(stan_glm, out = "plot")
+
+#devtools::install_github("thomasp85/patchwork")
+mcmc.comps <- emmeans(stan_glm, ~ food) %>%
+  contrast(method = "pairwise") %>%
+  coda::as.mcmc() #%>%
+  p1 <- bayesplot::mcmc_areas(mcmc.comps, prob = 0.66)
+  p2 <- bayesplot::mcmc_intervals(mcmc.comps,prob = 0.66, prob_outer = 0.95)
+
+  p1 + p2 + theme(axis.text.y = element_blank())
+
+stan_glm %>%
   emmeans::ref_grid() %>%
   emmeans::contrast(method = "pairwise", type = "response") %>%
   #emmeans::emmeans(type = "response")
@@ -236,18 +307,9 @@ stan_lm %>%
 #bayesplot::color_scheme_set("purple")
 # plot Bayes HDI
 stan_lm %>% emmeans::ref_grid() %>% coda::as.mcmc() %>%
-  # bayesplot::mcmc_areas_ridges(prob = 0.80,
-  #                       prob_outer = 0.95,
-  #                       point_est = "median") +
-  # bayesplot::mcmc_areas(prob = 0.80,
-  #                       prob_outer = 0.95,
-  #                       point_est = "median") +
   bayesplot::mcmc_intervals(prob = 0.80,
                         prob_outer = 0.95,
                         point_est = "median") +
-  # bayesplot::mcmc_areas_ridges_data(prob = 0.80,
-  #                              prob_outer = 0.95,
-  #                              point_est = "median") +
   scale_x_continuous(limits = c(0,20)) +
   ggbeeswarm::geom_quasirandom(data = SOSKO,
                                aes(x = response.time,
@@ -255,7 +317,7 @@ stan_lm %>% emmeans::ref_grid() %>% coda::as.mcmc() %>%
                                    colour = food), alpha = 0.5, groupOnX = FALSE, width = 0.1, method = "smiley") +
   scale_color_plot("grey-blue", drop = TRUE)
 
-stan_mcmc_data <- stan_lm %>%  emmeans::ref_grid() %>% coda::as.mcmc() %>%
+stan_mcmc_data <- stan_glm %>%  emmeans::ref_grid() %>% coda::as.mcmc() %>%
   bayesplot::mcmc_areas_data(prob = 0.80,
                                prob_outer = 0.95) %>%
   tidyr::separate(parameter, into = c("parameter", "food"), sep = "food ") %>%
@@ -265,8 +327,8 @@ stan_mcmc_data <- stan_lm %>%  emmeans::ref_grid() %>% coda::as.mcmc() %>%
 ggplot(SOSKO) +
   ggbeeswarm::geom_quasirandom(data = SOSKO,
                                aes(x = response.time, y = -0.2, color = food),
-                               alpha = 0.4, groupOnX = FALSE, width = 0.1) +
-  geom_ribbon(data = stan_mcmc_data,
+                               alpha = 0.4, groupOnX = FALSE, width = 0.1) #+
+  geom_ribbon(data = fitted,
                 aes(ymax = density, x = x, ymin = 0, fill = interval), alpha = 0.5) +
 
   # geom_rug(data = mutate(SOSKO, food = as.numeric(food)), aes(x = response.time), sides = "b") +
@@ -277,22 +339,27 @@ ggplot(SOSKO) +
   theme_my
 
 
-
 #### plot 5 Receptor and rescue ####
 SOS %>% dplyr::filter(cond == "Tyrosine",
                       genotype %in% c("N2",
                                       "tyra-2",
+                                      "ser-3",
                                       "octr-1",
-                                      "tyra-2; octr-1",
-                                      "octr-1; ex[sra6p::octr-1]",
-                                      "tyra-2; ex[sra6p::tyra-2]",
-                                      "tdc-1",
-                                      "tbh-1"),
+                                      #"tyra-2; octr-1",
+                                      "octr-1; ex[sra6p::octr-1]"
+                                      #"tyra-2; ex[sra6p::tyra-2]",
+                                      #"tdc-1",
+                                      #"tbh-1"
+                                      ),
                       food %in% c("OP50", "JUb39"), #) %>%
                       #!date %in% c("2018_10_29"),
                       #date %in% c("2018_10_23","2018_11_13"), #weirdness with 10_29 + tdc-1 was contaminated before 11_13
-                      date %in% c("2019_01_07", "2019_01_14"),
-                      #response.time < 20,
+                      #date %in% c("2019_01_07", "2019_01_14"),
+                      date %in% c("2018_10_23", "2018_10_29", "2018_11_13", "2019_01_07", "2019_01_14",
+                        "2019_02_05", "2019_02_15", "2019_03_06",
+                        "2019_05_27", "2019_05_28", "2019_06_02",
+                        "2019_04_02"),
+                      response.time < 20,
                       !(genotype == "tyra-2" & food == "JUb39; tdcDel::cmR")) %>%
   ggplot(aes(x = food, y = response.time)) +
   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.3, method = "smiley") +
@@ -307,33 +374,33 @@ SOS %>% dplyr::filter(cond == "Tyrosine",
   theme(axis.title.x = ggplot2::element_blank(),
              axis.text.x = ggplot2::element_blank(),
              axis.text.y = ggplot2::element_text(size = 15),
-        panel.spacing.x=unit(1, "lines")) +
-  stat_summary(aes(group=date, colour = date), fun.y=median, geom="line")
-#figure.axes()
-  #scale_x_discrete(labels = c("control", "+Tyrosine")) +
-  scale_y_log10()
-figure.axes(no.x = FALSE) #+ theme_black()
+        panel.spacing.x=unit(1, "lines"))
 
 #### plot octr-1 and rescue ####
-SOS %>% dplyr::filter(cond == "Tyrosine",
+receptors<-SOS %>% dplyr::filter(cond == "Tyrosine",
                       genotype %in% c("N2",
                                       "tyra-2",
+                                      "ser-3",
                                       "octr-1",
-                                      "octr-1; ex[sra6p::octr-1]"),
+                                      "octr-1; ex[sra6p::octr-1]",
+                                      "tyra-2; ex[sra6p::tyra-2]"),
                       food %in% c("OP50", "JUb39"), #) %>%
-                      #date == c("2019_02_15"),
-                      #date %in% c("2018_10_23","2018_11_13"), #weirdness with 10_29 + tdc-1 was contaminated before 11_13
                       date %in% c("2019_01_07",
                                   "2019_01_14",
                                   "2019_02_05",
                                   "2019_02_15",
                                   "2019_03_06",
                                   "2019_04_02",
-                                  "2019_04_23"),
+                                  "2019_04_23",
+                                  "2019_05_27",
+                                  "2019_05_28",
+                                  "2018_10_23", #maybe contaminated these days
+                                  "2018_10_29",
+                                  "2019_06_02"),
                       response.time < 20,
-                      !(genotype == "tyra-2" & food == "JUb39; tdcDel::cmR")) %>%
+                      food %in% c("OP50", "JUb39")) #%>%
   #mutate(response.time = log10(response.time)) %>%
-  ggplot(aes(x = food, y = response.time)) +
+  receptors %>% ggplot(aes(x = food, y = response.time)) +
   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.3, method = "smiley") +
   scale_color_plot("grey-blue", drop = TRUE) +
   facet_grid(.~genotype, scales = "free", labeller = label_wrap_gen(width = 2)) +
@@ -369,7 +436,10 @@ mod <- SOS %>% dplyr::filter(cond == "Tyrosine",
                                   "2019_02_15",
                                   "2019_03_06",
                                   "2019_04_02",
-                                  "2019_04_23"),
+                                  "2019_04_23",
+                                  "2018_10_23", #maybe contaminated these days
+                                  "2018_10_29",
+                                  "2019_06_02"),
                       response.time < 20,
                       !(genotype == "tyra-2" & food == "JUb39; tdcDel::cmR")) %>%
   #mutate(response.time = log(response.time)) %>%
@@ -390,10 +460,11 @@ ggplot(mod.layer, aes(x = response.time, y = food)) +
 
 #### tdc KO on NGM v Tyrosine ####
 SOS %>% dplyr::filter(cond %in% c("off_food", "Tyrosine"),
-                      genotype == "tyra-2",
+                      genotype == "N2",
                       food %in% c("OP50", "JUb39", "JUb39; tdcDel::cmR"),
-                      date %in% c("2018_10_23", "2018_10_29")) %>%
-  ggplot(aes(x = cond, y = response.time, fill = date)) +
+                      date %in% c("2018_10_23", "2018_10_29", "2018_11_13", "2019_01_14"),
+                      response.time < 20) %>%
+  ggplot(aes(x = cond, y = response.time, fill = food)) +
   geom_boxplot(outlier.shape =NA) +
   geom_point(pch = 21, position = position_jitterdodge()) +
   #ggbeeswarm::geom_quasirandom(aes(colour = date), width = 0.2) +
@@ -445,12 +516,13 @@ SOS %>% dplyr::filter(cond %in% c("off_food"),
        y = "time to reversal (s)")
 
 #### for 30% octanol ####
-SOS %>% dplyr::filter(cond %in% c("20min_off_food"),
+SOS_30pct <- SOS %>% dplyr::filter(cond %in% c("20min_off_food"),
                       response.time < 20,
                       genotype %in% c("tdc-1", "N2"),
                       food %in% c("OP50", "JUb39", "JUb39; tdcDel::cmR"),
-                      date %in% c("2019_03_18", "2019_04_09", "2019_04_13", "04_29_19")) %>%
-  ggplot(aes(x = genotype, y = response.time)) +
+                      date %in% c("2019_03_18", "2019_04_09", "2019_04_13"))
+#%>% # "04_29_19" is 2KO
+  SOS_30pct %>% ggplot(aes(x = genotype, y = response.time)) +
   #geom_boxplot(outlier.shape =NA) +
   #geom_point(pch = 21) +#, position = position_jitterdodge()) +
   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2) +
@@ -475,7 +547,7 @@ SOS %>% dplyr::filter(cond %in% c("20min_off_food"),
 #### TA-saturation ####
 TAGOF <- SOS %>%
   dplyr::filter(
-    cond %in% c("Tyr+TA", "Tyrosine"),
+    cond %in% c("Tyr+TA", "Tyrosine", "Tyr+10mM_TA"),
     cue == "oct_1.0",
     response.time < 20,
     !date %in% c("2018_10_23", "2018_10_29"),
@@ -484,13 +556,14 @@ TAGOF <- SOS %>%
   ) %>%
   mutate(
     date_group = case_when(
-      date %in% c("2019_03_19", "2019_04_17", "2019_04_23", "2019_04_27", "2019_05_06") ~ "TA-dataset",
+      date %in% c("2019_03_19", "2019_04_17", "2019_04_23", "2019_04_27", "2019_05_06") ~ "4mM_TA_dataset",
+      date %in% c("2019_05_17", "2019_05_20", "2019_05_27", "2019_05_28") ~ "10mM_TA_dataset",
       TRUE ~ "old_data"
     ),
-    cond = fct_relevel(cond, "Tyrosine")
+    cond = fct_relevel(cond, "Tyrosine", "Tyr+TA")
   ) %>%
   filter(
-    date_group == "TA-dataset" #& date %in% c("2019_03_19", "2019_04_17")
+    date_group != "old_data" #& date %in% c("2019_03_19", "2019_04_17")
   )
 
   TAGOF %>%
@@ -498,17 +571,47 @@ TAGOF <- SOS %>%
   ggbeeswarm::geom_quasirandom(width = 0.2, aes(colour = food), alpha = 0.75) +
   scale_color_plot("2-Ps", drop = TRUE) +
   scale_alpha_manual(values = c(0.3, 1)) +
-  facet_grid(.~food) +
+  facet_grid(.~food) +#, scales = "free_x") +
   add.median('response.time', colour = "red") +
   add.quartiles('response.time') +
   add.n(cond) +
   theme_my +
   guides(colour = FALSE) +
   labs(x = "food",
-       y = "time to reversal (s)")
+       y = "time to reversal (s)") #+
+    stat_summary(geom = "errorbar", stat = mean_se)
 
   TAGOF %>% lm(data = ., log(response.time) ~ food*cond + date) %>%
     emmeans(pairwise ~ cond | food)
+
+  #### 10mM TA ####
+  TAGOF <- SOS %>%
+    dplyr::filter(
+      cond %in% c("Tyr+10mM_TA", "Tyrosine"),
+      cue == "oct_1.0",
+      response.time < 20,
+      date %in% c("2019_05_17", "2019_05_20", "2019_05_27", "2019_05_28"),
+      genotype %in% c("N2","octr-1"),
+      food %in% c("JUb39", "JUb39; tdcDel::cmR delAADC")
+    ) %>%
+    mutate(cond = fct_relevel(cond, "Tyrosine")) %>% droplevels()
+
+  TAGOF %>%
+    ggplot(aes(x = cond, y = response.time)) +
+    ggbeeswarm::geom_quasirandom(width = 0.2, aes(colour = food), alpha = 0.75) +
+    scale_color_plot("2-Ps", drop = TRUE) +
+    scale_alpha_manual(values = c(0.3, 1)) +
+    facet_grid(~food+genotype) +
+    add.median('response.time', colour = "red") +
+    add.quartiles('response.time') +
+    add.n(cond) +
+    theme_my +
+    guides(colour = FALSE) +
+    labs(x = "food",
+         y = "time to reversal (s)")
+
+  TAGOF %>% lm(data = ., log(response.time) ~ food*cond*genotype + date) %>%
+    emmeans(pairwise ~ cond | food | genotype)
 
 #### 2-nonanone avoidance ####
 SOS %>% dplyr::filter(cond %in% c("Tyrosine"),
