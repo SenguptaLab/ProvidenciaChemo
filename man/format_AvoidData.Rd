@@ -4,7 +4,8 @@
 \alias{format_AvoidData}
 \title{format_AvoidData}
 \usage{
-format_AvoidData(data, day.correct = "OP50", center.data = FALSE, ...)
+format_AvoidData(data, day.correct = "OP50", center.data = FALSE,
+  min_p = 0.005, ...)
 }
 \description{
 format_AvoidData

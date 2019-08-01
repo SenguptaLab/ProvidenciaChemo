@@ -1,0 +1,23 @@
+date,genotype,odorant,ring,food,Nout,Ntotal,cond,plate,fraction_out
+2019_06_08,N2,none,8M glycerol,OP50,1,9,NGM,57,0.1111111111111111
+2019_06_08,N2,none,8M glycerol,OP50,0,9,NGM,58,0
+2019_06_08,N2,none,8M glycerol,OP50,2,12,NGM,59,0.16666666666666666
+2019_06_08,N2,none,8M glycerol,OP50,0,10,NGM,60,0
+2019_06_08,N2,none,8M glycerol,OP50,2,10,NGM,61,0.2
+2019_06_08,N2,none,8M glycerol,JUb39,0,10,NGM,62,0
+2019_06_08,N2,none,8M glycerol,JUb39,0,10,NGM,63,0
+2019_06_08,N2,none,8M glycerol,JUb39,1,11,NGM,64,0.09090909090909091
+2019_06_08,N2,none,8M glycerol,JUb39,0,10,NGM,65,0
+2019_06_08,N2,none,8M glycerol,JUb39,0,10,NGM,66,0
+2019_06_10,N2,none,8M glycerol,OP50,2,11,NGM,67,0.18181818181818182
+2019_06_10,N2,none,8M glycerol,OP50,2,10,NGM,68,0.2
+2019_06_10,N2,none,8M glycerol,OP50,0,10,NGM,69,0
+2019_06_10,N2,none,8M glycerol,OP50,0,10,NGM,70,0
+2019_06_10,N2,none,8M glycerol,OP50,2,10,NGM,71,0.2
+2019_06_10,N2,none,8M glycerol,OP50,0,9,NGM,72,0
+2019_06_10,N2,none,8M glycerol,JUb39,0,10,NGM,73,0
+2019_06_10,N2,none,8M glycerol,JUb39,2,10,NGM,74,0.2
+2019_06_10,N2,none,8M glycerol,JUb39,0,10,NGM,75,0
+2019_06_10,N2,none,8M glycerol,JUb39,0,10,NGM,76,0
+2019_06_10,N2,none,8M glycerol,JUb39,1,10,NGM,77,0.1
+2019_06_10,N2,none,8M glycerol,JUb39,0,10,NGM,78,0

@@ -1,0 +1,566 @@
+date,genotype,food,cond,cue,plateID,animal,response.time,pir,group,paralyzed,tdc,tbh,data_type
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1439,6.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1440,4.3,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1441,5.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1442,8.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1443,14.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1444,4.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1445,4.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1446,3.3,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1447,3.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1448,1.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1449,4.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1450,9.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1451,3.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1452,4.3,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1453,3.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1454,4,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1455,5.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1456,5.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1457,4.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,OP50,Tyrosine,oct_1.0,94,1458,3.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1460,3.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1461,2.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1462,6.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1463,3.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1464,5.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1465,8,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1467,5,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1468,5.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1469,13.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1470,5.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1471,6,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1473,3.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1474,9.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1476,13.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1477,5.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,N2,JUb39,Tyrosine,oct_1.0,95,1478,6.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1499,1.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1500,3.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1501,6.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1502,2.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1503,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1504,4.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1505,5.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1506,2.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1507,2.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1508,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1509,1.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1510,3.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1511,3.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1512,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1513,3.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1514,2.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1515,1.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1516,2.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1517,2.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1518,3.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,OP50,Tyrosine,oct_1.0,97,1519,2.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1521,4.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1522,6.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1523,7.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1525,6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1527,8.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1528,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1530,7.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1531,3.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1532,6.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1533,6.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1534,11.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1535,6.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1536,10.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1537,3.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1538,5.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1539,4.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tdc-1,JUb39,Tyrosine,oct_1.0,98,1540,5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1583,3.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1584,3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1585,1.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1586,7.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1587,14.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1588,9.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1589,9.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1590,3.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1591,9.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1592,8.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1593,3.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1594,12.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1595,6.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1596,5.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1597,3.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1598,3.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1599,5.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1600,5.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,OP50,Tyrosine,oct_1.0,101,1601,5.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1602,4.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1603,1.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1604,5.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1605,5.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1606,7.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1607,2.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1608,1.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1609,10.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1611,9.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1612,9.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1613,4.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1614,5.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1615,3.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1616,5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1617,5.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1618,5.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1619,4.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1620,7.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1621,4.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_07,tbh-1,JUb39,Tyrosine,oct_1.0,102,1622,3.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1816,8.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1817,0.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1818,8.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1819,6.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1820,4.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1821,1.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1822,6.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1823,10.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1824,3.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1825,1.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1826,2.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1827,6.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1828,10.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1829,9.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1830,10.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1831,5.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1832,7.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1833,6.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1834,4.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,JUb39,Tyrosine,oct_1.0,113,1835,5.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1836,1.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1837,1.8,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1838,1.2,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1839,5.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1840,4.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1841,1.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1842,5.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1843,2.1,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1844,1.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1845,1.3,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1846,2.3,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1847,1.6,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1848,3.7,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1849,2.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1850,1.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1851,1.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1852,1.4,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1853,0.9,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,N2,OP50,Tyrosine,oct_1.0,114,1854,1.5,NA,NA,non-paralyzed,+,+,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1976,8.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1977,3.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1978,7.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1979,5.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1980,7,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1981,1.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1982,5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1983,3.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1984,1.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1985,2.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1986,6.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1987,2.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1988,3.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1989,2.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1990,2.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1991,1.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1992,2.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1993,1.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,JUb39,Tyrosine,oct_1.0,121,1994,14,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,1995,4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,1996,4.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,1997,1.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,1998,2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,1999,2.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2000,2.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2001,3.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2002,3.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2003,1.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2004,7.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2005,5.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2006,2.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2007,1.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2008,4.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2009,1.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2010,1.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2011,3.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2012,2.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2013,2.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tbh-1,OP50,Tyrosine,oct_1.0,122,2014,1.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2093,2.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2094,2.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2095,18.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2096,5.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2097,3.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2098,5.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2100,6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2101,6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2102,11.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2103,5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2105,8.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2106,5.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2107,3.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2108,2.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2109,1.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2110,8.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2111,2.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,JUb39,Tyrosine,oct_1.0,127,2112,5.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2113,2.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2114,3.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2115,5.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2116,3.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2117,5.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2118,5.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2119,6.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2120,2.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2121,1.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2122,4.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2123,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2124,3.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2125,8,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2126,6.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2127,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2128,7.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2129,5.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2130,6,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2131,2,NA,NA,non-paralyzed,mutant,+,raw
+2019_01_14,tdc-1,OP50,Tyrosine,oct_1.0,128,2132,2.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3302,2.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3303,5.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3304,2.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3305,2.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3306,1.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3307,2.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3308,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3309,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3310,2.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3311,4.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3312,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3313,4.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3314,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3315,2.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3316,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3317,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3318,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3319,1.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3320,1.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3321,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,OP50,Tyrosine,oct_1.0,188,3322,4.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3322,4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3324,9.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3326,13.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3327,1.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3328,3.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3329,2.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3330,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3331,3.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3333,3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3334,4.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3336,4.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3337,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3338,3.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3339,1.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3340,3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1,JUb39,Tyrosine,oct_1.0,189,3341,4.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3342,1.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3343,3.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3344,1.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3345,4.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3346,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3347,2.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3348,2.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3349,4.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3350,3.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3351,2.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3352,2.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3353,1.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3354,1.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3355,1.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3356,1.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3357,1.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3358,1.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3359,5.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3360,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3361,0.96,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,190,3362,2.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3363,5.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3365,1.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3366,2.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3367,4.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3368,1.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3369,1.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3370,4.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3371,2.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3372,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3373,2.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3374,2.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3375,4.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3376,6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3377,0.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3378,3.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3379,6.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3380,1.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3381,7.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3382,1.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_16,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,191,3383,6.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3616,1.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3617,0.9,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3618,0.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3619,3.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3620,0.9,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3621,5.9,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3622,2.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3623,1.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3624,1.5,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3625,1.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3626,1.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3627,3.9,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3628,3.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3629,1.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3630,0.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3631,3.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3632,6.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3633,2.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3634,4.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,OP50,Tyrosine,oct_1.0,204,3635,2.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3636,1.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3637,10.5,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3638,8.5,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3639,2,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3641,9.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3642,9.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3643,6.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3644,2.4,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3645,3.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3646,14.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3647,13.9,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3648,3.3,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3650,4.5,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3651,3.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3652,4.4,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,N2,JUb39,Tyrosine,oct_1.0,205,3653,3.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3734,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3735,2.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3736,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3737,3.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3738,2.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3739,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3740,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3741,1.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3742,1.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3743,0.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3744,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3745,8.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3746,1.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3747,1.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3748,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3749,4.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3750,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3751,1.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3752,4.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,OP50,Tyrosine,oct_1.0,210,3753,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3754,6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3755,13.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3758,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3760,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3761,5.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3762,6.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3763,9.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3764,16.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3765,2.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3766,4.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3767,1.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3768,4.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3769,5.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3770,2.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3771,2.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1,JUb39,Tyrosine,oct_1.0,211,3774,4.1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3775,2.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3776,5.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3777,2.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3778,4.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3779,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3780,4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3781,1.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3782,0.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3783,8.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3784,2.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3785,1.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3786,2.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3787,5.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3788,4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3789,2.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3790,5.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3791,0.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3792,7.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3793,4.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3794,2.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,212,3795,3.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3797,3.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3798,6.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3799,9.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3801,5.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3802,3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3803,2.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3804,4.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3805,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3806,4.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3807,2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3809,6.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3810,3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3811,2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3812,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3813,3.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3814,6.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3815,1.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_27,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,213,3816,5.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3877,1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3878,1.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3879,1.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3880,1.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3881,4.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3882,1.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3883,2.4,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3884,2.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3885,3,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3886,1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3887,8.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3888,1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3889,2.5,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3890,1.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3891,1.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3892,1.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3893,1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3894,2.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3895,1.3,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,OP50,Tyrosine,oct_1.0,217,3896,5.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3898,2.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3899,2.9,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3900,4.7,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3901,1.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3902,8,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3904,8.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3905,1.4,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3908,2.3,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3909,3.2,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3910,11.1,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3911,2.8,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3912,2.6,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,N2,JUb39,Tyrosine,oct_1.0,218,3913,12.5,NA,NA,non-paralyzed,+,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3935,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3936,0.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3937,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3938,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3939,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3940,2.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3941,3.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3942,1.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3943,1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3944,0.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3945,1.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3946,1.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3947,0.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3948,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3949,0.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3950,1.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3951,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3952,1.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3953,1,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,OP50,Tyrosine,oct_1.0,220,3954,2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3955,0.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3956,5.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3957,5.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3958,5.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3959,3.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3960,1.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3961,1.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3962,3.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3963,9.6,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3964,12.9,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3965,1.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3966,1.7,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3967,3.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3968,2.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3969,2.4,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3970,1.3,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3971,2.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3972,1.2,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3973,15.8,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1,JUb39,Tyrosine,oct_1.0,221,3974,1.5,NA,NA,non-paralyzed,mutant,+,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3975,2.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3977,1.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3978,12.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3979,1.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3980,1.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3981,1.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3982,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3983,0.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3984,0.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3985,0.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3986,1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3987,1.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3988,1.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3989,5.2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3990,1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3991,1.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3992,1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3993,1.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,OP50,Tyrosine,oct_1.0,222,3994,1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,3995,1.4,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,3996,2.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,3997,4.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4000,1.9,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4002,1.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4003,1.6,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4004,2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4005,1.5,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4006,0.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4007,2,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4008,0.7,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4009,2.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4010,0.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4011,4.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4012,1.1,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4013,1.8,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tdc-1; tbh-1,JUb39,Tyrosine,oct_1.0,223,4014,2.3,NA,NA,non-paralyzed,mutant,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4015,1.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4016,1.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4017,0.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4018,5,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4019,4.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4020,4.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4021,1.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4022,6.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4023,1.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4024,1.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4025,1.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4026,1.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4027,1.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4028,1.4,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4029,1.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4030,1.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4031,2.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4032,2.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4033,2.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,OP50,Tyrosine,oct_1.0,224,4034,1.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4035,3.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4036,1.1,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4037,1.5,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4038,2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4039,2.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4040,3.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4041,4.3,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4042,3.7,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4044,1.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4046,6.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4047,1.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4048,1.2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4049,1.8,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4050,2,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4051,4.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4052,2.9,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4053,2.6,NA,NA,non-paralyzed,+,mutant,raw
+2019_04_29,tbh-1,JUb39,Tyrosine,oct_1.0,225,4054,3.3,NA,NA,non-paralyzed,+,mutant,raw

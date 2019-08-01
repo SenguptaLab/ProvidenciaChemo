@@ -16,8 +16,10 @@
 \alias{fun_length}
 \alias{theme_my}
 \alias{g_legend}
+\alias{geom_bardots}
+\alias{geom_relLatency}
 \title{ggplot_layers}
-\format{An object of class \code{theme} (inherits from \code{gg}) of length 60.}
+\format{An object of class \code{theme} (inherits from \code{gg}) of length 66.}
 \usage{
 add.scatter(yval)
 
@@ -45,6 +47,10 @@ fun_length(x)
 theme_my
 
 g_legend(a.gplot)
+
+geom_bardots(fillvar, dotvar, ...)
+
+geom_relLatency(fitted, fillvar, dotvar, yvar)
 }
 \arguments{
 \item{width}{optional width for median lines}

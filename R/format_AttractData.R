@@ -10,7 +10,8 @@ format_AttractData <- function(data) {
          strain = fct_relevel(strain, 'OP50'),
          nAll = nCue + nControl,
          plate = seq(1:nrow(.)),
-         CI = (nCue - nControl) / (nAll + outside),
+         #CI = (nCue - nControl) / (nAll + outside),
+         CI = (nCue - nControl) / (nAll),
          p = nCue  / nAll,
          logit.p = case_when(
             p == 0 ~ boot::logit(0.005),

@@ -1,0 +1,67 @@
+---
+title: "Figure_1e_mcherry"
+author: "Mike O'Donnell"
+date: "6/13/2019"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 5
+    fig_width: 10 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+library(emmeans)
+library(modelr)
+library(tidybayes)
+library(kableExtra)
+library(patchwork)
+theme_set(theme_my)
+```
+
+```{r}
+mcherry<-read_csv(here::here('extdata/Figure_1e_mcherry_oct_correlation.csv'))
+
+mcherry <- gather(mcherry,
+                key = location,
+                value = cell_count,
+       ant, mid, post) %>% mutate(
+         cell_count = case_when(
+           cell_count == 0 ~ "none",
+           cell_count == 1 ~ "few (<10)",
+           TRUE ~ "many"
+         )) %>% mutate(
+           cell_count = fct_relevel(cell_count, "none")
+         )
+
+mCherry_JU <- filter(mcherry, condition == "JUb39")
+mcherry_Post <- filter(mCherry_JU, location == "post")
+
+ggplot(filter(mcherry_Post),
+       aes(x=outcome, fill=fct_relevel(cell_count, "none"))) +
+  geom_bar(position='fill') +
+  facet_grid(.~ condition, scales = "free_x") +
+  scale_fill_manual(values=c("#CCCCCC", "#CC6666", "#990000")) +
+  theme_my +
+  guides(fill=guide_legend(title="cell count"))
+
+#add n
+filter(mcherry_Post, condition != 'OP50', location != 'mid') %>%
+ group_by(outcome, location, cell_count) %>% 
+  tally() %>% 
+  kableExtra::kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+ord.regression.simple <- MASS::polr(filter(mCherry_JU, location == "post"), formula = cell_count ~ outcome )
+contrasts.simple <- emmeans::emmeans(ord.regression.simple, pairwise ~ outcome)
+car::Anova(ord.regression.simple) # for P(Chisq) outcome
+
+kable(contrasts.simple$contrasts) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+

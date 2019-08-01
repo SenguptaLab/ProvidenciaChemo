@@ -28,7 +28,7 @@ theme_set(theme_my)
 filepath <- here::here("extdata/Figure_S1_lidAvoidance.csv")
   
 lid_data <- read_csv(filepath) %>%
-  format_AvoidData(day.correct = FALSE) %>%
+  format_AvoidData(day.correct = "treatment") %>%
   mutate(plate = factor(seq(1:nrow(.))),
          treatment = factor(treatment, levels = c("none", "lid")),
          data_type = "raw") %>% 
@@ -50,7 +50,7 @@ stan_glmm <-  rstanarm::stan_glmer(data = lid_data,
 fitted <- recenter_fittedValues(lid_data, stan_glmm, day.correct = "treatment", BayesFit = "HDI")
 
 plot1 <- lid_data %>%
-  plot_plasticityIndex(xvar = data_type, width = 0.2, BayesFit = TRUE) +
+  plot_plasticityIndex(xvar = data_type, width = 0.2, BayesFit = TRUE, bar = TRUE) +
   labs(title = "1-oct (corrected)") + 
   scale_color_plot(palette = "grey-blue", drop = TRUE) + 
   guides(color = FALSE) + 

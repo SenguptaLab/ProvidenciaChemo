@@ -8,7 +8,7 @@
 
 recenter_fittedValues <- function(data,
                                   model,
-                                  day.correct = day.correct,
+                                  day.correct = FALSE,
                                   transform = "logit",
                                   BayesFit = "fitted_draws",
                                   ...) {
@@ -22,13 +22,19 @@ recenter_fittedValues <- function(data,
     #this will not marginalize over group effects
     data %>% group_by_at(vars(mod_predictors)) %>%
     data_grid(!!!syms(mod_predictors)) %>%
-    add_fitted_draws(model, re_formula = NA) %>%
-    mutate(logit.p = boot::logit(.value)) %>%
-    ungroup() -> data
+    add_fitted_draws(model, re_formula = NA) -> data
+    if(transform == "logit") {
+      data %>%
+        mutate(logit.p = boot::logit(.value)) %>%
+        ungroup() -> data
+    } else {
+
+    }
     comment(data) <- "fitted_draws"
   }
 
   if(BayesFit == "HDI") {
+    # only for comparing all to a common control
     #sjstats::hdi(stan_glmm, type = "fixed", prob = c(0.66, .95)) %>% tibble()
     mod.data <- emmeans::ref_grid(model) %>%
       emmeans::contrast(method = "trt.vs.ctrl") %>%
@@ -37,14 +43,16 @@ recenter_fittedValues <- function(data,
     mod.data <- mod.data[[2]] %>%
       data.frame() %>%
       rownames_to_column("contrast")
-    mod_predictors <- rev(mod_predictors)
+    if(length(mod_predictors > 1)) {
+      mod_predictors <- rev(mod_predictors)
+    }
     print(mod_predictors)
     predictors <- data %>% modelr::data_grid(!!!syms(mod_predictors)) %>%
       slice(2:n())
     data <- cbind(mod.data, predictors) %>%
       mutate(interval_type = "HDI",
              data_type = "fit") %>%
-      dplyr::select(1:9) %>%
+      #dplyr::select(1:10) %>%
       rename(lower.2.5 = 2,
              lower.17 = 3,
              median = 4,
@@ -53,22 +61,15 @@ recenter_fittedValues <- function(data,
   }
 
 
-  if(BayesFit == "fitted_draws") {
+  if(BayesFit == "fitted_draws" & transform == "logit") {
     if(day.correct == "OP50_N2") {
     means <- data %>%
       filter(strain == "OP50", genotype == "N2") %>%
       group_by(date) %>%
       summarise(meanOP50 = mean(logit.p))
-  }
-  #
-  # if(day.correct == "genotype") {
-  #   means <- data %>%
-  #     filter(strain == "OP50") %>%
-  #     group_by(genotype, date) %>%
-  #     summarise(meanOP50 = mean(logit.p))
-  # }
-  #
-  if(day.correct == "treatment") {
+    }
+
+    if(day.correct == "treatment") {
     data <- mutate(data, genotype = "N2")
     means <- data %>%
       ungroup() %>%
@@ -76,37 +77,29 @@ recenter_fittedValues <- function(data,
       mutate(genotype = "N2") %>%
       group_by(genotype) %>%
       summarise(meanOP50 = mean(boot::logit(.value)))
-  }
+    }
 
-  # if(day.correct == "genotype+treatment") {
-  #   means <- data %>%
-  #     filter(strain == "OP50") %>%
-  #     group_by(genotype, date, treatment) %>%
-  #     summarise(meanOP50 = mean(logit.p))
-  # }
-  #
-  #
-  if(day.correct == FALSE) {
+    if(day.correct == "OP50_by_genotype") {
+      means <- data %>%
+        ungroup() %>%
+        filter(strain == "OP50") %>%
+        group_by(genotype) %>%
+        summarise(meanOP50 = mean(boot::logit(.value)))
+    }
+
+    if(day.correct == FALSE) {
     data <- mutate(data, genotype = "N2")
     means <- data %>%
       filter(strain == "OP50") %>%
       group_by(genotype) %>%
       summarise(meanOP50 = mean(logit.p))
+    }
   }
-}
 
-  if(BayesFit == "fitted_draws") {
+  if(BayesFit == "fitted_draws" & transform == "logit") {
     data <- full_join(data, means) %>% mutate(rel.Logit = logit.p - meanOP50,
                                               interval_type = "fitted_draws")
   } else {
   return(data)
-}
-  #data <- data %>% mutate(meanOP50 = as.numeric(means), rel.Logit = logit.p - meanOP50)
-
-  # if(day.correct) {
-  #   data %>% mutate(rel.Logit = logit.p - meanOP50)
-  # } else {
-  #   data %>% mutate(rel.Logit = logit.p - mean(dplyr::filter(., genotype == "N2" & strain == 'OP50')$logit.p))
-  # }
-
+    }
 }

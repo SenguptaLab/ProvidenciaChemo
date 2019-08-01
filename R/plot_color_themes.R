@@ -20,6 +20,7 @@ plotColors <- c(
   `red` = "#C93030",
   `green` = "#2F8A34",
   `blue` = "#484CC7",
+  `mid-blue` = "royalblue1",
   `midGrey` = "#B8B1B1",
   `lightGrey` = "#E6DDDD",
   `brown` = "#824B4B",
@@ -57,10 +58,13 @@ plotColor_palettes <- list(
 
   `2-Ps` = plotColorGetter("darkGrey", "blue", "light-blue"),
 
-  `2-each` = plotColorGetter("darkGrey", "lightGrey", "blue", "light-blue"),
+  `2-each` = plotColorGetter("darkGrey", "midGrey", "blue", "light-blue"),
 
-  `grey-blue-light` = plotColorGetter("darkGrey", "blue", "light-blue")
-)
+  `grey-blue-light` = plotColorGetter("darkGrey", "blue", "light-blue", "green"),
+
+  `grey-blue-green` = plotColorGetter("darkGrey", "blue", "green"),
+
+  `lightgrey-lightblue` = plotColorGetter("midGrey", "mid-blue"))
 
 
 #' paletteGetter

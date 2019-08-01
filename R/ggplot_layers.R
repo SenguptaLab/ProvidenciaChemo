@@ -125,7 +125,7 @@ add.n <- function(xval, y.pos) {
   if(missing(y.pos)) {
     y.pos <- 0
   } else {
-    y.pos <- quo_name(enquo(y.pos))
+    y.pos <- y.pos
   }
   xval <- quo_name(enquo(xval))
   stat_summary(aes_string(x = xval, y=y.pos),
@@ -211,6 +211,47 @@ g_legend <- function(a.gplot){
   legend <- gtable::gtable_filter(tmp, 'guide-box', fixed = TRUE)
   return(legend)
 }
+
+#' @export
+#' @rdname ggplot_layers
+#plot mean bar, sem errorbar and quasirandom scatter (req. ggbeeswarm)
+geom_bardots <- function(fillvar, dotvar, ...) {
+  list(stat_summary(geom = "bar", fun.y = mean, aes(fill = {{ fillvar }}), width = 0.5, alpha = 0.75),
+       ggbeeswarm::geom_quasirandom(aes(colour = {{ dotvar }}), width = 0.1, alpha = 0.5),
+       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.3))
+}
+
+#' @export
+#' @rdname ggplot_layers
+#plot boxplot and scatter, plus Bayes cred interval from emmeans contrasts, named 'fitted'
+geom_relLatency <- function(fitted, fillvar, dotvar, yvar) {
+  list(ggbeeswarm::geom_quasirandom(aes(colour = {{ dotvar }},
+                                        y = {{ yvar }}),
+                                    width = 0.2,
+                                    alpha = 0.5,
+                                    shape = 16),
+       geom_boxplot(aes(fill = {{ fillvar }},
+                        y = {{ yvar}}),
+                    alpha = 0.7,
+                    outlier.shape = NA),
+       geom_linerange(data = fitted,
+                      aes(x = 1.5,
+                          ymin = ll,
+                          ymax = hh),
+                      lwd = 0.35,
+                      colour = "grey34"),
+         geom_crossbar(data = fitted,
+                       aes(y = m,
+                           x = 1.5,
+                           ymin = l,
+                           ymax = h),
+                       width = 0.05,
+                       lwd = 0.35,
+                       alpha = 0.5,
+                       colour = "grey69",
+                       fill = "grey69"))
+       }
+
 
 theme_black = function(base_size = 12, base_family = "") {
 

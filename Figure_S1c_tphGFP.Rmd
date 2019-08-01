@@ -1,0 +1,63 @@
+---
+title: "Figure_S1c"
+author: "Mike O'Donnell"
+date: "6/11/2019"
+output: html_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+```
+
+```{r tph-1GFP data}
+library(tidyverse)
+library(rstanarm)
+library(emmeans)
+library(modelr)
+library(tidybayes)
+library(kableExtra)
+library(patchwork)
+theme_set(theme_my)
+
+tph1GFP <- read.csv(here::here('data/tph-1GFP.csv')) %>%
+  filter(mean < 4095) %>%
+  mutate(food = fct_relevel(food, "OP50"),
+         data_type = "raw")
+
+lm(tph1GFP, formula = mean ~ neuron * food) %>% summary()
+
+stan_mod <- rstanarm::stan_glm(data = tph1GFP,
+                    formula = mean ~ neuron * food,
+                    cores = 4, 
+                    chains = 4)
+
+fitted <- tph1GFP %>% data_grid(neuron, food) %>%
+  add_fitted_draws(stan_mod) %>%
+  mutate(mean = .value, data_type = "fit")
+
+plot <- tph1GFP %>% ggplot(aes(x = data_type, y = mean)) +
+  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.75) +
+  scale_color_plot(palette = "grey-blue", drop = TRUE) +
+  facet_grid(neuron~food, scales = "free_y") +
+  add.mean(mean, colour = "red", width =0.2) +
+  stat_summary(geom = "errorbar",
+               fun.data = mean_se,
+               width = 0.2) +
+   stat_pointinterval(aes(y=mean, x = 1.5),
+                     data = fitted, fatten_point = 0,
+                     size_range = c(0.3, 1), colour = "darkgrey") +
+  stat_summary(data = fitted,
+               aes(y=mean, x = 1.5),
+               fun.y = median,
+               fun.ymin = median,
+               fun.ymax = median,
+               geom = "crossbar",
+               width = 0.05,
+               lwd = 0.35,
+               colour = "darkgrey")
+
+```
+

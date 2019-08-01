@@ -6,7 +6,7 @@
 #' @export
 #' @examples data %>% format_AvoidData()
 
-format_AvoidData <- function(data, day.correct = "OP50", center.data = FALSE, ...) {
+format_AvoidData <- function(data, day.correct = "OP50", center.data = FALSE, min_p = 0.005, ...) {
   data %>% mutate(
          strain = fct_relevel(strain, 'OP50'),
          plate = factor(seq(1:nrow(.))),
@@ -16,8 +16,8 @@ format_AvoidData <- function(data, day.correct = "OP50", center.data = FALSE, ..
          CI = (nCue - nControl) / nAll,
          p = nCue  / nAll,
          logit.p = case_when(
-            #p == 0 ~ boot::logit(0.005),
-            p == 0 ~ boot::logit(1/nAll),
+            p == 0 ~ min(boot::logit(min_p), boot::logit(1/nAll)),
+            #p == 0 ~ boot::logit(1/nAll),
             p == 1 ~ boot::logit(0.995),
             TRUE ~ boot::logit(p)),
          data_type = "raw") %>%
@@ -42,6 +42,13 @@ if(day.correct == "genotype") {
     means <- data %>%
       filter(strain == "OP50", treatment %in% c("control", "none")) %>%
       group_by(date) %>%
+      summarise(meanOP50 = mean(logit.p))
+  }
+
+  if(day.correct == "treatment_overall") {
+    means <- data %>%
+      filter(strain == "OP50", treatment %in% c("control", "none")) %>%
+      group_by(genotype) %>%
       summarise(meanOP50 = mean(logit.p))
   }
 

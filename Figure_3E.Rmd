@@ -1,0 +1,130 @@
+---
+title: "Figure_3E"
+author: "Mike O'Donnell"
+date: "5/30/2019"
+output: 
+  html_document:
+      code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+```
+
+```{r Ps tdcKO}
+library(tidyverse)
+library(emmeans)
+library(modelr)
+library(tidybayes)
+library(kableExtra)
+
+filepath <- here::here("extdata/Figure_3E.csv")
+
+SOSKO <- read_csv(filepath) %>%
+  mutate(food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC"))) %>%
+  filter(!date %in% c("2019_04_23", "2019_04_27"))
+         
+         
+lmer <- SOSKO %>%
+    lme4::lmer(., formula = log10(response.time) ~ food  + (1|date) + (1|plateID))
+
+library(rstanarm)
+
+stan_glm <- SOSKO %>%
+  rstanarm::stan_lmer(., 
+                      formula = log(response.time) ~ food + (1 | date) + (1|plateID),
+                      cores = 4, 
+                      chains = 4,
+                      seed = 637,
+                      adapt_delta = 0.99)
+
+
+# get Bayesian cred intervals for differences between food
+fitted1 <- emmeans::ref_grid(stan_glm) %>%
+  emmeans::contrast("trt.vs.ctrl") %>%
+  coda::as.mcmc() %>% 
+  bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
+  mutate(data_type = "fit",
+         food = c("JUb39", 
+                  "JUb39; tdcDel::cmR",
+                  "JUb39; delAADC",
+                  "JUb39; tdcDel::cmR delAADC")) %>%
+  mutate(food = factor(food, levels = c("OP50", 
+                                        "JUb39",
+                                        "JUb39; tdcDel::cmR",
+                                        "JUb39; delAADC",
+                                        "JUb39; tdcDel::cmR delAADC"))) #%>% 
+  #mutate_if(is.numeric, function(.) {. * -1})
+
+plot <- format_SOS(SOSKO, day_correct = genotype) %>%
+  ggplot(aes(x = data_type)) +
+  geom_relLatency(fitted = fitted1,
+                  fillvar = food,
+                  dotvar = food,
+                  yvar = rel_log) +
+  scale_color_plot("grey-blue-light", drop = TRUE) +
+  scale_fill_plot("grey-blue-light", drop = TRUE) +
+  facet_grid(.~genotype+food) +
+  add.n('data_type', y.pos = -1.6) +
+  labs(x = "genotype",
+       y = "relative reversal latency [log(s)]") +
+  guides(colour = FALSE, fill = FALSE) +
+  coord_cartesian(ylim = c(-1.7,2)) +
+  theme(axis.text.x = element_blank())
+
+## for plotting non-relative bargraphs
+# fitted <- SOSKO %>%
+#   data_grid(food) %>%
+#   add_fitted_draws(stan_glm, re_formula = NA) %>%
+#   mutate(response.time = exp(.value), data_type = "fit")
+
+# plot <- SOSKO %>%
+# mutate(response.time = case_when(
+#     response.time < 1 ~ 1, 
+#     TRUE ~ response.time
+#   ),
+#   food = fct_relevel(food, "OP50")) %>%
+#   ggplot(aes(x = data_type, y = response.time)) +
+#   stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.6, alpha = 0.5) +
+#   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.75) +
+#   scale_color_plot("grey-blue-light", drop = TRUE) +
+#   scale_fill_plot("grey-blue-light", drop = TRUE) +
+#   facet_grid(.~genotype + food, 
+#              labeller = labeller(genotype = label_wrap_gen(10), 
+#                                  food = as_labeller(c("OP50" = "",
+#                                                     "JUb39" = "")))) +
+#   stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+#   add.n('data_type', y.pos = 0.9) +
+#   stat_pointinterval(aes(y=response.time, x = 1.4),
+#                      data = fitted, fatten_point = 0,
+#                      size_range = c(0.3, 1), colour = "darkgrey") +
+#   stat_summary(data = fitted,
+#                aes(y=response.time, x = 1.4),
+#                fun.y = median,
+#                fun.ymin = median,
+#                fun.ymax = median,
+#                geom = "crossbar",
+#                width = 0.05,
+#                lwd = 0.35,
+#                colour = "darkgrey") +
+#   labs(x = "genotype",
+#        y = "time to reversal (s)") +
+#   guides(colour = FALSE, fill = FALSE) +
+#   theme(axis.text.x = element_blank()) +
+#   scale_y_log10()
+
+plot
+
+
+lmer %>%
+  emmeans::ref_grid() %>%
+  emmeans::contrast(method = "pairwise", type = "response") %>%
+  broom::tidy() %>% 
+  mutate_if(is.numeric, ~ round(., 3)) %>% kable() %>% kable_styling(bootstrap_options = c("striped", "hover"))
+
+
+```
+

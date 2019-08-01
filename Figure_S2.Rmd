@@ -1,0 +1,82 @@
+---
+title: "Figure_ext2"
+author: "Mike O'Donnell"
+date: "6/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+library(patchwork)
+library(tidybayes)
+library(modelr)
+library(emmeans)
+library(magrittr)
+library(emmeans)
+library(rstanarm)
+```
+
+```{r tyrosine effects}
+tyrosine_data <- read_csv(here::here('extdata','Figure_S2_LTyr.csv')) %>%
+  mutate(food = fct_relevel(food, "OP50"),
+         cond = fct_relevel(cond, "off_food"),
+         data_type = "raw") #%>%
+  filter(date != "2019_01_14")
+
+stan_glm <- rstanarm::stan_lmer(tyrosine_data, 
+                      formula = log(response.time) ~ food*cond + (food | date) + (1|plateID),
+                      seed = 6994,
+                      cores = 4, 
+                      chains = 4)
+
+fitted <- tyrosine_data %>%
+  data_grid(food,cond) %>%
+  add_fitted_draws(stan_glm, re_formula = NA) %>%
+  mutate(response.time = exp(.value), data_type = "fit")
+
+ plot <- tyrosine_data %>%
+ mutate(response.time = case_when(
+    response.time < 1 ~ 1, 
+    TRUE ~ response.time
+  ))  %>%
+  ggplot(aes(x = data_type, y = response.time)) +
+  stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.6, alpha = 0.5) +
+  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.75) +
+  facet_grid(.~cond + food, 
+             labeller = labeller(genotype = label_wrap_gen(10), 
+                                 food = as_labeller(c("OP50" = "",
+                                                    "JUb39" = "")))) +
+   scale_color_plot(palette = "grey-blue", drop = TRUE) +
+   scale_fill_plot(palette = "grey-blue", drop = TRUE) +
+  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+  add.n('data_type', y.pos = 0.9) +
+  stat_pointinterval(aes(y=response.time, x = 1.5),
+                     data = fitted, fatten_point = 0,
+                     size_range = c(0.3, 1), colour = "darkgrey") +
+  stat_summary(data = fitted,
+               aes(y=response.time, x = 1.5),
+               fun.y = median,
+               fun.ymin = median,
+               fun.ymax = median,
+               geom = "crossbar",
+               width = 0.05,
+               lwd = 0.35,
+               colour = "darkgrey") +
+  labs(x = "genotype",
+       y = "time to reversal (s)") +
+  guides(colour = FALSE, fill = FALSE) +
+  theme(axis.text.x = element_blank()) +
+  scale_y_log10()
+
+# glmm was singular
+ glmm <- tyrosine_data %>% lme4::lmer(data = ., log(response.time) ~ food*cond + (1|plateID))
+
+ glmm %>% ref_grid() %>% emmeans::emmeans(pairwise ~ food | cond)
+ 
+ lm(data = tyrosine_data, log(response.time) ~ food*cond) %>% ref_grid() %>% emmeans::contrast(method = "pairwise")
+```
+

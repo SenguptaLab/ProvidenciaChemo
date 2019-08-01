@@ -1,5 +1,5 @@
 ---
-title: "Figure 1A"
+title: "Figure 1AB"
 author: "Mike O'Donnell"
 output:
   html_document:
@@ -60,7 +60,7 @@ plot2_nolegend <- plot2 + guides(color = FALSE)
 
 plot3 = hex_data %>% dplyr::filter(genotype == 'N2') %>%
   plot_ChemoIndex(xvar = strain, palette = "attract") +
-  guides(color = FALSE) +
+  #guides(color = FALSE) +
   labs(title = "1-hex (1:1000)") + figure.axes(no.x = TRUE)
 
 plot4 =  butanone_data %>% dplyr::filter(genotype == 'N2', user == "MOD") %>%
@@ -89,15 +89,16 @@ filepath <- here::here("extdata", "Figure1A_avoidance.csv")
 
 nonanone_data = read.csv(filepath) %>%
   filter(assay == "nonanone") %>%
-  format_AvoidData(day.correct = FALSE) %>%
+  format_AvoidData(day.correct = FALSE, min_p = 0.01) %>%
   mutate(strain = fct_relevel(strain, "DA1878", after = Inf))
 
 octanol_data = read.csv(filepath) %>%
   filter(assay == "oct") %>%
-  format_AvoidData(day.correct = "OP50") %>%
+  format_AvoidData(day.correct = "OP50", min_p = 0.01) %>%
   mutate(strain = fct_relevel(strain, "DA1878", after = Inf))
-
-
+         
+avoidData <- rbind(nonanone_data, octanol_data) %>% droplevels()
+                  
 nonanone_plot = nonanone_data %>% dplyr::filter(genotype == 'N2') %>%
   plot_ChemoIndex(xvar = strain, plot.pos = FALSE) +
   guides(color = FALSE) + labs(title = "nonanone") + figure.axes()
@@ -116,23 +117,41 @@ repellents
 ```{r stats and bayesian model}
 
 library(rstanarm)
-columns <- c("date", "assay", "strain", "plate", "nCue", "nControl", "CI")
+columns <- c("date", "assay", "strain", "plate", "nCue", "nControl", "CI", "logit.p")
 
 alldata <- rbind(select(attractData, columns),
                  select(octanol_data, columns),
                  select(nonanone_data, columns)) %>% 
-  mutate(assay = fct_relevel(assay, "oct"))
+  mutate(assay = fct_relevel(assay, "IAA")) %>% droplevels()
 
-glm.all <- lme4::glmer(alldata, formula = cbind(nCue,nControl) ~ strain * assay + (assay|date) + (1|plate),
-                       family = binomial)
 lm.all <- lm(alldata, formula = CI ~ strain * assay)
 
-contrasts <- lsmeans::ref.grid(lm.all, type = "response") %>% lsmeans::lsmeans(pairwise ~ strain | assay)
+lm.logit <- lm(data = filter(alldata, outlier.status == FALSE), formula = logit.p ~ strain * assay)
+
+#identify outliers using Cook's Distance:
+alldata <- flag_outliers(df = alldata, lin.mod = lm.logit)
+# 
+# lm.all <- lm(filter(alldata, outlier.status == FALSE), formula = CI ~ strain * assay)
+
+#fit mixed-effects regression on outlier-less data (doesn't converge)
+glm.all <- lme4::glmer(data = alldata, formula = cbind(nCue,nControl) ~ strain * assay + (1|plate),
+                       family = binomial)
+
+#takes a long time:
+#inf.glm2 <- influence.ME::influence(glm.all, "plate")
+#plot(inf.glm2, which = "cook", cutoff = 4/nrow(alldata), sort = TRUE, xlab = "Cook's Distance", ylab = "plate")
+
+#from cooksD, influential observations are removed:
+# inf_obs <- c("7_28_15.nonanone.15", "7_13_15.bz.5", "7_13_15.bz.4", "7_23_15.2−but.120", "7_23_15.bz.85", "8_10_15.oct.23", "7_27_15.1−hex.165", "7_27_15.diacetyl.207", "7_21_15.bz.36", "8_10_15.nonanone.42", "7_27_15.bz.154", "7_14_15.diacetyl.11", "7_27_15.bz.197", "7_28_15.nonanone.4", "7_28_15.oct.7", "7_23_15.1−hex.122", "7_27_15.2−but.164", "7_13_15.bz.3", "8_10_15.nonanone.40", "7_23_15.bz.147", "8_10_15.oct.34")
+
+#pairwise contrasts within assay type 
+contrasts <- emmeans::ref_grid(lm.all, type = "response") %>%
+  emmeans::emmeans(pairwise ~ strain | assay) #%>% emmeans::contrast("trt.vs.ctrl")
 contrasts <- contrasts$contrasts
-broom::tidy(contrasts) %>% dplyr::filter(p.value < 0.05 & level1 == "OP50 ")
+broom::tidy(contrasts) %>% dplyr::filter(p.value < 0.05 & level1 == "OP50")
 
 stan_all <- rstanarm::stan_glmer(data = mutate(alldata, assay = fct_relevel(assay, "IAA")), 
-                  formula = cbind(nCue,nControl) ~ strain * assay + (1 + assay | date) + (1|plate),
+                  formula = cbind(nCue,nControl) ~ strain * assay + (assay | date) + (1|plate),
                   chains = 6, cores = 4, seed = 2000,iter=6000,
                   family = binomial,
     control = list(adapt_delta=0.99))

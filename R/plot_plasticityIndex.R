@@ -19,15 +19,20 @@
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom magrittr "%<>%"
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot aes vars facet_grid stat_summary
 #' @export
 #' @examples data %>% plot_plasticityIndex()
 
-plot_plasticityIndex <- function(data,
+plot_plasticityIndex <- function(df,
                                  xvar = strain,
                                  dot_color = strain,
                                  palette = main,
                                  BayesFit = FALSE,
                                  width = 0.5,
+                                 alpha = 1,
+                                 bar = FALSE,
+                                 n_pos = -3,
                                  ...) {
 
   if(BayesFit) {
@@ -37,63 +42,78 @@ plot_plasticityIndex <- function(data,
   }
 
   colors <- quo_name(enquo(palette))
-  p <- ggplot(data, aes_string(x = xvar))
   width = width
 
   dot_color <- quo_name(enquo(dot_color))
 
-  if(dot_color == xvar) {
-    p <- p + ggbeeswarm::geom_quasirandom(aes_string(y = 'rel.Logit', colour = xvar), width = 0.1)
+
+  if (bar == TRUE) {
+    p <- ggplot(df, aes(x = .data[[xvar]])) +
+      stat_summary(geom = "bar", fun.y = mean, aes(fill = .data[[dot_color]], y = .data$rel.Logit), width = 0.5, alpha = alpha) +
+      stat_summary(geom = "errorbar", fun.data = mean_se, aes(y = .data$rel.Logit), width = 0.2)
   } else {
-    p <- p + ggbeeswarm::geom_quasirandom(aes_string(y = 'rel.Logit', colour = dot_color), width = 0.1)
+  p <- ggplot(df, aes(x = .data[[xvar]]))
   }
 
+  if(dot_color == xvar) {
+    p <- p + ggbeeswarm::geom_quasirandom(aes(y = .data$rel.Logit, colour = .data[[xvar]]), width = 0.1, alpha = alpha)
+  } else {
+    p <- p + ggbeeswarm::geom_quasirandom(aes(y = .data$rel.Logit, colour = .data[[dot_color]]), width = 0.1, alpha = alpha)
+  }
+
+  if(bar == TRUE) {
     p <- p + theme_classic() +
-    add.median('rel.Logit', width = width) +
-    add.quartiles('rel.Logit', width = 0.3*width) +
-    scale_x_discrete(drop = FALSE) +
-    add.n(!!xvar, y.pos = -3) +
-    labs(y = "plasticity index") #+
-    #figure.axes(no.x = FALSE)
+      scale_x_discrete(drop = FALSE) +
+      add.n(!!xvar, y.pos = n_pos) +
+      labs(y = "modulation index")
+  } else {
+    p <- p + theme_classic() +
+      add.mean('rel.Logit', width = width, colour = "red") +
+      add.quartiles('rel.Logit', width = 0.3*width) +
+      scale_x_discrete(drop = FALSE) +
+      add.n(!!xvar, y.pos = n_pos) +
+      labs(y = "modulation index")
+  }
+
 
     if(BayesFit == TRUE & fitted[1,"interval_type"] == "fitted_draws") {
       p +
-        stat_pointinterval(aes(y=rel.Logit, x = 1.2),
+        stat_pointinterval(aes(y=rel.Logit, x = 1.4),
                            data = fitted, fatten_point = 0,
-                           size_range = c(0.3, 1), colour = "grey") +
+                           size_range = c(0.3, 1), colour = "darkgrey") +
         stat_summary(data = fitted,
-                     aes(y=rel.Logit, x = 1.2),
+                     aes(y=rel.Logit, x = 1.4),
                      fun.y = median,
                      fun.ymin = median,
                      fun.ymax = median,
                      geom = "crossbar",
                      width = 0.05,
                      lwd = 0.35,
-                     colour = "grey")
+                     colour = "darkgrey")
     } else {
       if(BayesFit == TRUE & fitted[1,"interval_type"] == "HDI") {
         p + geom_crossbar(data = fitted,
-                          aes(x = 1.2,
+                          aes(x = 1.4,
                               y = median,
                               ymin = median,
                               ymax = median),
                           width = 0.05,
-                          colour = "grey") +
+                          colour = "darkgrey") +
           geom_pointrange(data = fitted,
-                        aes(x = 1.2,
+                        aes(x = 1.4,
                             y = median,
                             ymin = lower.2.5,
                             ymax = upper.97.5),
                             size = 0.5,
                         fatten = 0,
-                        color = "grey") +
+                        color = "darkgrey") +
           geom_pointrange(data = fitted,
-                          aes(x = 1.2,
+                          aes(x = 1.4,
                               y = median,
                               ymin = lower.17,
                               ymax = upper.83),
                           size = 1, fatten = 0,
-                          colour = "grey")
+                          colour = "darkgrey")
       } else {
       p
       }

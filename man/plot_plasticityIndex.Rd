@@ -4,12 +4,11 @@
 \alias{plot_plasticityIndex}
 \title{plot_plasticityIndex}
 \usage{
-plot_plasticityIndex(data, xvar = strain, dot_color = strain,
-  palette = main, BayesFit = FALSE, width = 0.5, ...)
+plot_plasticityIndex(df, xvar = strain, dot_color = strain,
+  palette = main, BayesFit = FALSE, width = 0.5, alpha = 1,
+  bar = FALSE, n_pos = -3, ...)
 }
 \arguments{
-\item{data}{dataset used to plot, must be proportion data}
-
 \item{xvar}{x-axis before facetting. This should be the variable that will
 divide the nearest data categories. Usually this is "strain" - the food source.}
 
@@ -24,6 +23,8 @@ recenter_fittedValues() function. If using this, the xvar is locked to
 orienting of the data needs to be done by facetting.}
 
 \item{width}{width of horizontal elements, median, error bars.}
+
+\item{data}{dataset used to plot, must be proportion data}
 }
 \description{
 This function is used to plot a modulation, ie a relative change in

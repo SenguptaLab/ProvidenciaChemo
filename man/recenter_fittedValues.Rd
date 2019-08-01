@@ -4,7 +4,7 @@
 \alias{recenter_fittedValues}
 \title{recenter_fittedValues}
 \usage{
-recenter_fittedValues(data, model, day.correct = day.correct,
+recenter_fittedValues(data, model, day.correct = FALSE,
   transform = "logit", BayesFit = "fitted_draws", ...)
 }
 \description{

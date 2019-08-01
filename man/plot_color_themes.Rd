@@ -10,7 +10,7 @@
 \alias{scale_color_plot}
 \alias{scale_fill_plot}
 \title{plot_color_themes}
-\format{An object of class \code{character} of length 8.}
+\format{An object of class \code{character} of length 9.}
 \usage{
 plotColors
 
