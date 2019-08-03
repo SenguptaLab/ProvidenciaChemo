@@ -1,0 +1,29 @@
+---
+title: Modulation of sensory behavior and food choice by an enteric bacteria-produced
+  neurotransmitter
+author: Michael P. O’Donnell^[1,3], Bennett Fox^[2],Pin-Hao Chao^[1], Frank Schroeder^[2],
+  and Piali Sengupta^[1,3]
+date: "8/2/2019"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: 1
+    number_sections: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Title
+
+^[1]Department of Biology 
+Brandeis University
+Waltham, MA 02454
+
+^[2]Boyce Thompson Institute and Department of Chemistry and Chemical Biology
+Cornell University
+Ithaca, NY 14850
+
+^[3]Corresponding authors: M.O’D: mikeod@brandeis.edu; PS: sengupta@brandeis.edu
+
+Running title: Sensory neuromodulation by an enteric bacteria-produced neurotransmitter

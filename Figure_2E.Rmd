@@ -116,7 +116,7 @@ plot <- amine_data %>%
 
 gt <- ggplot_gtable(ggplot_build(plot))
 gt$widths[c(8,12,16,20)] = 5*gt$widths[c(8,12,16,20)]
-gt$widths[c(6,10,14,18,18)] = .3*gt$widths[c(6,10,14,16,18)]
+gt$widths[c(6,10,14,16,18)] = .3*gt$widths[c(6,10,14,16,18)]
 grid::grid.draw(gt)
 
 # F-test for interaction term using loci as predictors:

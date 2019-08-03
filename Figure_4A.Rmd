@@ -2,7 +2,9 @@
 title: "Figure 4A "
 author: "Mike O'Donnell"
 date: "6/19/2018"
-output: html_document
+output: 
+  html_document:
+      code_folding: hide
 ---
 
 
@@ -65,6 +67,40 @@ fitted <- receptors %>%
   add_fitted_draws(stan_mod, re_formula = NA) %>%
   mutate(response.time = exp(.value), data_type = "fit")
 
+fitted1 <- emmeans(stan_mod, pairwise ~ (food | genotype))$contrasts %>% 
+  coda::as.mcmc() %>% 
+  bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
+  mutate(genotype = levels(receptors$genotype),
+         data_type = "fit",
+         food = "JUb39") %>%
+  mutate(food = factor(food, levels = c("OP50", "JUb39")),
+         genotype = fct_relevel(genotype, c("N2", "tdc-1", "tbh-1"))) %>% 
+  mutate_if(is.numeric, funs(. * -1))
+
+#--------relative effect plot (log)
+
+plot <- receptors %>%
+  format_SOS(., day_correct = genotype) %>%
+  ggplot(aes(x = data_type)) +
+  #geom_hline(yintercept = 0, linetype = "dashed", colour = "grey") +
+  geom_relLatency(fitted = fitted1,
+                  fillvar = food,
+                  dotvar = food,
+                  yvar = rel_log) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  scale_fill_plot("grey-blue", drop = TRUE) +
+  facet_grid(.~genotype+food) +
+  add.n('data_type', y.pos = -1.6) +
+  labs(x = "genotype",
+       y = "relative reversal latency [log(s)]") +
+  guides(colour = FALSE) +
+  theme(axis.text.x = element_blank())
+
+gt <- ggplot_gtable(ggplot_build(plot))
+gt$widths[c(8,12,16,20,24)] = 5*gt$widths[c(8,12,16,20,24)]
+gt$widths[c(6,10,14,18,22)] = .3*gt$widths[c(6,10,14,18,22)]
+grid::grid.draw(gt)
+
 ```
 
 ```{r frequentist stats}
@@ -81,7 +117,7 @@ lmer_octr <- lme4::lmer(data = receptors %>% mutate(genotype = fct_relevel(genot
 lmer %>% emmeans(pairwise ~ food | genotype)
 lmer %>% emmeans(pairwise ~ genotype | food)
 
-#plot
+#b------------bar plot (raw data)
 plot <- receptors %>%
   mutate(response.time = case_when(
     response.time < 1 ~ 1, 
@@ -90,8 +126,9 @@ plot <- receptors %>%
   data_type = "raw",
   genotype = fct_relevel(genotype, c("N2", "tyra-2", "ser-3", "octr-1"))) %>%
   ggplot(aes(x = data_type, y = response.time)) +
-  stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.7, alpha = 0.5) +
-  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.75) +
+  #stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.7, alpha = 0.5) +
+  stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.7, alpha = 0.75) +
+  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.5, shape = 16) +
   scale_color_plot("grey-blue", drop = TRUE) +
   scale_fill_plot("grey-blue", drop = TRUE) +
   stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
