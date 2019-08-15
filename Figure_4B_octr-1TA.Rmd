@@ -112,6 +112,8 @@ plot <- TAGOF %>%
          fill = FALSE) +
   theme(axis.text.x = element_blank())
 
+plot
+
 
 #------------posterior draws for non-normalized data-------
 fitted <- TAGOF %>%

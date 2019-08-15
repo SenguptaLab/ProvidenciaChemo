@@ -33,28 +33,28 @@ new_data %>% ggplot(aes(x = data_type, y = logit_p)) +
   labs(y = "Providencia preference index") +
   guides(colour = FALSE, fill = FALSE)
 
-choice %>%
-  ggplot(aes(x = data_type, y = p)) +
-  ggbeeswarm::geom_quasirandom(aes(colour = strain), width = 0.2, alpha = 0.75) +
-  facet_grid(~test_bac + strain, scales = "free_x") +
-  scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
-  scale_color_plot("grey-blue-green", drop = TRUE) +
-  add.mean(p, colour = "red") +
-  add.quartiles(p) +
-  labs(y = "Providencia preference index") +
-    stat_pointinterval(aes(y=.value, x = 1.2),
-                       data = fitted, fatten_point = 0,
-                       size_range = c(0.3, 1), colour = "grey") +
-    stat_summary(data = fitted,
-                 aes(y=.value, x = 1.2),
-                 fun.y = median,
-                 fun.ymin = median,
-                 fun.ymax = median,
-                 geom = "crossbar",
-                 width = 0.05,
-                 lwd = 0.35,
-                 colour = "grey") +
-  guides(colour = FALSE) #+
+# choice %>%
+#   ggplot(aes(x = data_type, y = p)) +
+#   ggbeeswarm::geom_quasirandom(aes(colour = strain), width = 0.2, alpha = 0.75) +
+#   facet_grid(~test_bac + strain, scales = "free_x") +
+#   scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
+#   scale_color_plot("grey-blue-green", drop = TRUE) +
+#   add.mean(p, colour = "red") +
+#   add.quartiles(p) +
+#   labs(y = "Providencia preference index") +
+#     stat_pointinterval(aes(y=.value, x = 1.2),
+#                        data = fitted, fatten_point = 0,
+#                        size_range = c(0.3, 1), colour = "grey") +
+#     stat_summary(data = fitted,
+#                  aes(y=.value, x = 1.2),
+#                  fun.y = median,
+#                  fun.ymin = median,
+#                  fun.ymax = median,
+#                  geom = "crossbar",
+#                  width = 0.05,
+#                  lwd = 0.35,
+#                  colour = "grey") +
+#   guides(colour = FALSE) #+
   #scale_color_plot(palette = "2-Ps", drop = TRUE)
 
   plot <- choice %>%
@@ -111,7 +111,7 @@ glmm_mod2 <- lme4::glmer(data = choice %>%
 glmm_mod3 <- lme4::glmer(data = filter(choice, test_bac == "JUb39, 2KO") %>%
                            mutate(strain = fct_relevel(strain, "JUb39")),
                          cbind(N_Test, N_OP50) ~ strain + (1|plateID), family = binomial)
-  glmm_mod2 %>% emmeans::emmeans(~ strain | test_bac) %>% emmeans::contrast("trt.vs.ctrl")
+glmm_mod2 %>% emmeans::emmeans(~ strain | test_bac) %>% emmeans::contrast("trt.vs.ctrl")
 
 
 stan_mod <- rstanarm::stan_glmer(data = choice_noOutliers,

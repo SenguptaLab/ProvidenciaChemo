@@ -134,7 +134,9 @@ plot3 <- TAGOF %>%
     #geom_relLatency(fitted = fitted, yvar = log(response.time)) +
   facet_grid(.~food + cond) + coord_cartesian(ylim = c(-2,2)) +
   add.n(data_type, y.pos = -2) +
-  guides(fill = FALSE)
+  guides(fill = FALSE, colour = FALSE)
+
+plot3
 
 #-------------barplot------------
  # plot <- TAGOF %>%

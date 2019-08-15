@@ -35,8 +35,7 @@ supe_data <- read_csv(filepath) %>%
          data_type = "raw") %>% 
   mutate(group.id = interaction(strain, treatment),
          food = fct_relevel(strain, "OP50"),
-         treatment = fct_relevel(treatment, "none")) #,
-         feed_state = fct_relevel(feed_state, "fed")) %>% droplevels()
+         treatment = fct_relevel(treatment, "none")) %>% droplevels()
 
 #convergence errors with date random effect, left out of this model
 glmm <- lme4::glmer(data = supe_data, 
@@ -64,10 +63,10 @@ plot1 <- supe_data %>%
 #glm.contrasts <- emmeans::emmeans(glmm, pairwise ~ strain | treatment)
 emmeans::ref_grid(glmm) %>% emmeans::emmeans(., pairwise ~ treatment | strain ) %>%
   extract2(2) %>%
-  kableExtra::kable() %>% kable_styling(bootstrap_options = c("striped", "hover"))
+  kableExtra::kable() %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover"))
 
 emmeans::ref_grid(glmm) %>% emmeans::contrast(., method = "pairwise") %>%
-  broom::tidy() %>% kableExtra::kable() %>% kable_styling(bootstrap_options = c("striped", "hover"))
+  broom::tidy() %>% kableExtra::kable() %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover"))
  
   
 

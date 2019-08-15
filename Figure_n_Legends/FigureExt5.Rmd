@@ -1,0 +1,17 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='.6\\linewidth' }
+knitr::include_graphics("Figure_ext5_v5.pdf")
+```
+
+__Extended Data Fig. 5. Mutations in _Providencia_ TDC-encoding genes or _C. elegans_ _octr-1_ do not alter intestinal _Providencia_ numbers.__\
+Presence of mCherry-expressing bacteria in the posterior intestines of young adult wild-type or _octr-1_ mutant animals. Bars show proportion of animals with the indicated distribution of bacterial cells present in animals grown on shown bacteria. Numbers in parentheses indicate the number of animals. _P_-value is derived from an ordinal regression.

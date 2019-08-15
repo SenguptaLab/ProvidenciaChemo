@@ -1,0 +1,19 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='1\\linewidth' }
+knitr::include_graphics("Figure_4_vB8.pdf")
+```
+
+__Fig. 4. Modulation of octanol avoidance by _Providencia_ requires the OCTR-1 OA receptor in the ASH/ASI sensory neurons.__\
+__a-b)__ Reversal response latency of animals of the indicated genotypes grown on the shown bacteria in control conditions of NGM + 0.5% L-Tyr __(a)__ or supplemented with TA + 0.5% L-Tyr __(b)__ to 100% octanol using SOS assays. Each dot is the response time of a single worm. Y-axis is log~10~-scaled for these log-normal distributed data, and normalized to the indicated control group for each experimental day. Numbers in parentheses indicate the number of worms tested in assays over at least 3 independent days. Boxplot indicates median and quartiles, whiskers indicate the data range, excluding outliers. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals for the difference of means, respectively. _P_-values between indicated conditions are from a LMM with Tukey-type multivariate-t adjustment.\
+__c)__ (Left) Cartoon depicting assay setup of the short-range bacterial choice assay. (Right) Preference index of animals grown on the indicated bacteria for the test bacteria JUb39. Each dot represents one assay of at least 10 animals; assays were performed over at least 4 independent days. Y-axis is on log-odds (logit) scale. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values represent difference of means relative to JUb39-grown animals from a GLMM with Dunnett-type multivariate-t adjustment.\
+__d)__ Cartoon of working model. JUb39 colonizes the _C. elegans_ intestine and produces TA via the TyrDC and AdcA enzymes. TA is converted to OA by _C. elegans_ TBH-1 and acts via the ASH neuron-expressed OCTR-1 OA receptor to modulate octanol avoidance and food choice. 

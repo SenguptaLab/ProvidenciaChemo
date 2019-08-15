@@ -1,0 +1,17 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='.6\\linewidth' }
+knitr::include_graphics("Figure_ext3_vB3.pdf")
+```
+
+__Fig. S3. L-Tyr supplementation enhances octanol modulation.__\
+Reversal response times of animals of the indicated genotypes grown on the indicated bacteria in control conditions or supplemented with 0.5% L-Tyr to 100% octanol using SOS assays. Each dot is the response time of a single worm. Y-axis is log~10~-scaled for these log-normal distributed data, and normalized to the indicated control group for each experimental day. Numbers in parentheses indicate the number of worms tested in assays over at least 3 independent days. Boxplot indicates median and quartiles, whiskers indicate the data range, excluding outliers.  Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals for the difference of means, respectively. _P_-values indicating comparisons of means relative to the OP50 control for each conditions are from a LMM with Tukey-type multivariate-t adjustment. _P_-value in red indicates Wald F-statistic for the effect of L-Tyr supplementation on the magnitude of the JUb39 effect.
