@@ -1,0 +1,19 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='.87\\linewidth' }
+knitr::include_graphics("Figure_1v5.pdf")
+```
+
+__Fig. 1. _Providencia_ colonizes the _C. elegans_ intestine and modulates octanol avoidance behavior.__\
+__a-b)__ Long-range chemotaxis assays of _C. elegans_ grown on the indicated bacterial strains to attractive __(a)__ or aversive __(b)__ odors. Chemotaxis index (CI) = (animals at the odorant – animals at the control)/total number of animals. Each dot indicates the CI from a single assay of approximately 100 animals. Positive and negative numbers indicate attraction and avoidance, respectively. Horizontal line is median; errors are 1st and 3rd quartiles. _P_-value indicated is from a binomial general linearized mixed-effects model (GLMM) with random intercepts for assay plate and date and with false discovery rate (FDR) for post-hoc comparisons. Numbers in parentheses indicate total number of assays.\
+__c-d)__ Modulation index of worms grown on the indicated bacterial strains __(c)__ or bacterial strains pre-treated with 200 \(\mu\)g/\(\mu\)L gentamicin for 2 hrs prior to plating __(d)__ in response to 100% octanol. Modulation index is defined as the log odds-ratio of the proportion of worms at octanol vs control of each condition relative to the OP50-grown condition per independent day. Modulation index values are shown on a log-odds (logit) scale and are normalized to the values of wild-type animals grown on OP50 for each day, indicated with a gray dashed line. Positive numbers indicate reduced octanol avoidance. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values between the indicated conditions are from a GLMM with Dunnett-type multivariate-t adjustment for __c__, and Tukey-type multivariate-t adjustment for __d__.\
+__e)__ Presence of mCherry-expressing bacteria in the posterior intestines of young adult animals indicated with micrographs (left) or quantified (right). Arrows in micrographs indicate intact rod-shaped cells, asterisk indicates diffuse intestinal fluorescence. Dashed line in micrographs indicate the intestinal boundary. Anterior is at left. Scale bar: 10 \(\mu\)m. Bars at right show proportion of animals with the indicated distribution of JUb39 cells present in animals that migrated to 100% octanol or the control in chemotaxis assays. Numbers in parentheses indicate the number of animals; 3 independent assays. _P_-value is derived from an ordinal regression. 

@@ -1,0 +1,45 @@
+---
+title: "2-nonanone SOS"
+author: "Mike O'Donnell"
+date: "4/28/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+theme_set(theme_my + theme(axis.text = element_text(size = 12)))
+```
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+filepath <- here::here("extdata/Nonanone_SOS.csv")
+
+SOS <- read_csv(filepath)
+
+#### 2-nonanone avoidance ####
+plot1 <- SOS %>% dplyr::filter(cond %in% c("Tyrosine"),
+                      cue == "nonanone_1.0",
+                      response.time < 20,
+                      genotype == "N2",
+                      food %in% c("OP50", "JUb39")) %>%
+  ggplot(aes(x = food, y = response.time)) +
+  ggbeeswarm::geom_quasirandom(width = 0.2, aes(colour = food)) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  scale_alpha_manual(values = c(0.3, 1)) +
+  add.median('response.time', colour = "red") +
+  add.quartiles('response.time') +
+  add.n(food) +
+  guides(colour = FALSE) +
+  #coord_cartesian(ylim = c(0,20)) + 
+  labs(x = "food",
+       y = "time to reversal (s)",
+       title = "2-nonanone avoidance")
+
+plot1
+
+```

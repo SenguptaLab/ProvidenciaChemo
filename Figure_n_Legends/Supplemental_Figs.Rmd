@@ -1,0 +1,51 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r FigureS1, echo = FALSE, message=FALSE, fig.align='center', out.width='1\\linewidth' }
+knitr::include_graphics("Figure_ext1_v4.pdf")
+```
+
+__Fig. S1. Octanol modulation by _Providencia_ requires ingestion of bacteria and is not mediated by nutritive cues.__\
+__a)__ Osmotic ring avoidance assays. Each dot represents one assay of 10 animals. Numbers in parentheses indicate the number of assays over at least 3 independent days. Y-axis is proportion of animals leaving an osmotic ring barrier of 8M glycerol after 10 minutes. _P_-value represents difference of means relative to JUb39-grown animals from a GLMM. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively.\
+__b)__ Isolation of nematode-associated bacteria. Nematodes were isolated from residential compost in Massachusetts. Worms were allowed to crawl onto NGM plates from which they were picked to clean plates. Resulting bacterial colonies were isolated, grown on LB media and characterized via 16S rRNA sequencing.\
+__c)__ Expression of a _tph-1p::gfp_ fluorescent reporter in indicated head neurons of young adult animals grown on either OP50 or JUb39. Each dot is the mean fluorescence of the soma of one neuron. Horizontal bar is mean; errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values are from two-way ANOVA.\
+__d-e)__ Modulation index of worms grown on the indicated bacterial strains, under the shown conditions. Animals were exposed to the indicated bacteria on the plate lid __(d)__ for one generation, or to NGM control or bacteria-conditioned NGM __(e)__ for 2 hours prior to the assay. Each dot represents results from one chemotaxis assay with approximately 100 animals each. Values are shown on a log-odds (logit) scale and are normalized to the values of wild-type animals grown on OP50 for each day, indicated with a gray dashed line. Positive numbers indicate reduced avoidance of octanol. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values between the indicated conditions are post-hoc comparisons from a GLMM, with Tukey-type multivariate-t adjustment for __e__. 
+
+```{r FigureS2, echo = FALSE, message=FALSE, fig.align='center', out.width='.8\\linewidth' }
+knitr::include_graphics("Figure_ext2_v1.pdf")
+```
+
+__Fig. S2. Structure of succinyl-TA.__\
+High-resolution MS/MS spectrum of succinyl-TA in negative ionization mode. Structures of major MS/MS fragmentations are denoted by dashed lines.
+
+
+```{r FigureS3, echo = FALSE, message=FALSE, fig.align='center', out.width='.4\\linewidth' }
+knitr::include_graphics("Figure_ext3_vB3.pdf")
+```
+
+__Fig. S3. L-Tyr supplementation enhances octanol modulation.__\
+Reversal response times of animals of the indicated genotypes grown on the indicated bacteria in control conditions or supplemented with 0.5% L-Tyr to 100% octanol using SOS assays. Each dot is the response time of a single worm. Y-axis is log~10~-scaled for these log-normal distributed data, and normalized to the indicated control group for each experimental day. Numbers in parentheses indicate the number of worms tested in assays over at least 3 independent days. Boxplot indicates median and quartiles, whiskers indicate the data range, excluding outliers.  Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals for the difference of means, respectively. _P_-values indicating comparisons of means relative to the OP50 control for each conditions are from a LMM with Tukey-type multivariate-t adjustment. _P_-value in red indicates Wald F-statistic for the effect of L-Tyr supplementation on the magnitude of the JUb39 effect.
+
+```{r FigureS4, echo = FALSE, message=FALSE, fig.align='center', out.width='.95\\linewidth' }
+knitr::include_graphics("Figure_ext4_v2.pdf")
+```
+
+__Fig. S4. Phylogenetic analysis of group II decarboxylase genes in _Gammaproteobacteria_.__\
+__a)__ Neighbor-joining unrooted tree based on sequences identified via a BLAST search using _Enterococcus faecalis_ TyrDC and _C. elegans_ TDC-1. Initial tree indicates 3 major groups. Representative enzymes and operon structures for each group are indicated by colored boxes.\
+__b)__ Bootstrapped maximum likelihood phylogeny using PhyML and Phylomizer pipeline. Maximum of two highly similar sequences per genus were included after each BLAST search. Genera are indicated to the right. Numbers on branch-points matching this tree out of 100 bootstrap replicates are indicated at values >60. Group representatives from __(a)__ are indicated in corresponding colors. _Providencia_ and _C. elegans_ sequences discussed in this work are indicated in bold. Accession numbers and BLAST metrics are listed in Extended Data Table 1.
+
+```{r FigureS5, echo = FALSE, message=FALSE, fig.align='center', out.width='.6\\linewidth' }
+knitr::include_graphics("Figure_ext5_v5.pdf")
+```
+
+__Fig. S5. Mutations in _Providencia_ TDC-encoding genes or _C. elegans_ _octr-1_ do not alter intestinal _Providencia_ numbers.__\
+Presence of mCherry-expressing bacteria in the posterior intestines of young adult wild-type or _octr-1_ mutant animals. Bars show proportion of animals with the indicated distribution of bacterial cells present in animals grown on shown bacteria. Numbers in parentheses indicate the number of animals. _P_-value is derived from an ordinal regression.
+

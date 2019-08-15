@@ -1,0 +1,18 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r FigureS4, echo = FALSE, message=FALSE, fig.align='center', out.width='.95\\linewidth' }
+knitr::include_graphics("Figure_ext4_v2.pdf")
+```
+
+__Fig. S4. Phylogenetic analysis of group II decarboxylase genes in _Gammaproteobacteria_.__\
+__a)__ Neighbor-joining unrooted tree based on sequences identified via a BLAST search using _Enterococcus faecalis_ TyrDC and _C. elegans_ TDC-1. Initial tree indicates 3 major groups. Representative enzymes and operon structures for each group are indicated by colored boxes.\
+__b)__ Bootstrapped maximum likelihood phylogeny using PhyML and Phylomizer pipeline. Maximum of two highly similar sequences per genus were included after each BLAST search. Genera are indicated to the right. Numbers on branch-points matching this tree out of 100 bootstrap replicates are indicated at values >60. Group representatives from __(a)__ are indicated in corresponding colors. _Providencia_ and _C. elegans_ sequences discussed in this work are indicated in bold. Accession numbers and BLAST metrics are listed in Extended Data Table 1.

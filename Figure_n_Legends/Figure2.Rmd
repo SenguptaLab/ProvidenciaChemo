@@ -1,0 +1,20 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='1\\linewidth' }
+knitr::include_graphics("Figure_2vB6.pdf")
+```
+
+__Fig. 2. _Providencia_ produces TA which compensates for loss of _C. elegans tdc-1_.__\
+__a)__ Biosynthesis pathway of TA and OA from L-Tyr in _C. elegans_^23^.\
+__b)__ Modulation index of worms of the indicated genotypes grown on OP50 or JUb39 in response to 100% octanol. Each dot represents results from one chemotaxis assay with approximately 100 animals each. Values are shown on the log-odds (logit) scale and are normalized to the values of animals of the corresponding genotypes grown on OP50 for each day, indicated with gray dashed lines. Positive numbers indicate reduced avoidance of octanol. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values between the indicated conditions are from a GLMM with Dunnett-type multivariate-t adjustment. _P_-value in red indicates Wald z-statistic for the magnitude of the JUb39 effect in _tbh-1_ compared to wild-type.\
+__c, e)__ Reversal response latency of animals of the indicated genotypes grown on OP50 or JUb39 on NGM __(c)__ or NGM + 0.5% L-Tyr __(e)__ in response to 30% octanol __(c)__ or 100% octanol __(e)__ in SOS assays. Each dot is the response time of a single animal. The Y-axis is log~10~-scaled for these log-normal distributed data, and normalized to the indicated control group for each experimental day. Numbers in parentheses indicate the number of worms tested in assays over at least 3 independent days. Boxplot indicates median and quartiles, whiskers indicate the data range, excluding outliers. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals for the difference of means, respectively. _P_-values between the indicated conditions are from a linear-mixed effects regression on log-transformed data (LMM). _P_-value in red __(e)__ indicates Wald F-statistic for the effect of the indicated genotypes on the magnitude of the JUb39 effect.\
+__d)__ Quantification of succinyl-TA in wild-type and _tdc-1_ mutant animals grown on either OP50 or JUb39. Data are averaged from three independent replicates each. ND, not detected. _P_-values are from two-way ANOVA. 
+

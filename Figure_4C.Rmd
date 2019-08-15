@@ -1,0 +1,99 @@
+---
+title: "Figure_4C_bacChoice"
+author: Michael P. O’Donnell^[1,3], Bennett Fox^[2],Pin-Hao Chao^[1], Frank Schroeder^[2],
+  and Piali Sengupta^[1,3]
+date: "8/14/2019"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(rstanarm)
+library(tidybayes)
+library(modelr)
+library(tidyverse)
+library(emmeans)
+```
+
+```{r food choice data input}
+library(rstanarm)
+library(tidybayes)
+library(modelr)
+
+
+choice <- read_csv(here::here("extdata/Figure_4C_choice.csv")) %>%
+  mutate(food = fct_relevel(food, c("OP50","JUb39")),
+    index = (N_Test - N_OP50) / (N_Test + N_OP50), plateID = factor(seq(1:nrow(.))),
+    p = N_Test / (N_Test + N_OP50),
+    logit_p = boot::logit(p),
+    strain = food,
+    data_type = "raw")
+
+#singular fit#
+glmm_mod1 <- lme4::glmer(data = choice %>%
+                           mutate(strain = fct_relevel(strain, "JUb39")),
+                         cbind(N_Test, N_OP50) ~ strain + (1|date) + (1|plateID), family = binomial) #%>%
+
+glmm_mod2 <- lme4::glmer(data = choice %>%
+                           mutate(strain = fct_relevel(strain, "JUb39")),
+                         cbind(N_Test, N_OP50) ~ strain + (1|plateID), family = binomial) #%>%
+
+#------------bayesian mod------------
+stan_mod <- rstanarm::stan_glmer(data = choice,
+                     cbind(N_Test, N_OP50) ~ strain + (1|plateID) + (strain|date),
+                     family = binomial,
+                     cores = 6,
+                     chains = 6,
+                     adapt_delta = 0.99)
+
+fitted <- choice %>%
+  data_grid(strain, test_bac) %>%
+  add_fitted_draws(stan_mod, re_formula = NA) %>%
+  mutate(logit_p = boot::logit(.value), data_type = "fit")
+
+```
+
+```{r}
+plot <- choice %>%
+    ggplot(aes(x = data_type, y = logit_p)) +
+    geom_bardots(fillvar = strain, dotvar = strain) +
+    facet_grid(. ~ strain) +
+    scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
+    labs(y = "Test bacteria preference (log-odds)") +
+  guides(colour = FALSE) +
+  scale_color_plot(palette = "grey-blue-green", drop = TRUE) +
+    scale_fill_plot(palette = "grey-blue-green", drop = TRUE) +
+    stat_pointinterval(aes(y=logit_p, x = 1.4),
+                       data = fitted, fatten_point = 0,
+                       size_range = c(0.3, 1), colour = "grey") +
+    stat_summary(data = fitted,
+                 aes(y=logit_p, x = 1.4),
+                 fun.y = median,
+                 fun.ymin = median,
+                 fun.ymax = median,
+                 geom = "crossbar",
+                 width = 0.05,
+                 alpha = 0.75,
+                 lwd = 0.35,
+                 colour = "darkgrey") +
+    guides(fill = FALSE) +
+    #figure.axes() +
+    add.n(data_type)
+
+plot
+
+
+#move down#
+stan_mod %>% emmeans::emmeans(~ strain) %>% emmeans::contrast(method = "pairwise") %>%
+  coda::as.mcmc() %>% bayesplot::mcmc_intervals()
+
+
+glmm_mod2 %>% emmeans::emmeans(~ strain) %>% emmeans::contrast("trt.vs.ctrl")
+
+```
+

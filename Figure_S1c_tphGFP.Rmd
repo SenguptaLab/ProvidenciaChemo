@@ -2,7 +2,9 @@
 title: "Figure_S1c"
 author: "Mike O'Donnell"
 date: "6/11/2019"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
 
 ```{r setup}
@@ -22,26 +24,41 @@ library(kableExtra)
 library(patchwork)
 theme_set(theme_my)
 
-tph1GFP <- read.csv(here::here('data/tph-1GFP.csv')) %>%
-  filter(mean < 4095) %>%
-  mutate(food = fct_relevel(food, "OP50"),
-         data_type = "raw")
+tph1GFP <- read.csv(here::here('extdata/Figure_S1C_tph1GFP.csv')) %>%
+  mutate(food = fct_relevel(food, "OP50"))
 
 lm(tph1GFP, formula = mean ~ neuron * food) %>% summary()
 
-stan_mod <- rstanarm::stan_glm(data = tph1GFP,
-                    formula = mean ~ neuron * food,
-                    cores = 4, 
-                    chains = 4)
+# stan_mod <- rstanarm::stan_glm(data = tph1GFP,
+#                     formula = mean ~ 0 + neuron * food,
+#                     cores = 4, 
+#                     chains = 4)
+# 
+# fitted <- tph1GFP %>% data_grid(neuron, food) %>%
+#   add_fitted_draws(stan_mod) %>%
+#   mutate(mean = .value, data_type = "fit")
+
+
+#using brms instead to model unequal varience between neurons
+brms_uneq <- brms::brm(
+  brms::bf(mean ~ (0 + neuron) * food, sigma ~ 0 + neuron), 
+  data = tph1GFP,
+  prior = c(brms::set_prior("normal(1500, 1000)", class = "b"),
+            brms::set_prior("cauchy(0, 1)", class = "b", dpar = "sigma")),
+  chains = 4, 
+  seed = 3242,
+  file = "brms_uneq"
+)
 
 fitted <- tph1GFP %>% data_grid(neuron, food) %>%
-  add_fitted_draws(stan_mod) %>%
+  add_fitted_draws(brms_uneq) %>%
   mutate(mean = .value, data_type = "fit")
+
 
 plot <- tph1GFP %>% ggplot(aes(x = data_type, y = mean)) +
   ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.75) +
   scale_color_plot(palette = "grey-blue", drop = TRUE) +
-  facet_grid(neuron~food, scales = "free_y") +
+  facet_grid(.~neuron + food, scales = "free_y") +
   add.mean(mean, colour = "red", width =0.2) +
   stat_summary(geom = "errorbar",
                fun.data = mean_se,
@@ -58,6 +75,8 @@ plot <- tph1GFP %>% ggplot(aes(x = data_type, y = mean)) +
                width = 0.05,
                lwd = 0.35,
                colour = "darkgrey")
+
+plot
 
 ```
 

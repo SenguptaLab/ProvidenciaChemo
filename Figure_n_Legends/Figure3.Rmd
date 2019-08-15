@@ -1,0 +1,21 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='.9\\linewidth' }
+knitr::include_graphics("Figure_3vB7.pdf")
+```
+
+__Fig. 3. Two amino acid decarboxylase enzymes encoded by the _Providencia_ genome act redundantly to modulate octanol avoidance.__\
+__a)__ Cartoons depicting the _tyrDC_ locus (top) in _Lactobacillales_ (left) and JUb39 (right) and the _adcA_ locus (bottom) in _Morganella_ (left) and JUb39 (right).\
+__b)__ Presence of _tyrDC_ and _adcA_ among complete genomes in _Gammaproteobacteria_. Linked boxes indicate organization in an operon. Hatched shading indicates variable presence among genera. Colored triangles indicate taxa of interest.\
+__c)__ Presence of _tyrDC_, _adcA_, _E.coli_-type _tyrP_ and _Morganella_-type _tyt-1_ at the family and genus level among _Enterobacteriales_. Linked boxes indicate organization in an operon.\
+__d)__ Homology-based model of the TyrDC catalytic domain in _Providencia_ based on the _Lb_-TyrDC crystal structure^34^ using SWISS-MODEL (https://swissmodel.expasy.org). Residues in magenta, green and yellow are from _Lb_-TyrDC, JUb39-TyrDC, and JUb39-AdcA, respectively. PLP is depicted in red and L-Tyr (manually docked for illustration) is indicated in light blue. Position of A600/S586^34^ in JUb39 TyrDC and _Lb_-TyrDC are indicated.\
+__e, g)__ Reversal response latency of animals of wild-type _C. elegans_ grown on the indicated bacterial genotypes in either control conditions of NGM + 0.5% L-Tyr __(e)__ or supplemented with the indicated concentrations of TA __(g)__ to 100% octanol using SOS assays. Each dot is the response time of a single worm. Y-axis is log~10~-scaled for these log-normal distributed data, and normalized to the indicated control group for each experimental day, indicated by the gray horizontal line. Numbers in parentheses indicate the number of worms tested in assays over at least 3 independent days. Boxplot indicates median and quartiles, whiskers indicate the data range, excluding outliers. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals for the difference of means, respectively. _P_-values between indicated conditions are from a LMM with Tukey-type multivariate-t adjustment.\
+__f)__ Quantification of succinyl-TA in _tdc-1_ mutant animals grown on the indicated bacterial strains. OP50 and JUb39 data are repeated from Fig. 2d. Data are averaged from three independent replicates each. ND, not detected. 

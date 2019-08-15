@@ -1,0 +1,20 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='1\\linewidth' }
+knitr::include_graphics("Figure_ext1_v4.pdf")
+```
+
+__Fig. S1. Octanol modulation by _Providencia_ requires ingestion of bacteria and is not mediated by nutritive cues.__\
+__a)__ Osmotic ring avoidance assays. Each dot represents one assay of 10 animals. Numbers in parentheses indicate the number of assays over at least 3 independent days. Y-axis is proportion of animals leaving an osmotic ring barrier of 8M glycerol after 10 minutes. _P_-value represents difference of means relative to JUb39-grown animals from a GLMM. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively.\
+__b)__ Isolation of nematode-associated bacteria. Nematodes were isolated from residential compost in Massachusetts. Worms were allowed to crawl onto NGM plates from which they were picked to clean plates. Resulting bacterial colonies were isolated, grown on LB media and characterized via 16S rRNA sequencing.\
+__c)__ Expression of a _tph-1p::gfp_ fluorescent reporter in indicated head neurons of young adult animals grown on either OP50 or JUb39. Each dot is the mean fluorescence of the soma of one neuron. Horizontal bar is mean; errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values are from two-way ANOVA.\
+__d-e)__ Modulation index of worms grown on the indicated bacterial strains, under the shown conditions. Animals were exposed to the indicated bacteria on the plate lid __(d)__ for one generation, or to NGM control or bacteria-conditioned NGM __(e)__ for 2 hours prior to the assay. Each dot represents results from one chemotaxis assay with approximately 100 animals each. Values are shown on a log-odds (logit) scale and are normalized to the values of wild-type animals grown on OP50 for each day, indicated with a gray dashed line. Positive numbers indicate reduced avoidance of octanol. Errors are SEM. Gray thin and thick vertical bars at right indicate Bayesian 95% and 66% credible intervals, respectively. _P_-values between the indicated conditions are post-hoc comparisons from a GLMM, with Tukey-type multivariate-t adjustment for __e__. 

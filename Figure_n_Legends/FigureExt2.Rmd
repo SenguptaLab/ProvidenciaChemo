@@ -1,0 +1,17 @@
+---
+title: ''
+geometry: margin=0.5cm
+output: pdf_document
+mainfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Figure2, echo = FALSE, message=FALSE, fig.align='center', out.width='.8\\linewidth' }
+knitr::include_graphics("Figure_ext2_v1.pdf")
+```
+
+__Fig. S2. Structure of succinyl-TA.__\
+High-resolution MS/MS spectrum of succinyl-TA in negative ionization mode. Structures of major MS/MS fragmentations are denoted by dashed lines.
