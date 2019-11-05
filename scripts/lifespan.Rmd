@@ -1,0 +1,86 @@
+---
+title: "survival_assay"
+author: "Mike O'Donnell"
+date: "08/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+theme_set(theme_classic())
+```
+
+```{r}
+print(getwd())
+survival <- read_csv('../data/lifespan.csv') %>%
+  mutate(prop_alive = alive / (alive + dead),
+         strain = fct_relevel(strain, c("OP50", "JUb39")))
+```
+
+
+```{r}
+nls_noFactor <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain != "PA14"), start = c(G = 0.00539, gamma = 0.3))
+
+nls_noFactor_PA14 <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = survival, start = c(G = 0.00539, gamma = 0.3))
+
+nls_OP50 <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain == "OP50"), start = c(G = 0.00539, gamma = 0.3))
+nls_JUb39 <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain == "JUb39"), start = c(G = 0.00539, gamma = 0.3))
+nls_PA14 <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain == "PA14"), start = c(G = 0.03, gamma = 0.9))
+
+lambda <- 2*((logLik(nls_OP50) + logLik(nls_JUb39)) - logLik(nls_noFactor))
+
+nls_Factor <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain != "PA14"), start = c(G = 0.00539, gamma = 0.3))
+
+nlme_OP50 <- nlme::nlme(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), 
+                        data = filter(survival, strain == "OP50"), start = c(G = 0.00539, gamma = 0.3),
+                        fixed = G + gamma ~ 1)
+
+
+model1cpt <- function(G,gamma,x) { 
+  D   <- 320
+  t   <-x[,1] 
+  ka  <-psi[id,1]
+  V   <-psi[id,2]
+  ke  <-psi[id,3]
+  fpred <-D*ka/(V*(ka-ke))*(exp(-ke*t)-exp(-ka*t))
+  return(fpred)
+}
+
+```
+
+
+```{r}
+
+ribbon.data <- survival %>%
+  filter(!is.na(prop_alive)) %>%
+  group_by(strain, day) %>%
+  summarize(mean_prop = mean(prop_alive, na.rm = TRUE),
+         min_prop = min(prop_alive, na.rm = TRUE),
+         max_prop = max(prop_alive, na.rm = TRUE))
+
+survival %>%
+  filter(!is.na(prop_alive)) %>%
+  ggplot(aes(x = day, y = prop_alive)) +
+  #geom_line(aes(colour = strain, group = interaction(strain, plate, group), , lty = strain), alpha = 0.1) +
+  geom_ribbon(data = ribbon.data, aes(fill = strain, y = mean_prop, ymin = min_prop, ymax = max_prop), alpha = 0.2) +
+  #geom_smooth(aes(group = strain, colour = strain), method = "loess") +
+  stat_summary(aes(group = strain), geom = "errorbar", fun.data = "mean_se", width = 0.1) +
+  stat_summary(aes(group = strain, colour = strain), geom = "point", fun.y = "mean") +
+  stat_summary(aes(group = strain, colour = strain, lty = strain), geom = "line", fun.y = "mean", alpha = 0.5) +
+  scale_color_plot(palette = "grey-blue-green", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue-green", drop = TRUE) +
+  scale_x_continuous(limits = c(1,28)) +
+  stat_function(fun = function(day = day, gamma = summary(nls_OP50)$coef[2], G = summary(nls_OP50)$coef[1]) {exp(-(G/gamma)*(exp(gamma * day) - 1))}, colour = "black", size =1.25) +
+  stat_function(fun = function(day = day, gamma = summary(nls_JUb39)$coef[2], G = summary(nls_JUb39)$coef[1]) {exp(-(G/gamma)*(exp(gamma * day) - 1))}, colour = "blue", size =1.25) +
+  stat_function(fun = function(day = day, gamma = summary(nls_PA14)$coef[2], G = summary(nls_PA14)$coef[1]) {exp(-(G/gamma)*(exp(gamma * day) - 1))}, colour = "darkgreen", size =1.25)
+  
+  
+  #stat_function(fun = S_t_plot)
+  
+```
+
+

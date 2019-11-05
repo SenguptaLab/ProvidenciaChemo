@@ -19,7 +19,8 @@ top_family <- wormpost %>%
   filter(n > 4)
 
 wormpost %>%
-  filter(My_Family %in% top_family$My_Family) %>%
+  filter(My_Family %in% top_family$My_Family,
+         !is.na(worm_strain)) %>%
   #group_by(worm_genotype, replicate, genus) %>%
   filter(!is.na(My_Family), !My_Family %in% c("Rhodotorula.yeast", "Trichosporonaceae")) %>%
   #tally() %>%
@@ -74,4 +75,5 @@ ampvis2::amp_ordinate(
   sample_colorframe_label = "SampleID",
   species_plotly = TRUE)
 
+ampvis2::amp_heatmap(data = myotutable, group_by = "type", tax_aggregate = "Family")
 
