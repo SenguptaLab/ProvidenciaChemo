@@ -1,0 +1,88 @@
+---
+title: "Figure_3E"
+author: "Mike O'Donnell"
+date: "5/30/2019"
+output: 
+  html_document:
+      code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+```
+
+```{r Ps tdcKO}
+library(tidyverse)
+library(emmeans)
+library(modelr)
+library(tidybayes)
+library(kableExtra)
+
+filepath <- here::here("extdata/Figure_3d_SOSJUKO.csv")
+
+SOSKO <- read_csv(filepath) %>%
+  mutate(food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC")))
+         
+         
+lmer <- SOSKO %>%
+    lme4::lmer(., formula = log10(response.time) ~ food  + (1|date) + (1|plateID))
+
+library(rstanarm)
+
+stan_glm <- SOSKO %>%
+  rstanarm::stan_lmer(., 
+                      formula = log(response.time) ~ food + (1 | date) + (1|plateID),
+                      cores = 4, 
+                      chains = 4,
+                      seed = 637,
+                      adapt_delta = 0.99)
+
+
+# get Bayesian cred intervals for differences between food
+fitted1 <- emmeans::ref_grid(stan_glm) %>%
+  emmeans::contrast("trt.vs.ctrl") %>%
+  coda::as.mcmc() %>% 
+  bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
+  mutate(data_type = "fit",
+         food = c("JUb39", 
+                  "JUb39; tdcDel::cmR",
+                  "JUb39; delAADC",
+                  "JUb39; tdcDel::cmR delAADC")) %>%
+  mutate(food = factor(food, levels = c("OP50", 
+                                        "JUb39",
+                                        "JUb39; tdcDel::cmR",
+                                        "JUb39; delAADC",
+                                        "JUb39; tdcDel::cmR delAADC"))) #%>% 
+  #mutate_if(is.numeric, function(.) {. * -1})
+
+plot <- format_SOS(SOSKO, day_correct = genotype) %>%
+  ggplot(aes(x = data_type)) +
+  geom_relLatency(fitted = fitted1,
+                  fillvar = food,
+                  dotvar = food,
+                  yvar = rel_log) +
+  scale_color_plot("grey-blue-light", drop = TRUE) +
+  scale_fill_plot("grey-blue-light", drop = TRUE) +
+  facet_grid(.~genotype+food) +
+  add.n('data_type', y.pos = -1.6) +
+  labs(x = "genotype",
+       y = "relative reversal latency [log(s)]") +
+  guides(colour = FALSE, fill = FALSE) +
+  coord_cartesian(ylim = c(-1.7,2)) +
+  theme(axis.text.x = element_blank())
+
+plot
+
+
+lmer %>%
+  emmeans::ref_grid() %>%
+  emmeans::contrast(method = "pairwise", type = "response") %>%
+  broom::tidy() %>% 
+  mutate_if(is.numeric, ~ round(., 3)) %>% kable() %>% kable_styling(bootstrap_options = c("striped", "hover"))
+
+
+```
+

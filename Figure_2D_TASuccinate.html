@@ -232,7 +232,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show)
+    if (show || $(this)[0].classList.contains('fold-show'))
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -346,7 +346,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -608,7 +607,7 @@ $(document).ready(function () {
 
 <pre class="r"><code>library(scales)
 
-TAsucc &lt;- read_csv('extdata/Figure_2B_3G_TAsucc.csv') %&gt;%
+TAsucc &lt;- read_csv('extdata/Figure_2d_3e_TAsucc.csv') %&gt;%
   filter(food %in% c(&quot;OP50&quot;, &quot;JUb39&quot;)) %&gt;%
   mutate(food = fct_relevel(food, c(&quot;OP50&quot;, &quot;JUb39&quot;)))
 

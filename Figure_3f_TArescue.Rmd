@@ -1,0 +1,183 @@
+---
+title: "Figure_3G"
+author: "Mike O'Donnell"
+date: "5/31/2019"
+output: 
+  html_document:
+      code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(rstanarm)
+library(tidybayes)
+library(modelr)
+library(tidyverse)
+library(estimate)
+library(emmeans)
+```
+
+```{r TA rescue}
+TAGOF <- readr::read_csv(here::here("extdata","Figure_3f_TArescue.csv")) %>%
+  mutate(cond = fct_relevel(cond, "Tyrosine", "Tyr+TA"),
+         food =fct_relevel(food, "OP50", "JUb39"),
+         group = interaction(cond, food),
+         TA = case_when(
+           cond == "Tyrosine" ~ 0,
+           cond == "Tyr+TA" ~ 4,
+           cond == "Tyr+10mM_TA" ~ 10
+         ),
+         data_type = "raw",
+         KO_data = case_when(
+           date %in% c("2019_03_19",
+                     "2019_04_17") & cond == "Tyrosine" ~ "repeated",
+           TRUE ~ "new")) %>% droplevels()
+
+# Bayesian Models -----------------------
+stan_glm <- rstanarm::stan_lmer(TAGOF, 
+                      formula = log(response.time) ~ food*cond + (food | date) + (1|plateID),
+                      seed = 6994,
+                      cores = 4, 
+                      chains = 4)
+
+stan_group_mod <- rstanarm::stan_lmer(TAGOF, 
+                      formula = log(response.time) ~ group + (food | date) + (1|plateID),
+                      seed = 6994,
+                      cores = 4, 
+                      chains = 4)
+
+#------Posterior parameter estimates
+means.95 <- estimate::estimate_means(stan_group_mod, ci = .95, transform = "none") %>% rename(m = Median, ll = CI_low, hh = CI_high)
+means.66 <- estimate::estimate_means(stan_group_mod, ci = .66, transform = "none") %>% rename(m = Median, l = CI_low, h = CI_high)
+fitted <- full_join(means.95, means.66) %>%
+  mutate(food = factor(c(
+    rep("OP50", 2),
+    rep("JUb39", 3),
+    rep("JUb39; tdcDel::cmR delAADC", 3)
+  ), levels = c("OP50", "JUb39", "JUb39; tdcDel::cmR delAADC")),
+  cond = factor(c(c("Tyrosine", "Tyr+TA"),
+           rep(c("Tyrosine", "Tyr+TA",  "Tyr+10mM_TA"), 2)),
+           levels = c("Tyrosine", "Tyr+TA",  "Tyr+10mM_TA")
+  ))
+
+# select 95 and 66% HDI contrasts between OP50 control and all other groups for plot
+#-----------------------------------------------
+contrasts.95 <- estimate::estimate_contrasts(stan_group_mod, ci = 0.95)[c(1,14,15,26,27),] %>%
+  mutate(food = c("OP50", rep("JUb39",2), rep("JUb39; tdcDel::cmR delAADC", 2)),
+         cond = c("Tyr+TA", rep(c("Tyr+TA",  "Tyr+10mM_TA"), 2))) %>%
+  select(food, cond, m = Median, ll = CI_low, hh = CI_high)
+contrasts.66 <- estimate::estimate_contrasts(stan_group_mod, ci = 0.66)[c(1,14,15,26,27),] %>%
+  mutate(food = c("OP50", rep("JUb39",2), rep("JUb39; tdcDel::cmR delAADC", 2)),
+         cond = c("Tyr+TA", rep(c("Tyr+TA",  "Tyr+10mM_TA"), 2))) %>%
+  select(food, cond, m = Median, l = CI_low, h = CI_high)
+fitted <- full_join(contrasts.95, contrasts.66) %>%
+  mutate(food = fct_relevel(food, c("OP50", "JUb39")),
+         cond = fct_relevel(cond, c("Tyrosine", "Tyr+TA",  "Tyr+10mM_TA"))) %>%
+         mutate_if(is.numeric,  function(.) {-1 * .})
+
+
+# fitted <- TAGOF %>%
+#   data_grid(food,cond) %>%
+#   add_fitted_draws(stan_glm, re_formula = NA) %>%
+#   mutate(response.time = exp(.value), data_type = "fit")
+
+#----normalize to Non-tyrosine control for each group to compare TA effect--------
+TAGOF <- TAGOF %>%
+  mutate(response.time = case_when(
+        response.time < 1 ~ 1,
+        TRUE ~ response.time)) %>%
+      group_by(cond, food, date) %>%
+      summarise(meanOP = mean(log(response.time))) %>%
+      filter(cond == "Tyrosine") %>%
+      ungroup() %>%
+      select(food, date, meanOP) %>%
+      full_join(., TAGOF) %>%
+      mutate(rel_log = log(response.time) - meanOP,
+             food = fct_relevel(food, "OP50"))
+
+plot3 <- TAGOF %>%
+  #filter(!(food == "JUb39" & cond == "Tyr+10mM_TA")) %>%
+   mutate(response.time = case_when(
+    response.time < 1 ~ 1, 
+    TRUE ~ response.time
+  )) %>%
+  ggplot(aes(x = data_type)) +
+  ggbeeswarm::geom_quasirandom(aes(colour = food,
+                                        y = rel_log),
+                                    width = 0.2,
+                                    alpha = 0.5,
+                                    shape = 16) +
+  geom_boxplot(aes(y = rel_log, fill = food),
+               alpha = 0.7,
+               outlier.shape = NA) +
+  geom_linerange(data = fitted,
+                      aes(x = 1.5,
+                          ymin = ll,
+                          ymax = hh),
+                      lwd = 0.35,
+                      colour = "grey34") +
+         geom_crossbar(data = fitted,
+                       aes(y = m,
+                           x = 1.5,
+                           ymin = l,
+                           ymax = h),
+                       width = 0.05,
+                       lwd = 0.35,
+                       alpha = 0.5,
+                       colour = "grey69",
+                       fill = "grey69") +
+  scale_fill_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
+    #geom_relLatency(fitted = fitted, yvar = log(response.time)) +
+  facet_grid(.~food + cond) + coord_cartesian(ylim = c(-2,2)) +
+  add.n(data_type, y.pos = -2) +
+  guides(fill = FALSE, colour = FALSE)
+
+plot3
+
+#-------------barplot------------
+ # plot <- TAGOF %>%
+ # mutate(response.time = case_when(
+ #    response.time < 1 ~ 1, 
+ #    TRUE ~ response.time
+ #  ))  %>%
+ #  ggplot(aes(x = data_type, y = response.time)) +
+ #  stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.6, alpha = 0.5) +
+ #  ggbeeswarm::geom_quasirandom(aes(colour = food, pch = KO_data), width = 0.2, alpha = 0.75) +
+ #  facet_grid(.~food + cond, 
+ #             labeller = labeller(genotype = label_wrap_gen(10), 
+ #                                 food = as_labeller(c("OP50" = "",
+ #                                                    "JUb39" = "")))) +
+ #   scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
+ #   scale_fill_plot(palette = "grey-blue-light", drop = TRUE) +
+ #  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+ #  add.n('data_type', y.pos = 0.9) +
+ #  stat_pointinterval(aes(y=response.time, x = 1.5),
+ #                     data = fitted, fatten_point = 0,
+ #                     size_range = c(0.3, 1), colour = "darkgrey") +
+ #  stat_summary(data = fitted,
+ #               aes(y=response.time, x = 1.5),
+ #               fun.y = median,
+ #               fun.ymin = median,
+ #               fun.ymax = median,
+ #               geom = "crossbar",
+ #               width = 0.05,
+ #               lwd = 0.35,
+ #               colour = "darkgrey") +
+ #  labs(x = "genotype",
+ #       y = "time to reversal (s)") +
+ #  guides(colour = FALSE, fill = FALSE) +
+ #  theme(axis.text.x = element_blank()) +
+ #  scale_y_log10()
+
+ #singular fit
+  TAGOF %>% lme4::lmer(data = ., log(response.time) ~ food*cond + (1|plateID) + (food|date))
+  #non-singular fit
+  TAGOF %>% lme4::lmer(data = ., log(response.time) ~ food*cond + (food|date)) %>% 
+  emmeans(~ cond | food) %>% contrast(method = "pairwise")
+  
+```
+

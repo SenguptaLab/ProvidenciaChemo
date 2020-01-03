@@ -1,0 +1,92 @@
+---
+title: "ExtFigs_4-6_quant"
+author: "Mike O'Donnell"
+date: "5/30/2019"
+output: 
+  html_document:
+      code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+library(scales)
+```
+
+```{r}
+metabolites <- read_csv('extdata/Figure_Ext4-6Quant_metabo.csv') %>%
+  mutate(bacterial_strain = stringr::str_wrap(bacterial_strain, width = 10),
+         bacterial_strain = fct_relevel(bacterial_strain, "OP50", "JUb39"),
+         mz604.1689 = case_when(
+           is.na(mz604.1689) ~ 0,
+           TRUE ~ mz604.1689
+         ))
+```
+
+```{r Ext4 mz499}
+
+mz499 <- filter(metabolites, sample_type == "worms") %>%
+  droplevels()
+
+plot1 <- mz499 %>% ggplot(aes(x = bacterial_strain, y = mz499.1474)) +
+  geom_bardots(fillvar = bacterial_strain, dotvar = bacterial_strain) +
+  facet_grid(.~worm_genotype) +
+  scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_y_continuous(labels = scientific) +
+  labs(x = "Bacterial strain",
+       y = "Compound m/z 499.1474 \n abundance (AUC)") +
+  guides(fill = FALSE,
+         color = FALSE)
+plot1
+
+lm.499 <- lm(data = mz499, mz499.1474 ~ worm_genotype * bacterial_strain)
+
+lm.499 %>% emmeans::emmeans(pairwise ~ bacterial_strain | worm_genotype) %>% summary()
+  
+```
+
+```{r Ext4 mz604}
+
+mz604 <- filter(metabolites, sample_type == "worms") %>%
+  droplevels()
+
+plot2 <- mz604 %>% ggplot(aes(x = bacterial_strain, y = mz604.1689)) +
+  geom_bardots(fillvar = bacterial_strain, dotvar = bacterial_strain) +
+  facet_grid(.~worm_genotype) +
+  scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_y_continuous(labels = scientific) +
+  labs(x = "Bacterial strain",
+       y = "Compound m/z mz604.1689 \n abundance (AUC)") +
+  guides(fill = FALSE,
+         color = FALSE)
+plot2
+
+lm.604 <- lm(data = mz604, mz604.1689 ~ bacterial_strain * worm_genotype)
+
+lm.604 %>% emmeans::emmeans(pairwise ~ bacterial_strain | worm_genotype) %>% summary()
+  
+```
+
+```{r Ext6 Succ-Serotonin}
+
+Serotonin <- filter(metabolites, condition == "NGM") %>%
+  droplevels()
+
+plot3 <- Serotonin %>% ggplot(aes(x = bacterial_strain, y = Succinyl_Serotonin)) +
+  geom_bardots(fillvar = bacterial_strain, dotvar = bacterial_strain) +
+  facet_grid(~worm_genotype) +
+  scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_y_continuous(labels = scientific) +
+  labs(x = "Bacterial strain",
+       y = "Succinyl-serotonin \n abundance (AUC)") +
+  guides(fill = FALSE,
+         color = FALSE)
+
+plot3
+```

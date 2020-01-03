@@ -1,0 +1,55 @@
+---
+title: "Figure_S5a_mCherry"
+author: "Mike O'Donnell"
+date: "6/12/2019"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+```
+
+```{r mcherry in Ps 2KO}
+
+mcherry <- read_csv(here::here('extdata',"Figure_Ext9_mCherry.csv")) %>% 
+  mutate(
+         cell_count = case_when(
+           n_cells_code == 0 ~ "none",
+           n_cells_code == 1 ~ "few (<10)",
+           TRUE ~ "many"
+         )) %>% mutate(
+           cell_count = fct_relevel(cell_count, "none"),
+           food = fct_relevel(food, "OP50", "JUb39"),
+           condition = interaction(genotype, food)
+         ) %>% droplevels()
+
+
+plot <- ggplot(mcherry,
+       aes(x=food, fill=fct_relevel(cell_count, "none"))) +
+  geom_bar(position='fill') +
+  facet_grid(.~ genotype, drop = TRUE)  + #, scales = "free_x") +
+  scale_fill_manual(values=c("#CCCCCC", "#CC6666", "#990000")) +
+  theme_my +
+  guides(fill=guide_legend(title="cell count"))
+
+
+plot
+
+#add n
+
+mcherry %>%
+ group_by(genotype, food, cell_count) %>% tally
+
+ord.regression <- MASS::polr(mcherry, formula = cell_count ~ condition)
+contrasts <- emmeans::emmeans(ord.regression, pairwise ~ condition)
+contrasts$contrasts %>% broom::tidy() %>% mutate(p.adjust = p.adjust(p.value, method = "bonf"))
+car::Anova(ord.regression) # for P(Chisq) outcome
+
+```
+

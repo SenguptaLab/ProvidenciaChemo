@@ -1,0 +1,101 @@
+---
+title: "egg-laying"
+author: "Mike O'Donnell"
+date: "19/10/2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+theme_set(theme_classic())
+```
+
+```{r}
+print(getwd())
+egl <- read_csv('extdata/Figure_Ext10_eggLaying.csv') %>%
+  mutate(strain = fct_relevel(food, c("OP50", "JUb39")),
+         food = fct_relevel(food, "OP50", "JUb39"),
+                              animal = interaction(genotype, group, food, animal_num))
+```
+
+```{r}
+counts <- egl %>%
+  group_by(genotype, food) %>%
+  summarize(grand_total = sum(number))
+
+egl_summary <- egl %>%
+  group_by(genotype, food, stage) %>%
+  summarize(total_eggs = sum(number)) %>%
+  full_join(., counts) %>%
+  mutate(prop_eggs = total_eggs / grand_total)
+
+counts_by_animal <- egl %>%
+  group_by(genotype, food, animal) %>%
+  summarize(grand_total = sum(number))
+
+egl_summary_by_animal <- egl %>%
+  group_by(genotype, food, stage, animal, group) %>%
+  summarize(total_eggs = sum(number)) %>%
+  full_join(., counts_by_animal) %>%
+  mutate(prop_eggs = total_eggs / grand_total) %>%
+  mutate(
+    egg_stage = case_when(
+      stage == "1-2" ~ "1-2",
+      TRUE ~ "4+"
+    ),
+    groupID = interaction(genotype, food)
+  )
+
+egl_summary_by_animal %>%
+  filter(stage == "1-2") %>%
+  lme4::glmer(data = ., 
+              cbind(total_eggs, (grand_total - total_eggs)) ~ groupID + (1|animal), 
+              family = binomial) %>%
+  emmeans::emmeans(~groupID) %>% emmeans::contrast(method = "pairwise")
+
+egl_summary_by_animal %>%
+  lme4::glmer(data = ., 
+              grand_total ~ groupID + (1|animal), 
+              family = poisson) %>%
+  emmeans::emmeans(~groupID) %>% emmeans::contrast(method = "pairwise")
+# 
+# p3 <- egl %>%
+#   group_by(genotype, food, animal) %>%
+#   summarize(n_eggs = sum(number)) %>%
+#   ggplot(aes(x = food, y = n_eggs)) +
+#   ggbeeswarm::geom_quasirandom(aes(colour = interaction(food, genotype)), width = 0.2) +
+#   stat_summary(aes(group = interaction(food, genotype)), geom = "errorbar", fun.data = "mean_se", width = 0.1) +
+#   stat_summary(aes(group = interaction(food, genotype)), 
+#                geom = "crossbar", 
+#                fun.ymin = "mean", 
+#                fun.ymax = "mean", 
+#                fun.y = "mean",
+#                width = 0.2) +
+#   scale_color_plot(palette = "2-each", 
+#                   drop = TRUE) +
+#   facet_grid(.~genotype, scales = "free_x") +
+#   guides(color = FALSE)
+
+p4 <- egl_summary_by_animal %>%
+  filter(egg_stage == "4+") %>%
+  ggplot(aes(x = groupID, y = prop_eggs)) +
+  geom_boxplot(aes(fill = groupID), outlier.shape = NA, alpha = 0.5) +
+  ggbeeswarm::geom_quasirandom(width = 0.2, aes(colour = groupID)) +
+  scale_fill_manual(values = c("#827E7E", "#B8B1B1", "#484CC7", "#2F8A34")) +
+  scale_colour_manual(values = c("#827E7E", "#B8B1B1", "#484CC7", "#2F8A34")) +
+labs(x = "condition", y = "proportion of eggs over 4-cell stage in utero")+
+  scale_size_continuous(limits = c(5,25)) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        panel.spacing = unit(2, "lines")) +
+  add.n(groupID)
+  
+
+library(patchwork)
+p4
+```
+
+

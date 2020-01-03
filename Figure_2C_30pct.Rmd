@@ -1,5 +1,5 @@
 ---
-title: "Figure_2E"
+title: "Figure_2c_30pct"
 author: "Mike O'Donnell"
 date: "5/31/2019"
 output: 
@@ -12,9 +12,49 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 library(ProvidenciaChemo)
+library(tidyverse)
 ```
 
-```{r amine data}
+
+```{r dataload}
+#### for 30% octanol ####
+SOS_30pct <- readr::read_csv(here::here("extdata","Figure_2C_30pct.csv")) %>%
+  dplyr::filter(response.time < 20,
+                date != "2019_04_29") %>%
+  mutate(plateID = interaction(date, genotype, food, cond, cue))
+
+
+SOS_30pct %>%
+  mutate(food = fct_relevel(food, c("OP50", "JUb39"))) %>%
+  dplyr::filter(
+  #                     response.time < 20,
+  #                     genotype %in% c("tdc-1", "N2"),
+                      # food %in% c("OP50", "JUb39")
+                      ) %>%
+  #                     date %in% c("2019_03_18", "2019_04_09", "2019_04_13", "2019_04_29")) %>%
+  ggplot(aes(x = genotype, y = response.time)) +
+  #geom_boxplot(outlier.shape =NA) +
+  #geom_point(pch = 21) +#, position = position_jitterdodge()) +
+  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  facet_grid(.~food) +
+  add.median('response.time', colour = "red") +
+  add.quartiles('response.time') +
+  theme_my +
+  add.n(genotype) +
+  labs(x = "food",
+       y = "time to reversal (s)")
+
+library(emmeans)
+SOS_30pct %>% 
+  dplyr::filter(food != "JUb39; tdcDel::cmR delAADC", date != "2019_04_29") %>% 
+  lme4::lmer(data = ., response.time ~ genotype * food + (1|plateID) + (1|date)) %>%
+  emmeans(pairwise ~ genotype| food)
+```
+
+
+
+```{r amine data, eval = FALSE}
 library(tidyverse)
 library(emmeans)
 library(modelr)
@@ -50,7 +90,7 @@ fitted1 <- emmeans(stan_mod, pairwise ~ (food | genotype))$contrasts %>%
 
 ```
 
-```{r frequentist stats}
+```{r frequentist stats, eval = FALSE}
 
 sjstats::equi_test(stan_mod)
 

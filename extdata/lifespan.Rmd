@@ -1,0 +1,280 @@
+---
+title: "survival_assay"
+author: "Mike O'Donnell"
+date: "08/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+theme_set(theme_classic())
+```
+
+```{r}
+print(getwd())
+survival <- read_csv('extdata/Figure_Ext1f_lifespan.csv') %>%
+  mutate(prop_alive = alive / (alive + dead),
+         strain = fct_relevel(strain, c("OP50", "JUb39")),
+         plateID = interaction(strain,group,plate),
+         groupID = interaction(strain,group))
+```
+
+
+```{r}
+G_f1 <- function(G, gamma, day) {
+  exp(-G*exp(gamma * day))
+}
+G_f2
+
+survival_OP50 <- filter(survival, strain == "OP50")
+survival_JUb39 <- filter(survival, strain == "JUb39")
+survival_PA14 <- filter(survival, strain == "PA14")
+
+nls_noFactor <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain != "PA14"), start = c(G = 0.00539, gamma = 0.3))
+
+nls_noFactor_PA14 <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = survival, start = c(G = 0.00539, gamma = 0.3))
+
+nls_OP50 <- nls(prop_alive ~ exp(-G*exp(gamma*day)), data = survival_OP50, start = c(G = 0.01, gamma = 0.3))
+nls_JUb39 <- nls(prop_alive ~ exp(-G*exp(gamma*day)), data = filter(survival, strain == "JUb39"), start = c(G = 0.01, gamma = 0.3))
+nls_PA14 <- nls(prop_alive ~ exp(-G*exp(gamma*day)), data = filter(survival, strain == "PA14"), start = c(G = .015, gamma = 1.2))
+
+lambda <- 2*((logLik(nls_OP50) + logLik(nls_JUb39)) - logLik(nls_noFactor))
+
+nls_Factor <- nls(prop_alive ~ exp(-(G/gamma)*(exp(gamma * day) - 1)), data = filter(survival, strain != "PA14"), start = c(G = 0.00539, gamma = 0.3))
+
+# parametric bootstrap to estimate octr-1 interaction effect:
+#lmer_add <- lme4::lmer(data = receptors_exp1, log(response.time) ~ food + genotype + (1|date) + (1|plateID))
+# lmer_boot <- lme4::bootMer(x=nls_OP50, FUN=fixef, re.form = NA, nsim=200)
+# boot::boot.ci(lmer_boot, index=7, type = "perc", conf = 0.95) # for srv-11 rescue
+# boot::boot.ci(lmer_boot, index=6, type = "perc", conf = 0.95) # for N2
+# boot::boot.ci(lmer_boot, index=8, type = "perc", conf = 0.95) # for srg-47 rescue
+nlstools::nlsBoot(nls_OP50, niter = 999)
+
+set.seed(2645)
+replicates <- 1000
+boots_OP50 <- rsample::bootstraps(survival_OP50, times = replicates)
+boots_JUb39 <- rsample::bootstraps(survival_JUb39, times = replicates)
+boots_PA14 <- rsample::bootstraps(survival_PA14, times = replicates)
+
+nls_Gompertz <- function(split, G = 0.01, gamma = 0.25, food = "OP50") {
+ nls(prop_alive ~ exp(-G*exp(gamma*day)), rsample::analysis(split), start = list(G = G, gamma = gamma))
+  #tibble(food = {{ food }}, prop_alive = predict(mod, newdata = tibble(day = seq(0,25))), day = seq(0,25)) 
+}
+
+
+
+boot_models_OP50 <- boots_OP50 %>%
+  mutate(strain = "OP50",
+    model = map(splits, nls_Gompertz),
+         coef_info = map(model, broom::tidy),
+         fitted_values = map(model, broom::augment, newdata = tibble(day = seq(1,25))),
+    median_survival = map(coef_info, function(x) {log(-log(0.5)/x[1,2])/x[2,2]})) #use inverse Gompertz to calc median survival 
+
+boot_models_JUb39 <- boots_JUb39 %>%
+  mutate(strain = "JUb39",
+    model = map(splits, nls_Gompertz),
+         coef_info = map(model, broom::tidy),
+         fitted_values = map(model, broom::augment, newdata = tibble(day = seq(1,25))),
+    median_survival = map(coef_info, function(x) {log(-log(0.5)/x[1,2])/x[2,2]}))
+
+
+boot_models_PA14 <- boots_PA14 %>%
+  mutate(strain = "PA14",
+    model = map(splits, possibly(nls_Gompertz, otherwise = "error")),
+         coef_info = map(model, possibly(broom::tidy, otherwise = "error")),
+         fitted_values = map(model, possibly(broom::augment, otherwise = "error")))
+
+
+  plot1 <- rbind(boot_models_OP50, boot_models_JUb39) %>%
+  mutate(strain = fct_relevel(strain, "OP50", "JUb39")) %>%
+  unnest(fitted_values) %>%
+  ggplot(aes(x = day, y = prop_alive)) +
+  stat_summary(aes(group = strain), geom = "errorbar", fun.data = "mean_se", width = 0.1, data = survival) +
+  stat_summary(aes(group = strain, colour = strain), geom = "point", fun.y = "mean", data = survival) +
+  #stat_summary(aes(group = strain, colour = strain), geom = "point", fun.y = "median", data = survival, colour = "red") +
+  stat_summary(aes(group = strain, colour = strain, lty = strain), geom = "line", fun.y = "mean", alpha = 0.5, data = survival) + 
+  #geom_point(aes(colour = strain), alpha = 0.1) +
+  #geom_line(aes(y = .fitted, group = interaction(id, strain), colour = strain), alpha= 0.1) +
+  stat_summary(geom = "ribbon", fun.ymin = function(x) quantile(x, 0.05), fun.ymax = function(x) quantile(x, 0.95), 
+               aes(group = strain, fill = strain, y = .fitted), alpha = 0.25) +
+  scale_color_plot(palette = "grey-blue-green", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue", drop = TRUE) +
+    theme_linedraw()
+  
+plot2 <- rbind(boot_models_OP50, boot_models_JUb39) %>%
+  mutate(strain = fct_relevel(strain, "OP50", "JUb39")) %>%
+    unnest(median_survival) %>%
+    select(strain, estimate) %>%
+    ggplot(aes(x = estimate)) +
+    geom_density(aes(fill = strain), alpha = 0.5, colour = NA) +
+    scale_fill_plot(palette = "grey-blue", drop = TRUE) +
+    coord_cartesian(xlim = c(0,30)) +
+  theme(axis.ticks.y = element_blank(), axis.text = element_blank()) +
+  labs(y = "", x = "bootstrap median lifespan (days)") +
+  theme_void() +
+  theme(plot.margin = margin(0, 0, 0, 0, "cm"))
+  
+    
+library(patchwork)
+
+```
+
+```{r hierarchical analysis}
+testdata <- filter(survival, strain == "OP50") %>% droplevels()
+
+allnls <- map_df(levels(survival$plateID), 
+              possibly(
+                function(plateID) {
+                  fit <- nls(prop_alive ~ exp(-G*exp(gamma*day)), 
+                    data = filter(survival, plateID == {{ plateID }}), 
+                    start = c(G = 0.00539, gamma = 0.3)) %>% 
+                    broom::tidy() %>%
+                    mutate(plateID = plateID) },
+                otherwise = NULL)
+              ) %>%
+  separate(plateID, into = c("strain", "group", "plate"), remove = FALSE)
+
+allnls %>%
+  ggplot(aes(x = strain, y = estimate)) +
+  geom_boxplot() +
+  geom_point(aes(, size = p.value)) +
+  facet_wrap(~term, scales = "free_y")
+
+setdiff(levels(survival$plateID), unique(allnls$plateID)) #levels of plateID that couldn't be fit in a gompertz eq via nls
+```
+
+
+```{r}
+# #non-linear effect formula based on strain effects intercept on G, ignoring subject-specific effects of plate:
+# library(brms)
+# CHAINS <- 4
+# ITER <- 4000
+# WARMUP <- 1000
+# BAYES_SEED <- 1234
+# options(mc.cores = parallel::detectCores())  # Use all cores
+# 
+# #models won't converge using individual plates, not simple to test hierarchical effects
+# 
+# #fit first with a 
+# fit_Gompertz <- brms::brm(
+#   brms::bf(prop_alive ~ exp(-G*exp(gamma*day),
+#            G ~ 1,
+#            gamma ~ 1,
+#            nl = TRUE),
+#   family = gaussian(link = log),
+#            data = filter(survival, strain != "PA14", 
+#                          !plateID %in% setdiff(levels(survival$plateID), unique(allnls$plateID))), #leave out poor fits
+#     prior = c(
+#     prior(normal(0.2, 0.2), nlpar = "gamma", lb = 0 ),
+#     prior(normal(0.01, 0.05), nlpar = "G",lb = 0)
+#   ),
+#   control = list(adapt_delta = 0.99),
+#   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED
+# )
+# 
+# fit_Gompertz_RE <- brms::brm(
+#   brms::bf(prop_alive ~ exp(-G*exp(gamma*day)),
+#            G + gamma ~ strain + (1|groupID),
+#            nl = TRUE),
+#   family = gaussian(),
+#            data = filter(survival, strain != "PA14", 
+#                          !plateID %in% setdiff(levels(survival$plateID), unique(allnls$plateID))), #leave out poor fits
+#     prior = c(
+#     prior(normal(0.2, 0.5), nlpar = "gamma"),
+#     prior(normal(0.01, 0.1), nlpar = "G")
+#   ),
+#   control = list(adapt_delta = 0.99),
+#   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED
+# )
+# 
+# fit_Gompertz_gamma <- brms::brm(
+#   brms::bf(prop_alive ~ -G*exp(gamma*day),
+#            G ~ 1,
+#            gamma ~ strain,
+#            nl = TRUE),
+#   family = gaussian(),
+#            data = filter(survival, strain != "PA14"),
+#     prior = c(
+#     prior(normal(0.05, 1), nlpar = "G", lb = 0),
+#     prior(normal(0.2, 1), nlpar = "gamma", lb = 0)
+#   ),
+#   control = list(adapt_delta = 0.9),
+#   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED
+# )
+# 
+# fit_Gompertz_Ggamma <- brms::brm(
+#   brms::bf(prop_alive ~ -G*exp(gamma*day),
+#            G ~ strain,
+#            gamma ~ strain,
+#            nl = TRUE),
+#   family = gaussian(),
+#            data = filter(survival, strain != "PA14"),
+#     prior = c(
+#     prior(normal(0.05, 1), nlpar = "G", lb = 0),
+#     prior(normal(0.2, 1), nlpar = "gamma", lb = 0)
+#   ),
+#   control = list(adapt_delta = 0.9),
+#   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED
+# )
+# 
+# fit_Gompertz_G <- brms::brm(
+#   brms::bf(prop_alive ~ -G*exp(gamma*day),
+#            G ~ strain,
+#            gamma ~ 1,
+#            nl = TRUE),
+#   family = gaussian(),
+#            data = filter(survival, strain != "PA14"),
+#     prior = c(
+#     prior(normal(0.05, 1), nlpar = "G", lb = 0),
+#     prior(normal(0.2, 1), nlpar = "gamma", lb = 0)
+#   ),
+#   control = list(adapt_delta = 0.9),
+#   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED
+# )
+# 
+# 
+
+
+```
+
+
+```{r}
+#plot showing range of data, by plate:
+
+ribbon.data <- survival %>%
+  filter(!is.na(prop_alive)) %>%
+  group_by(strain, day) %>%
+  summarize(mean_prop = mean(prop_alive, na.rm = TRUE),
+         min_prop = min(prop_alive, na.rm = TRUE),
+         max_prop = max(prop_alive, na.rm = TRUE))
+
+survival %>%
+  filter(!is.na(prop_alive)) %>%
+  ggplot(aes(x = day, y = prop_alive)) +
+  geom_line(aes(colour = strain, group = interaction(strain, plate, group), , lty = strain), alpha = 0.1) +
+  geom_ribbon(data = ribbon.data, aes(fill = strain, y = mean_prop, ymin = min_prop, ymax = max_prop), alpha = 0.2) +
+  #geom_smooth(aes(group = strain, colour = strain), method = "loess") +
+  stat_summary(aes(group = strain), geom = "errorbar", fun.data = "mean_se", width = 0.1) +
+  stat_summary(aes(group = strain, colour = strain), geom = "point", fun.y = "mean") +
+  stat_summary(aes(group = strain, colour = strain, lty = strain), geom = "line", fun.y = "mean", alpha = 0.5) +
+  scale_color_plot(palette = "grey-blue-green", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue-green", drop = TRUE) +
+  scale_x_continuous(limits = c(1,28)) +
+  stat_function(fun = function(day = day, gamma = summary(nls_OP50)$coef["gamma",1], G = summary(nls_OP50)$coef["G",1])
+    {exp(-G*exp(gamma*day))}, colour = "black", size =1.25) +
+  stat_function(fun = function(day = day, gamma = summary(nls_JUb39)$coef["gamma",1], G = summary(nls_JUb39)$coef["G",1]) 
+    {exp(-G*exp(gamma*day))}, colour = "blue", size =1.25) +
+  # stat_function(fun = function(day = day, gamma = summary(nls_PA14)$coef[2], G = summary(nls_PA14)$coef[1]) {exp(-(G/gamma)*(exp(gamma * day) - 1))}, colour = "darkgreen", size =1.25) +
+  stat_function(fun = function(day = day, gamma = 1.2, G = .015)
+    {exp(-G*exp(gamma*day))}, colour = "green", size =1.25)
+  
+  
+  #stat_function(fun = S_t_plot)
+  
+```
+
+

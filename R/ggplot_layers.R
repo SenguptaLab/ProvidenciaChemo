@@ -297,3 +297,14 @@ theme_black = function(base_size = 12, base_family = "") {
     )
 
 }
+
+#' @export
+#' @rdname ggplot_layers
+#space out facets in a ggplot object that has multiple x-facets - n_facets is the number of major groups - only works for minor facet grouping
+# of n = 1, ie facet_grid(.~genotype + food), where food has 2 levels and genotype has n_facet levels
+space_facets <- function(plot, n_facets = 2, major_div = 5, minor_div = 0.3) {
+  gt <- ggplot_gtable(ggplot_build(plot))
+  gt$widths[seq(1:(n_facets-1))*4 + 4] = major_div*gt$widths[seq(1:(n_facets-1))*4 + 4]
+  gt$widths[seq(1:n_facets)*4-2] = minor_div*gt$widths[seq(1:n_facets)*4-2]
+  grid::grid.draw(gt)
+}

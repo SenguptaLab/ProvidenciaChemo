@@ -28,7 +28,7 @@ theme_set(theme_my)
 ```{r data load}
 library(scales)
 
-TAsucc <- read_csv('extdata/Figure_2B_3G_TAsucc.csv') %>%
+TAsucc <- read_csv('extdata/Figure_2d_3e_TAsucc.csv') %>%
   filter(food %in% c("OP50", "JUb39")) %>%
   mutate(food = fct_relevel(food, c("OP50", "JUb39")))
 

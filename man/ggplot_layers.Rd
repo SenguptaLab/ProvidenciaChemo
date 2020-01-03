@@ -18,6 +18,7 @@
 \alias{g_legend}
 \alias{geom_bardots}
 \alias{geom_relLatency}
+\alias{space_facets}
 \title{ggplot_layers}
 \format{An object of class \code{theme} (inherits from \code{gg}) of length 66.}
 \usage{
@@ -51,6 +52,8 @@ g_legend(a.gplot)
 geom_bardots(fillvar, dotvar, ...)
 
 geom_relLatency(fitted, fillvar, dotvar, yvar)
+
+space_facets(plot, n_facets = 2, major_div = 5, minor_div = 0.3)
 }
 \arguments{
 \item{width}{optional width for median lines}

@@ -21,11 +21,63 @@ library(modelr)
 library(tidybayes)
 library(kableExtra)
 
-filepath <- here::here("extdata/Figure_3E.csv")
+# SOS <- readr::read_csv(here::here("extdata","SOS_OP50_JUb39.csv")) %>%
+#   mutate(food = factor(food, levels = c("OP50",
+#                                         "JUb39",
+#                                         "BL21",
+#                                         "BL21_tdcGOF",
+#                                         "BL21_tdcK>A",
+#                                         "655",
+#                                         "655-tdcDel",
+#                                         "JUb39; tdcDel::cmR",
+#                                         "JUb39; tdcopDel",
+#                                         "JUb39; tdcDel::cmR delAADC",
+#                                         "JUb39; delAADC")),
+#          genotype = factor(genotype, levels = c("N2",
+#                                                 "tbh-1",
+#                                                 "tdc-1",
+#                                                 "octr-1",
+#                                                 "ser-3",
+#                                                 "tyra-2",
+#                                                 "tyra-2; ex[sra6p::tyra-2]",
+#                                                 "tyra-2; octr-1",
+#                                                 "octr-1; ex[sra6p::octr-1]",
+#                                                 "tdc-1; tyra-2",
+#                                                 "tdc-1; tbh-1")),
+#          paralyzed = case_when(response.time == 20 ~ "paralyzed",
+#                                TRUE ~ "non-paralyzed")) %>%
+#   #group_by(date, genotype, food, cond, cue) %>%
+#   #tidyr::nest() %>%
+#   mutate(plateID = interaction(genotype, food, date, cue, cond)) #%>% tidyr::unnest()
+# 
+# SOSKO <-  SOS %>% dplyr::filter(cond == "Tyrosine",
+#                                 cue == "oct_1.0",
+#                       genotype %in% c("N2"),
+#                       food %in% c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; tdcDel::cmR delAADC", "JUb39; delAADC"),
+#                       response.time < 20,
+#                       #date %in% c("2019_02_13","2019_02_15"),
+#                       date %in% c("2019_01_07", #need to subset days
+#                                   "2019_01_14",
+#                                   "2018_10_23",
+#                                   "2018_10_29",
+#                                   "2018_11_13",
+#                                   "2019_02_13",
+#                                   "2019_02_15",
+#                                   "2019_03_06",
+#                                   "2019_03_19",
+#                                   '2019_04_17',
+#                                   '2019_04_23',
+#                                   '2019_04_27',
+#                                   '2019_04_29')) %>%
+#   mutate(food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC")),
+#                             data_type = "raw") %>%
+#   droplevels() %>%
+#   mutate(log.response = log(response.time))
+
+filepath <- here::here("extdata/Figure_3d_SOSJUKO.csv")
 
 SOSKO <- read_csv(filepath) %>%
-  mutate(food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC"))) %>%
-  filter(!date %in% c("2019_04_23", "2019_04_27"))
+  mutate(SOSKO, food = fct_relevel(food, c("OP50", "JUb39", "JUb39; tdcDel::cmR", "JUb39; delAADC")))
          
          
 lmer <- SOSKO %>%

@@ -25,44 +25,25 @@ theme_set(theme_my)
 ```{r dataload  GPCRS}
 
 
-#### initial filter ####
-# receptors <- SOS %>% dplyr::filter(cond == "Tyrosine",
-#                       genotype %in% c("N2",
-#                                       "tyra-2",
-#                                       "ser-3",
-#                                       "octr-1",
-#                                       #"tyra-2; octr-1",
-#                                       "octr-1; ex[sra6p::octr-1]"
-#                                       #"tyra-2; ex[sra6p::tyra-2]",
-#                                       #"tdc-1",
-#                                       #"tbh-1"
-#                                       ),
-#                       food %in% c("OP50", "JUb39"), #) %>%
-#                       #!date %in% c("2018_10_29"),
-#                       #date %in% c("2018_10_23","2018_11_13"), #weirdness with 10_29 + tdc-1 was contaminated before 11_13
-#                       #date %in% c("2019_01_07", "2019_01_14"),
-#                       date %in% c("2018_10_23", "2018_10_29", "2018_11_13", "2019_01_07", "2019_01_14",
-#                         "2019_02_05", "2019_02_15", "2019_03_06",
-#                         "2019_05_27", "2019_05_28", "2019_06_02",
-#                         "2019_04_02"),
-#                       response.time < 20,
-#                       !(genotype == "tyra-2" & food == "JUb39; tdcDel::cmR"))
-
-#write_csv(receptors, here::here('extdata/Figure_4A.csv'))
 ##### read data ####
+#newdates <- c("2019_11_16", "2019_11_29", "2019_12_03")
 
-receptors <- read_csv(here::here('extdata/Figure_4A.csv')) %>%
+receptors_exp1 <- read_csv(here::here('extdata/Figure_4A_receptors.csv')) %>%
+  filter(response.time < 20,
+         genotype %in% c("N2", "tyra-2", "ser-3", "octr-1")) %>%
   mutate(food = fct_relevel(food, "OP50"),
-         genotype = fct_relevel(genotype, c("N2", "tyra-2", "ser-3", "octr-1")),
-         data_type = "raw")
+         genotype = fct_relevel(genotype, c("N2", "octr-1", "ser-3", "tyra-2")),
+         data_type = "raw") %>% droplevels()  
 
-stan_mod <- rstanarm::stan_glmer(data = receptors, log(response.time) ~ food * genotype + (food|date) + (1|plateID),
+stan_mod <- rstanarm::stan_glmer(data = filter(receptors_exp1) %>% droplevels(),
+                                 log(response.time) ~ food * genotype  + (1|plateID), #add food|date back
                        family = gaussian,
-                       seed = 694,
+                       seed = 695,
                        chains = 6,
                        cores = 6)
 
-fitted <- receptors %>%
+## ---------- Bayesian credible intervals 
+fitted <- receptors_exp1 %>%
   data_grid(food, genotype) %>%
   add_fitted_draws(stan_mod, re_formula = NA) %>%
   mutate(response.time = exp(.value), data_type = "fit")
@@ -70,16 +51,15 @@ fitted <- receptors %>%
 fitted1 <- emmeans(stan_mod, pairwise ~ (food | genotype))$contrasts %>% 
   coda::as.mcmc() %>% 
   bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
-  mutate(genotype = levels(receptors$genotype),
+  mutate(genotype = factor(levels(receptors_exp1$genotype), levels = levels(receptors_exp1$genotype)),
          data_type = "fit",
          food = "JUb39") %>%
-  mutate(food = factor(food, levels = c("OP50", "JUb39")),
-         genotype = fct_relevel(genotype, c("N2", "tdc-1", "tbh-1"))) %>% 
+  mutate(food = factor(food, levels = c("OP50", "JUb39"))) %>% 
   mutate_if(is.numeric, funs(. * -1))
 
 #--------relative effect plot (log)
 
-plot <- receptors %>%
+plot <- receptors_exp1 %>%
   format_SOS(., day_correct = genotype) %>%
   ggplot(aes(x = data_type)) +
   #geom_hline(yintercept = 0, linetype = "dashed", colour = "grey") +
@@ -96,75 +76,36 @@ plot <- receptors %>%
   guides(colour = FALSE) +
   theme(axis.text.x = element_blank())
 
-gt <- ggplot_gtable(ggplot_build(plot))
-gt$widths[c(8,12,16,20,24)] = 5*gt$widths[c(8,12,16,20,24)]
-gt$widths[c(6,10,14,18,22)] = .3*gt$widths[c(6,10,14,18,22)]
-grid::grid.draw(gt)
+space_facets(plot, n_facets = 4)
 
 ```
 
-```{r frequentist stats}
+```{r frequentist stats exp1}
 sjstats::equi_test(stan_mod)
 
 # frequentist glmm (log transformed) - singular fit
-lmer <- lme4::lmer(data = receptors, log(response.time) ~ food * genotype + (food|date) + (1|plateID))
+lmer <- lme4::lmer(data = receptors_exp1, log(response.time) ~ food * genotype + (food|date) + (1|plateID))
 
 # frequentist glmm (log transformed) non-singular
 
-lmer<- lme4::lmer(data = receptors, log(response.time) ~ food * genotype + (1|date) + (1|plateID))
-lmer_octr <- lme4::lmer(data = receptors %>% mutate(genotype = fct_relevel(genotype, "octr-1")), log(response.time) ~ food * genotype + (1|date) + (1|plateID))
+lmer<- lme4::lmer(data = receptors_exp1, log(response.time) ~ food * genotype + (1|date) + (1|plateID))
+# lmer_octr <- lme4::lmer(data = receptors_exp1 %>% mutate(genotype = fct_relevel(genotype, "octr-1")), log(response.time) ~ food * genotype + (1|date) + (1|plateID))
 
-lmer %>% emmeans(pairwise ~ food | genotype)
+#lmer_octr %>% emmeans(pairwise ~ food | genotype)
 lmer %>% emmeans(pairwise ~ genotype | food)
+lmer %>% emmeans(pairwise ~ food | genotype)
 
-#b------------bar plot (raw data)
-plot <- receptors %>%
-  mutate(response.time = case_when(
-    response.time < 1 ~ 1, 
-    TRUE ~ response.time
-  ),
-  data_type = "raw",
-  genotype = fct_relevel(genotype, c("N2", "tyra-2", "ser-3", "octr-1"))) %>%
-  ggplot(aes(x = data_type, y = response.time)) +
-  #stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.7, alpha = 0.5) +
-  stat_summary(geom = "bar", fun.y = mean, aes(fill = food), width = 0.7, alpha = 0.75) +
-  ggbeeswarm::geom_quasirandom(aes(colour = food), width = 0.2, alpha = 0.5, shape = 16) +
-  scale_color_plot("grey-blue", drop = TRUE) +
-  scale_fill_plot("grey-blue", drop = TRUE) +
-  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
-  facet_grid(.~genotype+food, 
-             labeller = labeller(genotype = label_wrap_gen(10), 
-                                 food = as_labeller(c("OP50" = "",
-                                                    "JUb39" = "")))) +
-  # add.quartiles('response.time') +
-  # add.median('r, esponse.time', colour = "red") +
-  add.n(data_type, y.pos = 0.9) +
-  stat_pointinterval(aes(y=response.time, x = 1.5),
-                     data = fitted, fatten_point = 0,
-                     size_range = c(0.3, 1), colour = "grey") +
-  stat_summary(data = fitted,
-               aes(y=response.time, x = 1.5),
-               fun.y = median,
-               fun.ymin = median,
-               fun.ymax = median,
-               geom = "crossbar",
-               width = 0.05,
-               lwd = 0.35,
-               colour = "grey") +
-  labs(x = "genotype",
-       y = "time to reversal (s)") +
-  theme(axis.text.x = element_blank()) +
-  scale_y_log10()
+# t-test for predictors using Kenward-Rogers estimated degrees of freedom
+lmer %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
+
+# parametric bootstrap to estimate octr-1 interaction effect:
+library(lme4)
+lmer_add <- lme4::lmer(data = receptors_exp1, log(response.time) ~ food + genotype + (1|date) + (1|plateID))
+lmer_boot <- lme4::bootMer(x=lmer, FUN=fixef, re.form = NA, nsim=200)
+boot::boot.ci(lmer_boot, index=6, type = "perc", conf = 0.95)
 
 
-gt <- ggplot_gtable(ggplot_build(plot))
-gt$widths[c(8,12,16,20)] = 2*gt$widths[c(8,12,16,20)]
-gt$widths[c(6,10,14,18,22)] = .3*gt$widths[c(6,10,14,18,22)]
-grid::grid.draw(gt)
-
-
-
-# comaprison of mcmc intervals for supplement:
+# comparison of mcmc intervals for supplement:
 mcmc.comps <- emmeans(stan_mod, ~ food | genotype, type = "response") %>%
   contrast(method = "pairwise") %>%
   coda::as.mcmc() #%>%
@@ -173,12 +114,9 @@ p2 <- bayesplot::mcmc_intervals(mcmc.comps,prob = 0.66, prob_outer = 0.95)
 
 p1 + p2 + theme(axis.text.y = element_blank())
 
-lmer %>% lmerTest::as_lmerModLmerTest() %>% summary()
-
 lmer %>% emmeans::ref_grid() %>% emmeans::contrast(method = "pairwise", adjust = "fdr") %>% kableExtra::kable() %>% kable_styling(bootstrap_options = c("striped", "hover"))
 
 #test interaction effects:
-phia::testInteractions(lmer, fixed = "genotype", across = "food")
+phia::testInteractions(lmer_octr, fixed = "genotype", across = "food")
 
 ```
-

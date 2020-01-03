@@ -85,7 +85,7 @@ row1 <- plot2_nolegend + plot1 + plot4 + plot5 + plot_layout(nrow = 1)
 
 ```{r repellent data}
 
-filepath <- here::here("extdata", "Figure1A_avoidance.csv")
+filepath <- here::here("extdata", "Figure1B_avoidance.csv")
 
 nonanone_data = read.csv(filepath) %>%
   filter(assay == "nonanone") %>%

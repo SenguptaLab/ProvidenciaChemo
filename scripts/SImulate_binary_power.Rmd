@@ -1,0 +1,328 @@
+---
+  title: "survival_assay"
+author: "Mike O'Donnell"
+date: "08/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+theme_set(theme_classic())
+```
+
+```{r}
+# simulate for power analysis in choice assay:
+
+choice_power <- choice %>%
+  filter(!date %in% c("2019_10_19", "2019_10_22", "2019_11_5", "2019_11_6", "2019_11_8"),
+         genotype == "N2")
+
+# stan_mod <- rstanarm::stan_glmer(data = choice_power %>% filter(genotype == "N2"),
+#                                  cbind(N_Test, N_OP50) ~ strain + (1|plateID) + (strain|date),
+#                                  family = binomial,
+#                                  cores = 6,
+#                                  chains = 6,
+#                                  adapt_delta = 0.99)
+
+# use a brms model to estimate unequal variance and the variance structure of the random effects structure
+library(brms)
+set.seed(7654)
+CHAINS <- 4
+ITER <- 2000
+WARMUP <- 1000
+BAYES_SEED <- 1234
+options(mc.cores = parallel::detectCores())  # Use all cores
+
+brms_uneq <- brm(
+  bf(logit_p ~ strain, sigma ~ strain),
+  data = choice_power,
+  prior = c(set_prior("normal(0, 5)", class = "Intercept"),
+            set_prior("normal(0, 1)", class = "b"),
+            set_prior("cauchy(0, 1)", class = "b", dpar = "sigma")),
+  chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED,
+  file = "brms_uneq"
+)
+
+
+brms_eq <- brm(
+  bf(logit_p ~ strain),
+  data = choice_power,
+  prior = c(set_prior("normal(0, 5)", class = "Intercept"),
+            set_prior("normal(0, 1)", class = "b")),
+  chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES_SEED,
+  file = "brms_eq"
+)
+
+summary(brms_uneq)
+summary(brms_eq)
+
+model_params <- brms_eq$fit %>% broom::tidy()
+uneq_model_params <- brms_uneq %>% broom::tidy()
+
+plot(brm)
+```
+
+```{r}
+#compare fit values to true data for power simulation:
+#double check that SD is on the right scale first
+choice %>% 
+  filter(genotype == "N2",
+         !date %in% c("2019_10_19", "2019_10_22", "2019_11_5", "2019_11_6", "2019_11_8")) %>%
+  summarize(sd = sd(logit_p))
+
+model_params[4, 2]
+
+
+Nplates <- 30
+sim_data <- expand_grid(
+  plate = factor(1:Nplates),
+  genotype = "N2",
+  strain = factor(c("OP50", "JUb39"), levels = c("OP50", "JUb39"))
+) %>%
+  arrange(strain) %>%
+  mutate(logit_p = c(
+    rnorm(
+      Nplates,
+      mean = model_params[1, 2] %>% as.numeric(), # b_intercept, estimat is second column
+      sd = model_params[4, 2] %>% as.numeric()
+    ), # sigma
+    rnorm(
+      Nplates,
+      mean = (model_params[1, 2] + model_params[2, 2]) %>% as.numeric(), # b_intercept, estimat is second column
+      sd = model_params[4, 2] %>% as.numeric()
+    )
+  ))
+    
+sim_data %>% ggplot(aes(x = strain, y = logit_p)) +
+  ggbeeswarm::geom_quasirandom(aes(color = "strain"))
+
+sim_data %>%
+    ggplot(aes(x = strain, y = logit_p)) +
+    geom_bardots(fillvar = strain, dotvar = strain) +
+    scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
+    labs(y = "Test bacteria preference (log-odds)") +
+  guides(colour = FALSE) +
+  scale_color_plot(palette = "grey-blue-green", drop = TRUE) +
+    scale_fill_plot(palette = "grey-blue-green", drop = TRUE)
+
+### data looks reasonable, now make a function to replicate and predict power by N in 2-sample t-test:
+
+sim_data %$% t.test(logit_p ~ strain)
+    
+```
+
+```{r}
+
+power_func <- function(Nplates = 30,
+                                     mean_OP50 = as.numeric(model_params[1, 2]),
+                                     mean_JUb39 = as.numeric(model_params[1, 2] + model_params[2,2]),
+                                     sigma = as.numeric(model_params[4, 2]))) {
+  sim_data <- expand_grid(
+  plate = factor(1:Nplates),
+  genotype = "N2",
+  strain = factor(c("OP50", "JUb39"), levels = c("OP50", "JUb39"))
+) %>%
+  arrange(strain) %>%
+  mutate(logit_p = c(
+    rnorm(
+      Nplates,
+      mean = mean_OP50, # b_intercept, estimat is second column
+      sd = sigma
+    ), # sigma
+    rnorm(
+      Nplates,
+      mean = mean_JUb39, # b_intercept, estimat is second column
+      sd = sigma
+    )
+  ))
+
+p_value <- sim_data %$% t.test(logit_p ~ strain)$p.value
+return(p_value)
+}
+
+power_func_uneqVar <- function(Nplates = 30,
+                                     mean_OP50 = as.numeric(uneq_model_params[1, 2]),
+                                     mean_JUb39 = as.numeric(uneq_model_params[1, 2] + uneq_model_params[3,2]),
+                                     sigmaO = exp(as.numeric(uneq_model_params[2, 2])),
+                                     sigmaJ = exp(as.numeric(uneq_model_params[2, 2] + uneq_model_params[5, 2]))) {
+  sim_data <- expand_grid(
+  plate = factor(1:Nplates),
+  genotype = "N2",
+  strain = factor(c("OP50", "JUb39"), levels = c("OP50", "JUb39"))
+) %>%
+  arrange(strain) %>%
+  mutate(logit_p = c(
+    rnorm(
+      Nplates,
+      mean = mean_OP50, # b_intercept, estimat is second column
+      sd = sigmaO
+    ), # sigma
+    rnorm(
+      Nplates,
+      mean = mean_JUb39, # b_intercept, estimat is second column
+      sd = sigmaJ
+    )
+  ))
+
+p_value <- sim_data %$% t.test(logit_p ~ strain)$p.value
+tibble(p_value = p_value)
+}
+
+simN20 <- replicate(1000, power_func(Nplates = 20))
+pN20 <- simN20[simN20 < 0.05] %>% length()
+
+simN30 <- replicate(1000, power_func(Nplates = 30))
+pN30 <- simN30[simN30 < 0.05] %>% length()
+
+simN35 <- replicate(1000, power_func(Nplates = 35))
+pN35 <- simN35[simN35 < 0.05] %>% length()
+
+simN40 <- replicate(1000, power_func(Nplates = 40))
+pN40 <- simN40[simN40 < 0.05] %>% length()
+
+simN50 <- replicate(1000, power_func(Nplates = 50))
+pN50 <- simN50[simN50 < 0.05] %>% length()
+
+
+tibble(Nplates = c(20,30,35,40,50),
+       power = c(pN20,pN30,pN35,pN40,pN50)/1000) %>%
+  ggplot(aes(x = Nplates, y = power)) +
+  geom_line()
+
+purrr::map(c(20,30,35,40,50), function(Nplates = .) {
+  replicate(1000, power_func_uneqVar(Nplates = Nplates), simplify = FALSE) %>%
+    bind_rows() %>%
+    filter(p_value < 0.05) %>%
+    nrow() %>%
+    tibble(power = ./1000, n = Nplates)
+}) %>% bind_rows()
+
+
+```
+
+```{r}
+
+power_func_ANOVA <- function(Nplates = 30,
+                                     mean_OP50 = as.numeric(model_params[1, 2]),
+                                     mean_JUb39 = as.numeric(model_params[1, 2] + model_params[2,2]),
+                                     mean_Mut1_OP = as.numeric(model_params[1, 2]),
+                                     mean_Mut1_JU = as.numeric(model_params[1, 2]),
+                                     mean_Mut2_OP = as.numeric(model_params[1, 2]),
+                                     mean_Mut2_JU = as.numeric(model_params[1, 2]),
+                                     sigma = as.numeric(model_params[4, 2])) {
+means <- c(
+  mean_OP50, 
+  mean_JUb39, 
+  mean_Mut1_OP,
+  mean_Mut1_JU,
+  mean_Mut2_OP,
+  mean_Mut2_JU
+)
+  sim_data <- expand_grid(
+  plate = factor(1:Nplates),
+  genotype = factor(c("N2","Mut1", "Mut2"), levels = c("N2", "Mut1", "Mut2")),
+  strain = factor(c("OP50", "JUb39"), levels = c("OP50", "JUb39"))
+) %>%
+  arrange(genotype, strain) %>%
+  mutate(logit_p = 
+           purrr::map(means, ~ rnorm(mean = ., n = Nplates, sd = sigma)) %>% unlist())
+
+  
+model_stats <- sim_data %>% lm(data = ., logit_p ~ genotype * strain) %>% summary() %>% broom::tidy()
+
+return(tibble(JUbEffect = model_stats$estimate[4],
+              JUb_pval = model_stats$p.value[4],
+              Mut1_effect = model_stats$estimate[5],
+              Mut1_pval = model_stats$p.value[5],
+              Mut2_effect = model_stats$estimate[6],
+              Mut2_pval = model_stats$p.value[6]))
+}
+
+
+simN20 <- replicate(1000, power_func_ANOVA(Nplates = 20), simplify = FALSE) %>% 
+  bind_rows() %>% 
+  mutate(Nplates = 20) %>%
+  mutate(
+    main_effect = case_when(
+      JUbEffect > 0 & JUb_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    Int1_effect = case_when(
+      Mut1_effect < 0 & Mut1_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    Int2_effect = case_when(
+      Mut2_effect < 0 & Mut2_pval < 0.05 ~ 1,
+      TRUE ~ 0)
+    ) %>% group_by(Nplates, main_effect, Int1_effect, Int2_effect) %>% tally()
+
+nReps <- 1000
+test_data <- purrr::map(c(20,30,35,40,50,60), function(Nplates = .) { replicate(nReps, power_func_ANOVA(Nplates = Nplates), simplify = FALSE) %>% 
+  bind_rows() %>% 
+  mutate(Nplates = Nplates) %>%
+  mutate(
+    main_effect = case_when(
+      JUbEffect > 0 & JUb_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    Int1_effect = case_when(
+      main_effect == 1 & Mut1_effect < 0 & Mut1_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    Int2_effect = case_when(
+      main_effect == 1 & Mut2_effect < 0 & Mut2_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    any_interaction = case_when(
+      Int1_effect == 1 | Int2_effect == 1 ~ 1,
+      TRUE ~ 0),
+    both_interactions = case_when(
+      Int1_effect == 1 & Int2_effect == 1 ~ 1,
+      TRUE ~ 0
+    )
+    ) %>% group_by(Nplates, main_effect, any_interaction, both_interactions) %>% tally() }) %>% bind_rows()
+
+
+main_effects <- test_data %>% group_by(Nplates, main_effect) %>% 
+  summarize(total = sum(n))
+
+interaciton_effects <- test_data %>% group_by(Nplates, any_interaction, both_interactions) %>% 
+  summarize(total = sum(n))
+
+test_data_noInt <- purrr::map(c(20,30,35,40,50,60),
+                              function(Nplates = .) { 
+                                replicate(nReps, 
+                                          power_func_ANOVA(Nplates = Nplates,
+                                                                  mean_JUb39 = as.numeric(model_params[1, 2] + model_params[2,2]),
+                                                                  mean_Mut1_JU = as.numeric(model_params[1, 2] + model_params[2,2]),
+                                                                  mean_Mut2_JU = as.numeric(model_params[1, 2] + model_params[2,2])), 
+                                          simplify = FALSE) %>% 
+  bind_rows() %>% 
+  mutate(Nplates = Nplates) %>%
+  mutate(
+    main_effect = case_when(
+      JUbEffect > 0 & JUb_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    Int1_effect = case_when(
+      main_effect == 1 & Mut1_effect < 0 & Mut1_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    Int2_effect = case_when(
+      main_effect == 1 & Mut2_effect < 0 & Mut2_pval < 0.05 ~ 1,
+      TRUE ~ 0),
+    any_interaction = case_when(
+      Int1_effect == 1 | Int2_effect == 1 ~ 1,
+      TRUE ~ 0),
+    both_interactions = case_when(
+      Int1_effect == 1 & Int2_effect == 1 ~ 1,
+      TRUE ~ 0
+    )
+    ) %>% group_by(Nplates, main_effect, any_interaction, both_interactions) %>% tally() }) %>% bind_rows()
+
+
+tibble(Nplates = c(20,30,35,40,50),
+       power = c(pN20,pN30,pN35,pN40,pN50)/1000) %>%
+  ggplot(aes(x = Nplates, y = power)) +
+  geom_line()
+
+
+
+```

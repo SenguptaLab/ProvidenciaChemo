@@ -1,0 +1,133 @@
+---
+title: "Figure_2f_tbh1rescue"
+author: "Mike O'Donnell"
+date: "5/31/2019"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+```
+
+```{r amine data}
+library(tidyverse)
+library(emmeans)
+library(modelr)
+library(tidybayes)
+library(kableExtra)
+library(patchwork)
+theme_set(theme_my)
+
+# these data are used in Figure 2f and Figure Ext 2b
+
+tbh_rescue <- read_csv(here::here('extdata/Figure_2g_tbh1rescue.csv')) %>%
+  filter(response.time < 20,
+         genotype %in% c("N2", "tbh-1", "tbh-1; ex[tbh-1p::tbh-1a]", "cat-1(ok411)")) %>%
+  mutate(food = fct_relevel(food, "OP50"),
+         genotype = fct_relevel(genotype, c("N2", "tbh-1", "tbh-1; ex[tbh-1p::tbh-1a]", "cat-1(ok411)"))) %>%
+  droplevels()
+
+stan_mod <- rstanarm::stan_glmer(data = tbh_rescue, log(response.time) ~ food * genotype  + (1|plateID), #add + (food|date)
+                       family = gaussian,
+                       chains = 6,
+                       cores = 6)
+
+# fitted <- amine_data %>%
+#   data_grid(food, genotype) %>%
+#   add_fitted_draws(stan_mod, re_formula = NA) %>%
+#   mutate(response.time = exp(.value), data_type = "fit")
+
+fitted1 <- emmeans(stan_mod, pairwise ~ (food | genotype))$contrasts %>% 
+  coda::as.mcmc() %>% 
+  bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
+  mutate(genotype = levels(tbh_rescue$genotype),
+         data_type = "fit",
+         food = "JUb39") %>%
+  mutate(food = factor(food, levels = c("OP50", "JUb39")),
+         genotype = fct_relevel(genotype, c("N2", "tbh-1", "tbh-1; ex[tbh-1p::tbh-1a]", "tbh-1; ex[lim-7p::tbh-1a]"))) %>% 
+  mutate_if(is.numeric, funs(. * -1))
+
+
+```
+
+```{r frequentist stats}
+
+sjstats::equi_test(stan_mod)
+
+# frequentist glmm (log transformed)
+#singular fit so cannot do full model
+lmer <- lme4::lmer(data = mutate(tbh_rescue, genotype = fct_relevel(genotype, "tbh-1")),
+                   log(response.time) ~ food * genotype + (1|plateID) + (1|date))
+
+# estimated marginal means for food effects by gentoype:
+lmer %>% emmeans(pairwise ~ food | genotype)
+
+# t-test for predictors using Kenward-Rogers estimated degrees of freedom
+lmer %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
+
+#reform for cat-1 interaction term with N2:
+lmer_cat1 <- lme4::lmer(data = mutate(tbh_rescue, genotype = fct_relevel(genotype, "N2")),
+                   log(response.time) ~ food * genotype + (1|plateID) + (1|date))
+lmer_cat1 %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
+
+#Figure 2f, tbh-1 rescue
+plot <- tbh_rescue %>%
+  filter(genotype != "cat-1(ok411)") %>%
+  droplevels() %>%
+  format_SOS(., day_correct = genotype) %>%
+  ggplot(aes(x = data_type)) +
+  geom_relLatency(fitted = filter(fitted1, genotype != "cat-1(ok411)") %>% droplevels(),
+                  fillvar = food,
+                  dotvar = food,
+                  yvar = rel_log) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  scale_fill_plot("grey-blue", drop = TRUE) +
+  facet_grid(.~genotype+food) +
+  add.n('data_type', y.pos = -1.6) +
+  labs(x = "genotype",
+       y = "relative reversal latency [log(s)]") +
+  guides(colour = FALSE) +
+  theme(axis.text.x = element_blank())
+
+space_facets(plot, n_facets = 3)
+
+
+#plot for cat-1 ext 2B
+
+cat1 <- read_csv(here::here('extdata/Figure_ext7b_cat1.csv'))
+plot2 <- cat1 %>%
+  format_SOS(., day_correct = genotype) %>%
+  ggplot(aes(x = data_type)) +
+  geom_relLatency(fitted = filter(fitted1, genotype %in% c("N2", "cat-1(ok411)")) %>% droplevels(),
+                  fillvar = food,
+                  dotvar = food,
+                  yvar = rel_log) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  scale_fill_plot("grey-blue", drop = TRUE) +
+  facet_grid(.~genotype+food) +
+  add.n('data_type', y.pos = -1.6) +
+  labs(x = "genotype",
+       y = "relative reversal latency [log(s)]") +
+  guides(colour = FALSE) +
+  theme(axis.text.x = element_blank()) +
+  coord_cartesian(ylim = c(-1.8, 1.8))
+
+space_facets(plot2, n_facets = 2)
+
+# comaprison of mcmc intervals for supplement:
+mcmc.comps <- emmeans(stan_mod, ~ food | genotype, type = "response") %>%
+  contrast(method = "pairwise") %>%
+  coda::as.mcmc() #%>%
+p1 <- bayesplot::mcmc_areas(mcmc.comps)
+p2 <- bayesplot::mcmc_intervals(mcmc.comps,prob = 0.66, prob_outer = 0.95)
+
+p1 + p2 + theme(axis.text.y = element_blank())
+```
+
+
+

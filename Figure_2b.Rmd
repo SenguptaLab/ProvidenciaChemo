@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 library(ProvidenciaChemo)
+library(tidyverse)
+theme_set(theme_classic())
 ```
 
 ```{r amine mutants}
@@ -18,7 +20,7 @@ library(emmeans)
 library(modelr)
 library(tidybayes)
 
-filepath <- here::here("extdata/Figure_2A.csv")
+filepath <- here::here("extdata/Figure_2B_amines.csv")
 
 amine_data <- read_csv(filepath) %>%
   dplyr::filter(strain %in% c("OP50", "JUb39"),
@@ -53,11 +55,24 @@ fitted <- recenter_fittedValues(amine_data, stan_glmm, BayesFit = "fitted_draws"
 #          treatment = forcats::as_factor(c("none", "lid", "lid")),
 #          data_type = forcats::as_factor(rep("raw", 3)))
 
-plot <- plot_plasticityIndex(df = amine_data, xvar = strain, BayesFit = TRUE, width = 0.2, alpha = 0.7, bar = TRUE) + labs(title = "day corrected") +
-  scale_color_plot(palette = "grey-blue", drop = TRUE) + guides(color = FALSE) +
-  scale_fill_plot(palette = "grey-blue", drop = TRUE) + guides(fill = FALSE) +
-  facet_grid(.~genotype+strain) + coord_cartesian(ylim = c(-1.5,3.5)) +
+plot <- plot_plasticityIndex(df = amine_data, xvar = strain, BayesFit = TRUE, width = 0.2, alpha = 0.7, bar = TRUE) + 
+  labs(title = "day corrected") +
+  facet_grid(.~genotype+strain) + 
+  scale_color_plot(palette = "grey-blue", drop = TRUE) + 
+  guides(color = FALSE) +
+  scale_fill_plot(palette = "grey-blue", drop = TRUE) + 
+  guides(fill = FALSE) +
+  coord_cartesian(ylim = c(-1.5,3.5)) +
   geom_hline(yintercept = 0, alpha = 0.5)
+
+# plot2 <- amine_data %>%
+#   ggplot(aes(x = strain, y = rel.Logit)) +
+#   geom_boxplot(aes(fill = strain), alpha = 0.5, width = 0.8, outlier.shape = NA) +
+#   ggbeeswarm::geom_quasirandom(aes(colour = strain), width = 0.2, alpha = 0.75) +
+#   facet_grid(.~genotype) +
+#   scale_fill_plot(palette = "grey-blue", drop = TRUE) +
+#   scale_color_plot(palette = "grey-blue", drop = TRUE) +
+#   theme(panel.spacing.x = unit(2, "lines"))
 
 # 5 genotypes:
 gt <- ggplot_gtable(ggplot_build(plot))
