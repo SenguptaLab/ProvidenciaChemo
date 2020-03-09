@@ -1,5 +1,5 @@
 ---
-title: "Figure_2f_tbh1rescue"
+title: "Figure_2G_tbh1rescue"
 author: "Mike O'Donnell"
 date: "5/31/2019"
 output: 
@@ -23,9 +23,9 @@ library(kableExtra)
 library(patchwork)
 theme_set(theme_my)
 
-# these data are used in Figure 2f and Figure Ext 2b
+# these WT data are used in Figure 2G and Figure Ext 9B
 
-tbh_rescue <- read_csv(here::here('extdata/Figure_2g_tbh1rescue.csv')) %>%
+tbh_rescue <- read_csv(here::here('extdata/Figure_2G_tbh1rescue.csv')) %>%
   filter(response.time < 20,
          genotype %in% c("N2", "tbh-1", "tbh-1; ex[tbh-1p::tbh-1a]", "cat-1(ok411)")) %>%
   mutate(food = fct_relevel(food, "OP50"),

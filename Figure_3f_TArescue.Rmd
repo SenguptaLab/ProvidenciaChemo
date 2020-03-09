@@ -1,5 +1,5 @@
 ---
-title: "Figure_3G"
+title: "Figure_3F"
 author: "Mike O'Donnell"
 date: "5/31/2019"
 output: 
@@ -12,16 +12,17 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 library(ProvidenciaChemo)
+devtools::install_github("easystats/modelbased")
 library(rstanarm)
 library(tidybayes)
 library(modelr)
 library(tidyverse)
-library(estimate)
+library(modelbased)
 library(emmeans)
 ```
 
 ```{r TA rescue}
-TAGOF <- readr::read_csv(here::here("extdata","Figure_3f_TArescue.csv")) %>%
+TAGOF <- readr::read_csv(here::here("extdata","Figure_3F_TArescue.csv")) %>%
   mutate(cond = fct_relevel(cond, "Tyrosine", "Tyr+TA"),
          food =fct_relevel(food, "OP50", "JUb39"),
          group = interaction(cond, food),
@@ -50,8 +51,8 @@ stan_group_mod <- rstanarm::stan_lmer(TAGOF,
                       chains = 4)
 
 #------Posterior parameter estimates
-means.95 <- estimate::estimate_means(stan_group_mod, ci = .95, transform = "none") %>% rename(m = Median, ll = CI_low, hh = CI_high)
-means.66 <- estimate::estimate_means(stan_group_mod, ci = .66, transform = "none") %>% rename(m = Median, l = CI_low, h = CI_high)
+means.95 <- modelbased::estimate_means(stan_group_mod, ci = .95, transform = "none") %>% rename(m = Median, ll = CI_low, hh = CI_high)
+means.66 <- modelbased::estimate_means(stan_group_mod, ci = .66, transform = "none") %>% rename(m = Median, l = CI_low, h = CI_high)
 fitted <- full_join(means.95, means.66) %>%
   mutate(food = factor(c(
     rep("OP50", 2),
@@ -65,11 +66,11 @@ fitted <- full_join(means.95, means.66) %>%
 
 # select 95 and 66% HDI contrasts between OP50 control and all other groups for plot
 #-----------------------------------------------
-contrasts.95 <- estimate::estimate_contrasts(stan_group_mod, ci = 0.95)[c(1,14,15,26,27),] %>%
+contrasts.95 <- modelbased::estimate_contrasts(stan_group_mod, ci = 0.95)[c(1,14,15,26,27),] %>%
   mutate(food = c("OP50", rep("JUb39",2), rep("JUb39; tdcDel::cmR delAADC", 2)),
          cond = c("Tyr+TA", rep(c("Tyr+TA",  "Tyr+10mM_TA"), 2))) %>%
   select(food, cond, m = Median, ll = CI_low, hh = CI_high)
-contrasts.66 <- estimate::estimate_contrasts(stan_group_mod, ci = 0.66)[c(1,14,15,26,27),] %>%
+contrasts.66 <- modelbased::estimate_contrasts(stan_group_mod, ci = 0.66)[c(1,14,15,26,27),] %>%
   mutate(food = c("OP50", rep("JUb39",2), rep("JUb39; tdcDel::cmR delAADC", 2)),
          cond = c("Tyr+TA", rep(c("Tyr+TA",  "Tyr+10mM_TA"), 2))) %>%
   select(food, cond, m = Median, l = CI_low, h = CI_high)

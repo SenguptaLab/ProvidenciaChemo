@@ -18,5 +18,10 @@ Imports:
   scales,
   emmeans,
   tidybayes,
-  modelr
+  ggbeeswarm,
+  modelr,
+  pbkrtest,
+  estimate,
+  phia,
+  sjstats
 RoxygenNote: 6.1.1

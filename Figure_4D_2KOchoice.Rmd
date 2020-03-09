@@ -1,0 +1,268 @@
+---
+title: "Figure_4D_2KOChoice"
+author: "Mike O'Donnell"
+date: "6/19/2018"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(rstanarm)
+library(tidybayes)
+library(modelr)
+library(tidyverse)
+library(emmeans)
+```
+
+```{r food data input}
+library(rstanarm)
+library(tidybayes)
+library(modelr)
+
+choice <- read_csv(here::here("extdata/Figure_4D_2KOchoice.csv")) %>%
+  mutate(food = fct_relevel(food, c("OP50","JUb39")),
+         N_total = N_OP50 + N_Test,
+    index = (N_Test - N_OP50) / N_total, 
+    plateID = factor(seq(1:nrow(.))),
+    p = N_Test / N_total,
+    logit_p = boot::logit(p),
+    strain = food,
+    data_type = "raw")
+```
+
+```{r food choice data input}
+library(rstanarm)
+library(tidybayes)
+library(modelr)
+
+
+#singular fit#
+glmm_mod1 <- lme4::glmer(data = choice %>%
+                           mutate(strain = fct_relevel(strain, "JUb39")),
+                         cbind(N_Test, N_OP50) ~ strain + (1|date) + (1|plateID), family = binomial) #%>%
+
+glmm_mod2 <- lme4::glmer(data = choice %>% 
+                           mutate(strain = fct_relevel(strain, "JUb39")),
+                         cbind(N_Test, N_OP50) ~ strain + (1|plateID), family = binomial) #%>%
+
+glmm_mod2 %>% emmeans(~strain) %>% emmeans::contrast(method = "pairwise")
+
+#------------bayesian mod for experiment 1------------
+stan_mod <- rstanarm::stan_glmer(data = choice %>%
+                                   mutate(strain = fct_relevel(strain, "JUb39")),
+                     cbind(N_Test, N_OP50) ~ strain + (1|plateID) + (strain|date),
+                     family = binomial,
+                     cores = 6,
+                     chains = 4,
+                     adapt_delta = 0.99)
+
+fitted <- choice %>%
+  data_grid(strain, test_bac) %>%
+  add_fitted_draws(stan_mod, re_formula = NA) %>%
+  mutate(logit_p = boot::logit(.value), data_type = "fit")
+
+fitted1 <- emmeans(stan_mod, pairwise ~ strain)$contrasts %>% 
+  #emmeans(stan_mod2,  ~ (strain | genotype)) %>%
+  coda::as.mcmc() %>% 
+  bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
+  mutate(
+         data_type = "fit",
+         strain = c("JUb39", "JUb39; tdcDel::cmR delAADC", "NA")) %>%
+  filter(!strain == "NA") %>%
+  mutate(strain = fct_relevel(strain, "JUb39")) %>% 
+  mutate_if(is.numeric, funs(. * -1))
+
+
+```
+
+```{r}
+#-------------barplot - non-normalized-----
+# plot <- choice %>%
+#     filter(genotype == "N2",
+#            !date %in% c("2019_10_19", "2019_10_22", "2019_11_5", "2019_11_6", "2019_11_8", "2019_11_13")) %>%
+#     ggplot(aes(x = data_type, y = logit_p)) +
+#     geom_bardots(fillvar = strain, dotvar = strain) +
+#     facet_grid(. ~ strain) +
+#     scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
+#     labs(y = "Test bacteria preference (log-odds)") +
+#   guides(colour = FALSE) +
+#   scale_color_plot(palette = "grey-blue-green", drop = TRUE) +
+#     scale_fill_plot(palette = "grey-blue-green", drop = TRUE) +
+#     stat_pointinterval(aes(y=logit_p, x = 1.4),
+#                        data = fitted, fatten_point = 0,
+#                        size_range = c(0.3, 1), colour = "grey") +
+#     stat_summary(data = fitted,
+#                  aes(y=logit_p, x = 1.4),
+#                  fun.y = median,
+#                  fun.ymin = median,
+#                  fun.ymax = median,
+#                  geom = "crossbar",
+#                  width = 0.05,
+#                  alpha = 0.75,
+#                  lwd = 0.35,
+#                  colour = "darkgrey") +
+#     guides(fill = FALSE) +
+#     #figure.axes() +
+#     add.n(data_type)
+# 
+# plot
+
+
+
+
+#generate relative index values:
+means <- choice %>%
+      filter(strain == "OP50") %>%
+      #group_by(date) %>%
+      summarise(meanOP50 = median(logit_p))
+
+#choice <- full_join(choice, means) %>% mutate(rel.Logit = logit_p - meanOP50) %>% droplevels()
+choice <- choice %>%
+  mutate(rel.Logit = logit_p - means$meanOP50)
+
+
+plot1 <- choice %>%
+  droplevels() %>%
+  ggplot(aes(x = data_type)) +
+  geom_hline(yintercept = 0, lty = 2, alpha = 0.2) +
+  geom_boxplot(aes(fill = strain, y = rel.Logit), outlier.shape = NA, alpha = 0.75) +
+  ggbeeswarm::geom_quasirandom(aes(colour =  strain, y = rel.Logit), width = 0.1, alpha = 0.5) +
+  facet_grid(. ~ strain) +
+  scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
+  labs(y = "Relative JUb39 preference (log-odds ratio)") +
+  guides(colour = FALSE) +
+  scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue-light", drop = TRUE) +
+  # stat_pointinterval(aes(y = logit_p, x = 1.4),
+  #   data = fitted, fatten_point = 0,
+  #   size_range = c(0.3, 1), colour = "grey"
+  # ) +
+  # stat_summary(
+  #   data = fitted,
+  #   aes(y = logit_p, x = 1.4),
+  #   fun.y = median,
+  #   fun.ymin = median,
+  #   fun.ymax = median,
+  #   geom = "crossbar",
+  #   width = 0.05,
+  #   alpha = 0.75,
+  #   lwd = 0.35,
+  #   colour = "darkgrey"
+  #  ) +
+  geom_linerange(
+    data = fitted1,
+    aes(
+      x = 1.5,
+      ymin = ll,
+      ymax = hh
+    ),
+    lwd = 0.35,
+    colour = "grey34"
+  ) +
+  geom_crossbar(
+    data = fitted1,
+    aes(
+      y = m,
+      x = 1.5,
+      ymin = l,
+      ymax = h
+    ),
+    width = 0.05,
+    lwd = 0.35,
+    alpha = 0.5,
+    colour = "grey69",
+    fill = "grey69"
+  ) +
+  guides(fill = FALSE) +
+  # figure.axes() +
+  coord_cartesian(ylim = c(-2, 1.5)) +
+  add.n(data_type)
+
+
+#move down#
+stan_mod %>% emmeans::emmeans(~ strain) %>% emmeans::contrast(method = "pairwise") %>%
+  coda::as.mcmc() %>% bayesplot::mcmc_intervals()
+
+
+glmm_mod2 %>% emmeans::emmeans(~ strain) %>% emmeans::contrast("trt.vs.ctrl")
+
+
+```{r}
+#second plot for tbh-1, octr-1
+
+#generate relative index values:
+means <- choice %>%
+      filter(strain == "OP50",
+             N_total > 10,
+             is.na(note)) %>%
+      group_by(genotype, date) %>%
+      summarise(meanOP50 = mean(logit_p))
+
+choice <- full_join(choice, means) %>% mutate(rel.Logit = logit_p - meanOP50) %>% droplevels()
+
+
+plot1 <- choice %>%
+  droplevels() %>%
+  ggplot(aes(x = data_type)) +
+  geom_hline(yintercept = 0, lty = 2, alpha = 0.2) +
+  geom_boxplot(aes(fill = strain, y = rel.Logit), outlier.shape = NA, alpha = 0.75) +
+  ggbeeswarm::geom_quasirandom(aes(colour =  strain, y = rel.Logit), width = 0.1, alpha = 0.5) +
+  facet_grid(. ~ genotype + strain) +
+  scale_x_discrete(labels = function(strain) str_wrap(strain, width = 10)) +
+  labs(y = "Relative JUb39 preference (log-odds ratio)") +
+  guides(colour = FALSE) +
+  scale_color_plot(palette = "grey-blue", drop = TRUE) +
+  scale_fill_plot(palette = "grey-blue", drop = TRUE) +
+  # stat_pointinterval(aes(y = logit_p, x = 1.4),
+  #   data = fitted, fatten_point = 0,
+  #   size_range = c(0.3, 1), colour = "grey"
+  # ) +
+  # stat_summary(
+  #   data = fitted,
+  #   aes(y = logit_p, x = 1.4),
+  #   fun.y = median,
+  #   fun.ymin = median,
+  #   fun.ymax = median,
+  #   geom = "crossbar",
+  #   width = 0.05,
+  #   alpha = 0.75,
+  #   lwd = 0.35,
+  #   colour = "darkgrey"
+  #  ) +
+  geom_linerange(
+    data = fitted1,
+    aes(
+      x = 1.5,
+      ymin = ll,
+      ymax = hh
+    ),
+    lwd = 0.35,
+    colour = "grey34"
+  ) +
+  geom_crossbar(
+    data = fitted1,
+    aes(
+      y = m,
+      x = 1.5,
+      ymin = l,
+      ymax = h
+    ),
+    width = 0.05,
+    lwd = 0.35,
+    alpha = 0.5,
+    colour = "grey69",
+    fill = "grey69"
+  ) +
+  guides(fill = FALSE) #+
+  # figure.axes() +
+  #coord_cartesian(ylim = c(-.5, 1)) +
+  #add.n(data_type)
+
+space_facets(plot1, n_facets = 3, major_div = 2)
+
+```

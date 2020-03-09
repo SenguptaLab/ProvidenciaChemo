@@ -1,0 +1,104 @@
+---
+title: "Figure_4A_octr1_rescue"
+author: "Mike O'Donnell"
+date: "09/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+library(ProvidenciaChemo)
+library(tidyverse)
+library(emmeans)
+library(modelr)
+library(tidybayes)
+library(kableExtra)
+library(patchwork)
+library(lme4)
+theme_set(theme_my)
+```
+
+```{r exp2}
+#newdates <- c("2019_11_16", "2019_11_29", "2019_12_03")
+receptors_exp2 <- read_csv(here::here('extdata/Figure_4A_octr1Rescue.csv')) %>%
+  filter(response.time < 20,
+         genotype %in% c("N2", "octr-1", "octr-1; ex[srv11p::octr-1]", "octr-1; ex[srg47p::octr-1]")) %>%
+  mutate(food = fct_relevel(food, "OP50"),
+         genotype = fct_relevel(genotype, c("N2", "octr-1", "octr-1; ex[srv11p::octr-1]", "octr-1; ex[srg47p::octr-1]")),
+         data_type = "raw") %>% droplevels()  #excluding "octr-1; ex[sra6p::octr-1]" because 4B addresses cell-specific rescue
+
+stan_mod2 <- rstanarm::stan_glmer(data = receptors_exp2,
+                                 log(response.time) ~ food * genotype  + (1|plateID), #add food|date back
+                       family = gaussian,
+                       seed = 695,
+                       chains = 6,
+                       cores = 6)
+
+fitted <- receptors_exp2 %>%
+  data_grid(food, genotype) %>%
+  add_fitted_draws(stan_mod2, re_formula = NA) %>%
+  mutate(response.time = exp(.value), data_type = "fit")
+
+fitted1 <- emmeans(stan_mod2, pairwise ~ (food | genotype))$contrasts %>% 
+  coda::as.mcmc() %>% 
+  bayesplot::mcmc_intervals_data(prob = 0.66, prob_outer = 0.95) %>%
+  mutate(genotype = factor(levels(receptors_exp2$genotype), levels = levels(receptors_exp2$genotype)),
+         data_type = "fit",
+         food = "JUb39") %>%
+  mutate(food = factor(food, levels = c("OP50", "JUb39"))) %>% 
+  mutate_if(is.numeric, funs(. * -1))
+
+#--------relative effect plot (log)
+
+plot <- receptors_exp2 %>%
+  format_SOS(., day_correct = genotype) %>%
+  ggplot(aes(x = data_type)) +
+  geom_hline(yintercept = 0, alpha = 0.5, lty = 2) +
+  #geom_hline(yintercept = 0, linetype = "dashed", colour = "grey") +
+  geom_relLatency(fitted = fitted1,
+                  fillvar = food,
+                  dotvar = food,
+                  yvar = rel_log) +
+  scale_color_plot("grey-blue", drop = TRUE) +
+  scale_fill_plot("grey-blue", drop = TRUE) +
+  facet_grid(.~genotype+food) +
+  add.n('data_type', y.pos = -1.6) +
+  labs(x = "genotype",
+       y = "relative reversal latency [log(s)]") +
+  guides(colour = FALSE) +
+  theme(axis.text.x = element_blank())
+
+space_facets(plot, n_facets = 4)
+```
+```{r frequentist stats exp2}
+# frequentist glmm (log transformed) - singular fit
+lmer <- lme4::lmer(data = receptors_exp2, log(response.time) ~ food * genotype + (food|date) + (1|plateID))
+
+# frequentist glmm (log transformed) non-singular
+
+lmer<- lme4::lmer(data = receptors_exp2, log(response.time) ~ food * genotype + (1|date) + (1|plateID))
+lmer_octr <- lme4::lmer(data = receptors_exp2 %>% mutate(genotype = fct_relevel(genotype, "octr-1")), log(response.time) ~ food * genotype + (1|date) + (1|plateID))
+
+
+# pariwise comparisons
+lmer_octr %>% emmeans(pairwise ~ food | genotype)
+lmer_octr %>% emmeans(pairwise ~ genotype | food)
+
+# t-test for predictors using Kenward-Rogers estimated degrees of freedom
+lmer_octr %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
+
+# parametric bootstrap to estimate octr-1 interaction effect:
+#lmer_add <- lme4::lmer(data = receptors_exp1, log(response.time) ~ food + genotype + (1|date) + (1|plateID))
+lmer_boot <- lme4::bootMer(x=lmer_octr, FUN=fixef, re.form = NA, nsim=200)
+boot::boot.ci(lmer_boot, index=7, type = "perc", conf = 0.95) # for srv-11 rescue
+boot::boot.ci(lmer_boot, index=6, type = "perc", conf = 0.95) # for N2
+boot::boot.ci(lmer_boot, index=8, type = "perc", conf = 0.95) # for srg-47 rescue
+```
+
+
+
+
+
+
