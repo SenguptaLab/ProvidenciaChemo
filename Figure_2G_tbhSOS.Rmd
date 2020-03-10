@@ -52,7 +52,7 @@ fitted1 <- emmeans(stan_mod, pairwise ~ (food | genotype))$contrasts %>%
 
 ```{r frequentist stats}
 
-sjstats::equi_test(stan_mod)
+sjstats::equivalence_test(stan_mod)
 
 # frequentist glmm (log transformed)
 #singular fit so cannot do full model

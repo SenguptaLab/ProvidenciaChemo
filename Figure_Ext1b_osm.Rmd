@@ -1,5 +1,5 @@
 ---
-title: "Figure_S1A"
+title: "Figure_Ext1b"
 author: "Mike O'Donnell"
 date: "6/11/2019"
 output: 
@@ -21,7 +21,7 @@ library(emmeans)
 ```
 
 ```{r glycerol data}
-glycerol <- read_csv(here::here('extdata/Figure_Ext1a_osm.csv')) %>%
+glycerol <- read_csv(here::here('extdata/Figure_Ext1b_osm.csv')) %>%
     mutate(food = fct_relevel(food, "OP50"))
 
 

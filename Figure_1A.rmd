@@ -127,12 +127,10 @@ alldata <- rbind(select(attractData, columns),
 
 lm.all <- lm(alldata, formula = CI ~ strain * assay)
 
-lm.logit <- lm(data = filter(alldata, outlier.status == FALSE), formula = logit.p ~ strain * assay)
+lm.logit <- lm(data = filter(alldata), formula = logit.p ~ strain * assay)
 
 #identify outliers using Cook's Distance:
 alldata <- flag_outliers(df = alldata, lin.mod = lm.logit)
-# 
-# lm.all <- lm(filter(alldata, outlier.status == FALSE), formula = CI ~ strain * assay)
 
 #fit mixed-effects regression on outlier-less data (doesn't converge)
 glm.all <- lme4::glmer(data = alldata, formula = cbind(nCue,nControl) ~ strain * assay + (1|plate),

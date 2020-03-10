@@ -1,8 +1,10 @@
 ---
-title: "survival_assay"
+title: "Figure_Ext1g_lifespan"
 author: "Mike O'Donnell"
 date: "08/10/2019"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +18,7 @@ theme_set(theme_classic())
 
 ```{r}
 print(getwd())
-survival <- read_csv('extdata/Figure_Ext1f_lifespan.csv') %>%
+survival <- read_csv('extdata/Figure_Ext1g_lifespan.csv') %>%
   mutate(prop_alive = alive / (alive + dead),
          strain = fct_relevel(strain, c("OP50", "JUb39")),
          plateID = interaction(strain,group,plate),
@@ -110,7 +112,7 @@ boot_models_PA14 <- boots_PA14 %>%
 plot2 <- rbind(boot_models_OP50, boot_models_JUb39) %>%
   mutate(strain = fct_relevel(strain, "OP50", "JUb39")) %>%
     unnest(median_survival) %>%
-    select(strain, estimappppte) %>%
+    select(strain, estimate) %>%
     ggplot(aes(x = estimate)) +
     geom_density(aes(fill = strain), alpha = 0.5, colour = NA) +
     scale_fill_plot(palette = "grey-blue", drop = TRUE) +
@@ -128,33 +130,12 @@ library(patchwork)
 
 ```
 
-```{r hierarchical analysis}
-testdata <- filter(survival, strain == "OP50") %>% droplevels()
 
-allnls <- map_df(levels(survival$plateID), 
-              possibly(
-                function(plateID) {
-                  fit <- nls(prop_alive ~ exp(-G*exp(gamma*day)), 
-                    data = filter(survival, plateID == {{ plateID }}), 
-                    start = c(G = 0.00539, gamma = 0.3)) %>% 
-                    broom::tidy() %>%
-                    mutate(plateID = plateID) },
-                otherwise = NULL)
-              ) %>%
-  separate(plateID, into = c("strain", "group", "plate"), remove = FALSE)
-
-allnls %>%
-  ggplot(aes(x = strain, y = estimate)) +
-  geom_boxplot() +
-  geom_point(aes(, size = p.value)) +
-  facet_wrap(~term, scales = "free_y")
-
-setdiff(levels(survival$plateID), unique(allnls$plateID)) #levels of plateID that couldn't be fit in a gompertz eq via nls
-```
 
 
 ```{r}
 # #non-linear effect formula based on strain effects intercept on G, ignoring subject-specific effects of plate:
+# not done
 # library(brms)
 # CHAINS <- 4
 # ITER <- 4000

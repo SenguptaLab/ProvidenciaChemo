@@ -1,0 +1,85 @@
+---
+title: "Figure_Ext1a_attractants"
+author: "Mike O'Donnell"
+date: "09/03/2020"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 5
+    fig_width: 12
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+
+library(ProvidenciaChemo)
+
+```
+
+```{r dataload}
+library(tidyverse)
+library(patchwork)
+
+
+filepath <- here::here("extdata","Figure_Ext1a_attractants.csv")
+
+attractData <- read_csv(filepath) %>% format_AttractData() %>%
+  mutate(assay = fct_relevel(assay,"diacetyl"))  %>%
+  mutate(strain = fct_relevel(strain, "DA1878", after = Inf))
+#attractData.old <- read_csv(filepath) %>% format_AttractData()
+
+bz_data = attractData %>%
+  filter(assay == "bz")
+
+IAA_data = attractData %>%
+  filter(assay == "IAA")
+
+dia_data = attractData %>%
+  filter(assay == "diacetyl")
+
+butanone_data = attractData %>%
+  filter(assay == "2-but", user == "MOD")
+
+hex_data = attractData %>%
+  filter(assay == "1-hex")
+
+attractData <- rbind(bz_data, IAA_data, dia_data, hex_data, butanone_data) %>% droplevels()
+
+# plotColors = c('#827E7E','#2F8A34','#484CC7','#B8B1B1','#E6DDDD', 'gray94')
+
+
+plot1 = IAA_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  guides(color = FALSE) + labs(title = "IAA") + figure.axes(no.x = TRUE)
+
+plot2 =  dia_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  labs(title = "diacetyl") + figure.axes(no.x = TRUE)
+
+plot2_nolegend <- plot2 + guides(color = FALSE)
+
+plot3 = hex_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  #guides(color = FALSE) +
+  labs(title = "1-hex (1:1000)") + figure.axes(no.x = TRUE)
+
+plot4 =  butanone_data %>% dplyr::filter(genotype == 'N2', user == "MOD") %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  guides(color = FALSE) +
+  labs(title = "butanone") + figure.axes(no.x = TRUE)
+
+plot5 =  bz_data %>% dplyr::filter(genotype == 'N2') %>%
+  plot_ChemoIndex(xvar = strain, palette = "attract") +
+  labs(title = "benzaldehyde") + figure.axes(no.x = TRUE)
+
+#legend_Grob <- wrap_ggplot_grob(g_legend(plot2))
+
+
+# legend_Grob <- g_legend(plot2)
+
+#row1 <- wrap_ggplot_grob(gridExtra::grid.arrange(plot1, plot2_nolegend, plot3, plot4, plot5, nrow = 1))
+row1 <- plot2_nolegend + plot1 + plot4 + plot5 + plot_layout(nrow = 1)
+row1
+```

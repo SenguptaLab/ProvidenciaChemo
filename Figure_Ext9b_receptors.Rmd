@@ -1,5 +1,5 @@
 ---
-title: "Figure Ext9A "
+title: "Figure_Ext9b_receptors "
 author: "Mike O'Donnell"
 date: "6/19/2018"
 output: 
@@ -24,7 +24,7 @@ theme_set(theme_my)
 
 ```{r dataload  GPCRS}
 
-receptors_exp1 <- read_csv(here::here('extdata/Figure_Ext9A_receptors.csv')) %>%
+receptors_exp1 <- read_csv(here::here('extdata/Figure_Ext9b_receptors.csv')) %>%
   filter(response.time < 20,
          genotype %in% c("N2", "tyra-2", "ser-3", "octr-1")) %>%
   mutate(food = fct_relevel(food, "OP50"),

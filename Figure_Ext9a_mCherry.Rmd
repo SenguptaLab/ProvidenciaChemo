@@ -1,5 +1,5 @@
----
-title: "Figure_S5a_mCherry"
+  ---
+title: "Figure_Ext9a_mCherry"
 author: "Mike O'Donnell"
 date: "6/12/2019"
 output: 
@@ -17,7 +17,7 @@ library(tidyverse)
 
 ```{r mcherry in Ps 2KO}
 
-mcherry <- read_csv(here::here('extdata',"Figure_Ext9_mCherry.csv")) %>% 
+mcherry <- read_csv(here::here('extdata',"Figure_Ext9a_mCherry.csv")) %>% 
   mutate(
          cell_count = case_when(
            n_cells_code == 0 ~ "none",

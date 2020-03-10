@@ -1,5 +1,5 @@
 ---
-title: "Figure_S1d_lid"
+title: "Figure_Ext1e_lid"
 author: "Mike O'Donnell"
 date: "4/28/2019"
 output: 
@@ -26,7 +26,7 @@ library(emmeans)
 library(kableExtra)
 theme_set(theme_my)
 
-filepath <- here::here("extdata/Figure_Ext1d_lidAvoidance.csv")
+filepath <- here::here("extdata/Figure_Ext1e_lidAvoidance.csv")
   
 lid_data <- read_csv(filepath) %>%
   format_AvoidData(day.correct = "treatment") %>%

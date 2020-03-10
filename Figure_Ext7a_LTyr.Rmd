@@ -2,7 +2,9 @@
 title: "Figure_Ext7a_LTyr"
 author: "Mike O'Donnell"
 date: "6/12/2019"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -49,11 +51,11 @@ tyrosine_data <- tyrosine_data %>%
              food = fct_relevel(food, "OP50"),
              cond = fct_relevel(cond, "off_food"))
 
-contrasts.95 <- estimate::estimate_contrasts(stan_glm, ci = 0.95)[c(1,6),] %>%
+contrasts.95 <- modelbased::estimate_contrasts(stan_glm, ci = 0.95)[c(1,6),] %>%
   mutate(food = factor("JUb39", levels = c("OP50", "JUb39")),
          cond = c("off_food", "Tyrosine")) %>%
   select(food, cond, m = Median, ll = CI_low, hh = CI_high)
-contrasts.66 <- estimate::estimate_contrasts(stan_glm, ci = 0.66)[c(1,6),] %>%
+contrasts.66 <- modelbased::estimate_contrasts(stan_glm, ci = 0.66)[c(1,6),] %>%
   mutate(food = factor("JUb39", levels = c("OP50", "JUb39")),
          cond = c("off_food", "Tyrosine")) %>%
   select(food, cond, m = Median, l = CI_low, h = CI_high)

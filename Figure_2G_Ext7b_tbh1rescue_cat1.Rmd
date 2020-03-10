@@ -53,28 +53,6 @@ fitted1 <- emmeans(stan_mod, pairwise ~ (food | genotype))$contrasts %>%
   mutate_if(is.numeric, funs(. * -1))
 
 
-```
-
-```{r frequentist stats}
-
-sjstats::equi_test(stan_mod)
-
-# frequentist glmm (log transformed)
-#singular fit so cannot do full model
-lmer <- lme4::lmer(data = mutate(tbh_rescue, genotype = fct_relevel(genotype, "tbh-1")),
-                   log(response.time) ~ food * genotype + (1|plateID) + (1|date))
-
-# estimated marginal means for food effects by gentoype:
-lmer %>% emmeans(pairwise ~ food | genotype)
-
-# t-test for predictors using Kenward-Rogers estimated degrees of freedom
-lmer %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
-
-#reform for cat-1 interaction term with N2:
-lmer_cat1 <- lme4::lmer(data = mutate(tbh_rescue, genotype = fct_relevel(genotype, "N2")),
-                   log(response.time) ~ food * genotype + (1|plateID) + (1|date))
-lmer_cat1 %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
-
 #Figure 2f, tbh-1 rescue
 plot <- tbh_rescue %>%
   filter(genotype != "cat-1(ok411)") %>%
@@ -95,6 +73,28 @@ plot <- tbh_rescue %>%
   theme(axis.text.x = element_blank())
 
 space_facets(plot, n_facets = 3)
+
+```
+
+```{r frequentist stats}
+
+sjstats::equivalence_test(stan_mod)
+
+# frequentist glmm (log transformed)
+#singular fit so cannot do full model
+lmer <- lme4::lmer(data = mutate(tbh_rescue, genotype = fct_relevel(genotype, "tbh-1")),
+                   log(response.time) ~ food * genotype + (1|plateID) + (1|date))
+
+# estimated marginal means for food effects by gentoype:
+lmer %>% emmeans(pairwise ~ food | genotype)
+
+# t-test for predictors using Kenward-Rogers estimated degrees of freedom
+lmer %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
+
+#reform for cat-1 interaction term with N2:
+lmer_cat1 <- lme4::lmer(data = mutate(tbh_rescue, genotype = fct_relevel(genotype, "N2")),
+                   log(response.time) ~ food * genotype + (1|plateID) + (1|date))
+lmer_cat1 %>% lmerTest::as_lmerModLmerTest() %>% summary(ddf = "Kenward-Roger")
 
 
 #plot for cat-1 ext 2B

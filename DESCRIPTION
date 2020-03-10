@@ -23,5 +23,7 @@ Imports:
   pbkrtest,
   estimate,
   phia,
-  sjstats
+  sjstats,
+  brms,
+  rsample
 RoxygenNote: 6.1.1

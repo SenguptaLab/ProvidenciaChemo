@@ -1,5 +1,5 @@
 ---
-title: "Figure_1f_cfu"
+title: "Figure_1E_cfu"
 author: "Mike O'Donnell"
 date: "02/01/2020"
 output: html_document
@@ -15,7 +15,7 @@ library(tidyverse)
 
 
 ```{r}
-colonies <- read_csv('extdata/Figure_1f_cfu.csv') %>%
+colonies <- read_csv('extdata/Figure_1E_cfu.csv') %>%
   mutate(supe_total = n_sup * 10, # plated 1/10 volume of last wash after bleaching to get n cells left in supe
          cells_per_worm = ( (n_colonies * dilut) - supe_total ) / n_worms) # normalize based on # cells left over after bleaching
 

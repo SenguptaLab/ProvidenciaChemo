@@ -1,5 +1,5 @@
 ---
-title: "Figure_S1c"
+title: "Figure_Ext1d"
 author: "Mike O'Donnell"
 date: "6/11/2019"
 output: 
@@ -24,7 +24,7 @@ library(kableExtra)
 library(patchwork)
 theme_set(theme_my)
 
-tph1GFP <- read.csv(here::here('extdata/Figure_Ext1c_tph1GFP.csv')) %>%
+tph1GFP <- read.csv(here::here('extdata/Figure_Ext1d_tph1GFP.csv')) %>%
   mutate(food = fct_relevel(food, "OP50"))
 
 lm(tph1GFP, formula = mean ~ neuron * food) %>% summary()
