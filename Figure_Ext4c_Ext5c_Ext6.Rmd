@@ -72,12 +72,12 @@ lm.604 %>% emmeans::emmeans(pairwise ~ bacterial_strain | worm_genotype) %>% sum
   
 ```
 
-```{r Ext6 Succ-Serotonin}
+```{r Ext6 N-Ac-Serotonin}
 
 Serotonin <- filter(metabolites, condition == "NGM") %>%
   droplevels()
 
-plot3 <- Serotonin %>% ggplot(aes(x = bacterial_strain, y = Succinyl_Serotonin)) +
+plot3 <- Serotonin %>% ggplot(aes(x = bacterial_strain, y = `N-Ac_Serotonin`)) +
   geom_bardots(fillvar = bacterial_strain, dotvar = bacterial_strain) +
   facet_grid(~worm_genotype) +
   scale_color_plot(palette = "grey-blue-light", drop = TRUE) +
